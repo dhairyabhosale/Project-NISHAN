@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* { box-sizing: border-box; }
+body { margin: 0; font-family: Nirmala UI, Noto Sans Devanagari, system-ui, sans-serif; }
+button, input { font: inherit; }
+@keyframes settle-marker { from { transform: translate(-110%, -50%); opacity: 0; } to { transform: translate(-100%, -50%); opacity: 1; } }
+.rail-marker { animation: settle-marker 420ms ease-out both; }
+@media (prefers-reduced-motion: reduce) { .rail-marker { animation: none; } }

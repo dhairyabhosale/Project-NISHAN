@@ -1,0 +1,7 @@
+{
+  "id": "NSH-4F2A",
+  "state": "DIAGNOSED",
+  "amount": 2000,
+  "verdict": { "blocker": "B3", "subCause": "EKYC_OTP_UNAVAILABLE", "statusCode": "EKYC_OTP_UNAVAILABLE" },
+  "gates": ["PASSED", "PASSED", "BLOCKED", "UNREACHED", "UNREACHED", "UNREACHED", "UNREACHED", "UNREACHED"]
+}

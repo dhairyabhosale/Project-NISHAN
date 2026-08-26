@@ -1,0 +1,192 @@
+# NISHAN — Build Log
+
+One entry per work session: what was built, what Codex generated versus what was
+written afterwards, and every decision or reversal worth remembering.
+
+This file and [CREDITS.md](CREDITS.md) are the raw material for the second minute
+of the submission video (§17, 1:45–1:55) and are how hackathon requirement **R1**
+is evidenced. Keep them current — see CLAUDE.md §16.14.
+
+Times are IST.
+
+---
+
+## Session 1 — 26 August 2026, 17:14–17:22 — Codex scaffold
+
+**Author: OpenAI Codex.** Single generation run, start to finish in about eight
+minutes. See [CREDITS.md](CREDITS.md) for the file-by-file attribution and for
+the evidence this attribution rests on.
+
+### What was generated
+
+A complete, type-checking Next.js 14 App Router scaffold:
+
+- **Project config** — `package.json` (already named `pm-kisan-nishan`),
+  `tsconfig.json` with `strict: true`, Tailwind 3, PostCSS, `next.config.mjs`.
+  Dependency set is deliberately minimal: React, React DOM, Next. No component
+  library, no state library, no ORM — consistent with CLAUDE.md §8.3 and §16.11.
+- **Type layer** — `lib/types/{blocker,case,events,systems}.ts`.
+- **Content layer** — `content/catalogue.en.json` and `catalogue.hi.json`
+  (79 keys each, identical key sets), `content/resolve.ts` slot-filler,
+  `content/statusCodes.json`, and `lib/content.ts` deriving `CatalogueKey` from
+  the English catalogue so a mistyped key is a compile error.
+- **Four routes** — `/`, `/assisted`, `/case/[id]`, `/whats-real`.
+- **Thirteen components**, including the Money Rail trio (`MoneyRail`,
+  `RailGate`, `MoneyMarker`) and the disabled Bhashini mic affordance.
+- **Stubs, honestly marked** — `engine/diagnose.ts`, `mocks/index.ts` and
+  `db/schema.sql` each carry an explicit `TODO(...)` and do nothing.
+
+### What Codex got right, and should not be redone
+
+- **Zero hardcoded user-facing English in JSX.** Every visible string in all four
+  pages and all thirteen components resolves through `resolve()`. This is
+  CLAUDE.md §16.4, it is the thing that makes the no-AI honesty claim auditable,
+  and the scaffold honours it without exception. This was the single most
+  valuable property of the generated code.
+- **`MicButton.tsx` matches §9.4 exactly** — `disabled`, `aria-disabled`, a no-op
+  handler, no microphone permission request, no speech library imported, and
+  Bhashini named in the caption. Nothing to change.
+- **Gate state is not conveyed by colour alone** (§11.8) — `RailGate` prints a
+  text state label beside the colour.
+- **`prefers-reduced-motion` is respected** for the rail marker settle animation
+  (§11.5), in `app/globals.css`.
+- **The stubs are labelled as stubs.** `engine/diagnose.ts` throws rather than
+  returning a plausible wrong answer. Given CLAUDE.md §16.8 — never guess past a
+  gap — throwing is the correct failure mode for an unimplemented diagnosis, and
+  it is why the gap was impossible to miss during the audit.
+- **`README.md` is accurate.** Its "Stubbed" list correctly names the diagnosis
+  engine, all seven mock systems, persistence and every external call. Codex did
+  not overstate what it had produced.
+
+### What Codex invented that is not in CLAUDE.md
+
+Recorded here because §13.3 of the spec asked for it explicitly. None of these
+were fixed in this session; they are findings, not changes.
+
+1. **A second, incompatible blocker taxonomy.** `content/statusCodes.json` maps
+   `AADHAAR_NOT_SEEDED`→B2, `LAND_MISMATCH`→B4, `NPCI_UNMAPPED`→B5 and
+   `ITD_EXCLUDED`→B6. CLAUDE.md §7.2 assigns those to B4, B5, B4 and B2
+   respectively. Its eight code strings are also not the `ReasonCode` set of
+   §7.3. Two taxonomies are live in one repo.
+2. **An eight-gate Money Rail.** §11.2 specifies seven gates with fixed labels.
+   `components/MoneyRail.tsx` inlines an eight-entry `GATE_KEYS` array with
+   different labels (`rail.aadhaar`, `rail.exclusion`, `rail.treasury`), and puts
+   it in the component rather than the content layer.
+3. **A case-ID-first entry screen.** `app/page.tsx` asks for a case ID. §11.7 S2
+   specifies Aadhaar / mobile / registration number, precisely because P2 is that
+   farmers do not hold a reference number. The generated entry screen inverts the
+   product's answer to one of its own stated problems.
+4. **An off-spec colour set.** `tailwind.config.ts` defines `ink #202124`,
+   `stone`, `alert #B42318`, `rupee #B45309`. None of the eight §11.3 tokens
+   exist, and no CSS custom properties are defined at all.
+5. **A simplified database schema.** `db/schema.sql` has four tables against
+   §8.8's five, and omits `diagnoses`, `grievances`, `consents.scope`,
+   `reference`, `sla_due_at` and `ruleset_version`.
+
+### Decisions taken during this session
+
+- **Dense single-line formatting was kept.** Codex emitted most components as one
+  long line. It is unusual but consistent across the whole tree, it type-checks,
+  and reformatting 17 files two days before a hard deadline is churn with a
+  non-zero chance of breakage. Revisit in Stage 2, not now.
+
+---
+
+## Session 2 — 26 August 2026, ~22:00–22:30 — Audit and documentation correction
+
+**Author: Claude (Claude Code).** No feature work. Scope was deliberately limited
+to correcting the specification against the tree, executing the rename, and
+laying the Tamil plumbing.
+
+### What was found
+
+A file-by-file audit against CLAUDE.md §13.1, which listed as "done — do not
+rebuild": seven mock systems, eight personas, fault injection, a deterministic
+diagnosis engine, sub-cause derivation, `INDETERMINATE` handling, Fix Paths, a
+narrative service and a 28-test suite.
+
+**None of those existed.** The diagnosis engine was a six-line stub that throws.
+The seven mock modules all returned `null`. There was one sample case, not eight
+personas. There was no fault injection, no `/api/` directory, no test file, and
+no test runner.
+
+The inherited §13.1 was not a slightly optimistic list; it described a different
+repository. Had it been trusted, the two components CLAUDE.md §8.1 calls "the
+product" would have been assumed complete with two build days remaining.
+
+### What was changed
+
+**Documentation only, plus the rename and the Tamil key set.** No feature code
+was written and no existing behaviour was altered.
+
+- **CLAUDE.md §9.1 rewritten.** It described a complete, tested narrative service
+  at `src/lib/narrative/service.ts` with an `llmAvailable()` guard and a
+  `NARRATIVE_MODE` flag. No such file, directory, flag or dependency exists. The
+  section now records the service as never built, and notes that this makes the
+  honesty claim *stronger*, not weaker: no model can be enabled by setting an
+  environment variable, because no code reads one.
+- **CLAUDE.md §9.3 re-headed.** Was "Guards already implemented — do not remove
+  them"; `numbersAreGrounded()`, `containsSystemJargon()` and `asData()` do not
+  exist. Now "SPECIFIED, NOT BUILT", retained as the binding contract if the
+  question is ever reopened.
+- **CLAUDE.md §9.4 corrected** — `classifyIntentLocal` was marked "already
+  built"; it is not in the tree.
+- **CLAUDE.md §10.1 rewritten** — replaced the `src/lib/content/verdicts.ts` and
+  `fixPaths.ts` paths with the real root-level layout, plus a table mapping each
+  planned file to whatever serves its purpose today and naming the gap. `§10.4`
+  Fix Paths are recorded as entirely unbuilt.
+- **CLAUDE.md §11.2 corrected** — `RAIL_GATES in verdicts.ts` now records that
+  the gates are an eight-entry array inlined in `components/MoneyRail.tsx`, and
+  that the seven-gate table is the specification the component does not yet meet.
+- **CLAUDE.md §13 rewritten entirely** into three audited lists — verified
+  present and working, present but stubbed, absent — plus §13.4 on what the audit
+  does to the critical path.
+- **Rename executed (§1.1).** No `PKH` or `Paisa Kahan Hai` string remained in
+  source; `package.json` was already `pm-kisan-nishan`. The outstanding item was
+  the case-reference format: `sample-pmk-001` → **`NSH-4F2A`**, matching §12.3,
+  across `app/page.tsx`, both catalogues and `data/sample-case.json`.
+  `X-NISHAN-Fault` and `NSHDEMO-####` had nothing to rename — no fault middleware
+  and no fixtures exist. `npx tsc --noEmit` passes.
+- **Tamil plumbing laid.** `content/catalogue.ta.json` created with all 80 keys,
+  values `TODO_TA:`-prefixed English. `Locale` widened to `"en" | "hi" | "ta"`,
+  the resolver map and the language toggle now accept `ta`.
+
+### Decisions and reversals
+
+- **Reversal — the LLM plan is abandoned, not paused.** §9.1 previously argued
+  for keeping a dormant narrative service because "the code is written, tested,
+  and costs nothing to leave in place." That premise was false. The section now
+  says do not build it. For the video, the line is "there is no language model in
+  this build," not "the language model is switched off."
+- **Nothing was moved to match the doc.** CLAUDE.md's `src/lib/...` paths were a
+  documentation error. The doc was corrected to the tree, not the reverse. Moving
+  files two days out would have broken every import for no user-visible gain.
+- **Tamil was wired into the visible language toggle.** The alternative was to
+  ship the file unreferenced. An unreferenced catalogue proves nothing, and the
+  stated purpose of this step was that nothing breaks when Tamil lands — which is
+  only demonstrable if the locale is reachable. **Consequence: selecting Tamil
+  now shows `TODO_TA:`-prefixed English.** To hide it until the strings are
+  written, remove `"ta"` from the array in `components/LanguageToggle.tsx`; the
+  type and resolver plumbing stay valid either way.
+- **Tamil values were not machine-translated**, by instruction. Four keys are
+  exempt from the `TODO_TA:` prefix because they are proper nouns rather than
+  prose: `logo.label` (NISHAN) and the three language endonyms
+  (`English`, `हिन्दी`, `தமிழ்`).
+- **A `language.ta` key was added to all three catalogues.** The toggle resolves
+  a `language.<locale>` key per offered locale; without it the resolver would
+  have thrown on an undefined template. Key count is therefore 80, not 79.
+- **`catalogue.en.json` and `catalogue.hi.json` were reformatted** to one key per
+  line while inserting `language.ta`. Content is unchanged. They are now
+  hand-editable, which matters because the Tamil values are to be filled by hand.
+
+### Known-bad, deliberately left alone
+
+Flagged, not fixed, because fixing them is feature work and this session was
+scoped to documentation:
+
+1. The two incompatible blocker taxonomies (item 1 under Session 1).
+2. The missing §12.7 persistent disclosure banner — absent from every screen.
+   This is the build's most important honesty control.
+3. No footer, so `/whats-real` is reachable only by typing the URL.
+4. The project is **not a git repository**. No history, no rollback point, two
+   days from a hard deadline.

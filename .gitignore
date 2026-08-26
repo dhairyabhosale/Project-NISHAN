@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# next.js build output
+.next/
+out/
+next-env.d.ts
+
+# typescript incremental build info
+*.tsbuildinfo
+
+# environment — never commit real keys (CLAUDE.md §12.6)
+.env
+.env.*
+!.env.example
+
+# local scratch / caches
+work/
+outputs/
+
+# vendored skill packages — tooling, not project source
+.claude/skills/
+.agents/
+
+# os / editor
+Thumbs.db
+.DS_Store
+*.swp
