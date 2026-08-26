@@ -188,5 +188,23 @@ scoped to documentation:
 2. The missing §12.7 persistent disclosure banner — absent from every screen.
    This is the build's most important honesty control.
 3. No footer, so `/whats-real` is reachable only by typing the URL.
-4. The project is **not a git repository**. No history, no rollback point, two
-   days from a hard deadline.
+4. ~~The project is not a git repository.~~ **Resolved at the end of this
+   session** — see "Save point" below.
+
+### Save point
+
+The repository was initialised at the close of session 2 and the whole tree
+committed as `6d204ba`, on `main`. Before this there was no version control at
+all: no history, no rollback point, two days from a hard deadline, and no way to
+satisfy CLAUDE.md §12.9 ("roll back to last known-good deploy") near the
+deadline.
+
+- `.gitignore` excludes `node_modules/`, `.next/`, build info, `work/`,
+  `outputs/`, all `.env` files except `.env.example`, and the vendored skill
+  packages under `.claude/skills/` and `.agents/`. 46 project files are tracked.
+- The commit is mixed-authorship and its message says so. **It is a single
+  commit, so it does not by itself prove which lines Codex wrote** — CREDITS.md
+  remains the authority on that, and is explicit that its attribution rests on
+  timestamps and style, not on git history. Every change from here on does have
+  verifiable authorship.
+- No remote is configured. Deployment (R7) still does not exist.
