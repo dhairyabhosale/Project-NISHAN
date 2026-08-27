@@ -3,34 +3,66 @@ import { RailGate, type GateState } from "./RailGate";
 import type { CatalogueKey, Locale } from "../lib/content";
 import { resolve } from "../content/resolve";
 
-// §11.2's seven gates, in pipeline order. The order comes from RAIL_GATES in the
-// type layer; these are only the catalogue keys that label them, so the gate
-// taxonomy has one home and the labels have another.
+/* The Money Rail — CLAUDE.md §11.2. The one memorable thing; everything else on
+ * screen is quiet.
+ *
+ * Seven gates in pipeline order, labels from the content layer. The line runs
+ * --teal-deep down to the stop and --rule below it, so the eye lands on the
+ * marker without being told to.
+ *
+ * Why a rail and not a grid of six flags: flags are the current portal's
+ * information architecture restated prettily. The rail encodes what flags
+ * cannot — that these are SEQUENTIAL gates, that everything above the stop
+ * already worked, and that exactly one thing is in the way. */
+
 const GATE_KEYS: CatalogueKey[] = [
   "rail.registered", "rail.eligible", "rail.identity", "rail.state_signed",
   "rail.payment_file", "rail.bank_linked", "rail.credited"
 ];
 
-// §11.3: rail line is --teal-deep above the block, --rule below it.
 const DOT: Record<GateState, string> = {
-  PASSED: "bg-green",
-  BLOCKED: "bg-stop",
-  UNREACHED: "bg-rule"
+  PASSED: "bg-green border-cyan-pale",
+  BLOCKED: "bg-stop border-cyan-pale",
+  UNREACHED: "bg-cyan-pale border-rule"
 };
 
-export function MoneyRail({ gates, blockedAtIndex, amount, locale }: { gates: GateState[]; blockedAtIndex: number; amount: string; locale: Locale }) {
+export function MoneyRail({
+  gates,
+  blockedAtIndex,
+  amount,
+  locale,
+  credited = false
+}: {
+  gates: GateState[];
+  blockedAtIndex: number;
+  amount: string;
+  locale: Locale;
+  credited?: boolean;
+}) {
+  // B6c: every gate cleared, so the marker sits at the bottom in the cleared
+  // state rather than against a shut gate. §11.2 — this is what makes "your
+  // money arrived and nobody told you" land.
+  const markerAt = credited ? gates.length - 1 : blockedAtIndex;
+
   return (
-    <section aria-label={resolve("case.rail_label", {}, locale)} className="mt-8">
-      <ol className="space-y-2">
+    <section aria-label={resolve("case.rail_label", {}, locale)} className="mt-10">
+      <ol className="space-y-4">
         {gates.map((state, index) => {
-          const line = index <= blockedAtIndex ? "before:bg-teal-deep" : "before:bg-rule";
+          const beforeStop = markerAt === -1 ? index === 0 : index <= markerAt;
           return (
-            <li
-              key={GATE_KEYS[index]}
-              className={`relative pl-12 before:absolute before:left-5 before:top-[-8px] before:h-[calc(100%+16px)] before:w-0.5 first:before:top-1/2 first:before:h-1/2 last:before:h-1/2 ${line}`}
-            >
-              <span className={`absolute left-[14px] top-6 z-10 size-4 rounded-full border-2 border-cyan-pale ${DOT[state]}`} />
-              {index === blockedAtIndex && <MoneyMarker amount={amount} locale={locale} />}
+            <li key={GATE_KEYS[index]} className="relative pl-14">
+              {/* the rail line, drawn behind the bead */}
+              <span
+                aria-hidden="true"
+                className={`absolute left-[19px] top-[-16px] h-[calc(100%+32px)] w-[3px] ${
+                  beforeStop ? "bg-teal-deep" : "bg-rule"
+                } ${index === 0 ? "top-1/2 h-1/2" : ""} ${index === gates.length - 1 ? "h-1/2" : ""}`}
+              />
+              <span
+                aria-hidden="true"
+                className={`absolute left-[12px] top-7 z-10 size-[17px] rounded-full border-[3px] ${DOT[state]}`}
+              />
+              {index === markerAt && <MoneyMarker amount={amount} locale={locale} credited={credited} />}
               <RailGate labelKey={GATE_KEYS[index]} state={state} locale={locale} />
             </li>
           );

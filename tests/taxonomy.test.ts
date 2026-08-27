@@ -152,8 +152,8 @@ describe("E4 — catalogue integrity", () => {
       // from Evidence.slots
       "reason", "year", "pension", "threshold", "acquired_on", "cutoff",
       "on_record", "on_aadhaar", "other_bank", "land_name", "date", "cleared",
-      // structural
-      "code", "days"
+      // structural / UI
+      "code", "days", "language", "done", "total"
     ]);
     for (const [k, v] of Object.entries(catalogue("en"))) {
       for (const raw of v.match(/\{(\w+)\}/g) ?? []) {

@@ -218,3 +218,36 @@ describe("E6 — §10.5 copy rules, enforced", () => {
     }
   });
 });
+
+describe("E6 — no placeholder ever reaches a screen (§10.2)", () => {
+  const HI = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.hi.json"), "utf8")) as Record<string, string>;
+  const TA = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.ta.json"), "utf8")) as Record<string, string>;
+
+  it("hi and ta are still mostly placeholders, which is why the guard exists", () => {
+    const placeholders = Object.values(TA).filter((v) => v.startsWith("TODO_")).length;
+    assert.ok(placeholders > 100, "expected an unresolved locale, found " + placeholders);
+  });
+
+  it("resolving an unresolved locale falls back to English, never TODO_", () => {
+    for (const key of Object.keys(EN)) {
+      for (const loc of ["hi", "ta"] as const) {
+        const out = resolve(key as CatalogueKey, {}, loc);
+        assert.equal(out.startsWith("TODO_"), false, loc + " leaked a placeholder for " + key);
+      }
+    }
+  });
+
+  it("falls back silently — no apology injected into the sentence", () => {
+    // The selector already says the language is unresolved. Saying it again
+    // inside every sentence would be twenty apologies per screen.
+    const key = Object.keys(EN).find((k) => HI[k]?.startsWith("TODO_"))!;
+    assert.equal(resolve(key as CatalogueKey, {}, "hi"), resolve(key as CatalogueKey, {}, "en"));
+  });
+
+  it("still uses a real translation where one exists", () => {
+    // language.hi carries a genuine endonym in every locale, so the guard must
+    // not flatten values that are actually translated.
+    assert.equal(resolve("language.hi" as CatalogueKey, {}, "hi"), HI["language.hi"]);
+    assert.equal(HI["language.hi"].startsWith("TODO_"), false);
+  });
+});

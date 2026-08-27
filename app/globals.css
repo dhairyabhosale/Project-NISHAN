@@ -77,11 +77,22 @@ button, input { font: inherit; }
    The rail marker settling into position on the diagnosis screen. Everything
    else is instant. Reduced motion renders the final state. -------------------*/
 @keyframes settle-marker {
-  from { transform: translate(-110%, -50%); opacity: 0; }
-  to   { transform: translate(-100%, -50%); opacity: 1; }
+  from { transform: translateY(-14px); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
 }
-.rail-marker { animation: settle-marker 420ms ease-out both; }
+
+/* The shut gate draws after the marker lands, so the eye follows the money to
+   the thing that stopped it rather than the other way round. */
+@keyframes draw-stop {
+  from { border-left-width: 2px; }
+  to   { border-left-width: 6px; }
+}
+
+.rail-marker { animation: settle-marker 400ms ease-out both; }
+.rail-marker + div .border-l-[6px],
+.border-l-[6px] { animation: draw-stop 260ms ease-out 400ms both; }
 
 @media (prefers-reduced-motion: reduce) {
-  .rail-marker { animation: none; }
+  .rail-marker,
+  .border-l-[6px] { animation: none; }
 }
