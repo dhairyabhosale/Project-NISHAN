@@ -19,22 +19,34 @@
     "evidence": [
       {
         "system": "mUIDAI",
-        "field": "Identity check",
-        "observed": "Not finished",
-        "expected": "Finished",
-        "note": "Your identity check is not finished, so no instalment can be paid."
+        "field": "IDENTITY_CHECK",
+        "observed": {
+          "kind": "code",
+          "code": "CHECK_NOT_FINISHED"
+        },
+        "expected": {
+          "kind": "code",
+          "code": "CHECK_FINISHED"
+        },
+        "note": "EKYC_BLOCKS_PAYMENT"
       },
       {
         "system": "mUIDAI",
-        "field": "Phone number linked to your Aadhaar",
-        "observed": "None linked",
-        "expected": "A phone number you can answer",
-        "note": "No phone number is linked to your Aadhaar, so a one-time code cannot reach you. The online route will not work — you need a route that does not use a code."
+        "field": "LINKED_MOBILE",
+        "observed": {
+          "kind": "code",
+          "code": "NONE_LINKED"
+        },
+        "expected": {
+          "kind": "code",
+          "code": "A_NUMBER_YOU_ANSWER"
+        },
+        "note": "MOBILE_NOT_LINKED"
       }
     ],
     "facts": {
       "cycle": "2026-23",
-      "amount": "2000",
+      "amount": "2,000",
       "reg_no": "NSHDEMO-1001",
       "name": "Lakshmi Devi",
       "village": "Ariyur",

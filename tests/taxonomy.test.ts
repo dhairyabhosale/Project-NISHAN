@@ -139,12 +139,26 @@ describe("E4 — catalogue integrity", () => {
     assert.deepEqual(ta, en);
   });
 
-  it("leaves no unfilled slot in any English value", () => {
-    // Slots are filled by render(); a literal {slot} in the source is a typo.
+  it("uses only slots the engine can actually fill", () => {
+    // A slot the engine never supplies renders as an em dash forever, which is
+    // a silent hole in a sentence rather than a loud failure. Every name here
+    // is produced by Diagnosis.facts or by Evidence.slots.
+    const KNOWN = new Set([
+      // from Diagnosis.facts
+      "amount", "cycle", "reg_no", "name", "village", "state", "released_on",
+      "rejection_reason", "aadhaar_name", "land_owner_name", "khata_id",
+      "account_ref", "ifsc", "bank_name", "credited_on", "last4", "expected_by",
+      "blocker", "reason_code", "stopped_at", "days_overdue",
+      // from Evidence.slots
+      "reason", "year", "pension", "threshold", "acquired_on", "cutoff",
+      "on_record", "on_aadhaar", "other_bank", "land_name", "date", "cleared",
+      // structural
+      "code", "days"
+    ]);
     for (const [k, v] of Object.entries(catalogue("en"))) {
-      const slots = v.match(/\{(\w+)\}/g) ?? [];
-      for (const s of slots) {
-        assert.match(s, /^\{(amount|days|code|cycle|date|name|reason|rule|last4)\}$/, k + " uses unknown slot " + s);
+      for (const raw of v.match(/\{(\w+)\}/g) ?? []) {
+        const slot = raw.slice(1, -1);
+        assert.ok(KNOWN.has(slot), k + " uses unknown slot {" + slot + "}");
       }
     }
   });

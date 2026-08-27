@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
 import { diagnose } from "../engine/diagnose";
+import { renderEvidence, renderVerdict } from "../content/verdict";
 import { compareNames } from "../engine/names";
 import { RULESET_VERSION } from "../lib/types/diagnosis";
 import { readSnapshot } from "../mocks";
@@ -54,8 +55,8 @@ describe("E3 — precedence stops at the first blocking rule (§7.1)", () => {
     const d = await diagnoseRef("P1");
     assert.equal(d.reason, "MOBILE_NOT_LINKED");
     assert.notEqual(d.reason, "EKYC_PENDING_ACTION");
-    const notes = d.evidence.map((e) => e.note).join(" ");
-    assert.match(notes, /code cannot reach you|code can never reach/i);
+    const notes = renderEvidence(d).map((e) => e.note).join(" ");
+    assert.match(notes, /code cannot reach you/i);
   });
 });
 
@@ -142,9 +143,10 @@ describe("E3 — INDETERMINATE never guesses past a gap (§16.8)", () => {
   it("reports what is already known rather than nothing", async () => {
     const d = await diagnoseRef("P2", { mNPCI: { timeout: true } });
     assert.equal(d.primaryBlocker, "B0");
-    const cleared = d.evidence.find((e) => e.field === "Checks already passed");
+    const cleared = d.evidence.find((e) => e.field === "CHECKS_PASSED");
     assert.ok(cleared, "names the gates already confirmed clear");
-    assert.match(cleared!.observed, /B1/);
+    assert.equal(cleared!.observed.kind, "data");
+    assert.match(renderEvidence(d)[0].observed, /B1/);
   });
 });
 
@@ -173,9 +175,9 @@ describe("E3 — contract and determinism (§8.5)", () => {
       const d = await diagnoseRef(p.ref);
       assert.ok(d.evidence.length > 0, p.label + " has evidence");
       for (const e of d.evidence) {
-        for (const key of ["system", "field", "observed", "expected", "note"] as const) {
-          assert.ok(e[key] && String(e[key]).length > 0, p.label + " evidence." + key);
-        }
+        assert.ok(e.system && e.field && e.note, p.label + " evidence codes present");
+        assert.ok(e.observed.kind === "data" ? e.observed.value : e.observed.code, p.label + " observed");
+        assert.ok(e.expected.kind === "data" ? e.expected.value : e.expected.code, p.label + " expected");
       }
     }
   });
@@ -202,10 +204,10 @@ describe("E3 — no system vocabulary reaches a farmer (§16.5)", () => {
   // Evidence renders on S5, so the ban applies to it.
   const BANNED = /\b(npci|fto|mapper|seeding|seeded|dbt|pfms|rft)\b/i;
 
-  it("keeps banned words out of every evidence field and note", async () => {
+  it("keeps banned words out of every RENDERED evidence row", async () => {
     for (const p of PERSONAS) {
       const d = await diagnoseRef(p.ref);
-      for (const e of d.evidence) {
+      for (const e of renderEvidence(d)) {
         for (const key of ["field", "observed", "expected", "note"] as const) {
           assert.equal(BANNED.test(e[key]), false, p.label + " evidence." + key + ": " + e[key]);
         }
@@ -213,11 +215,21 @@ describe("E3 — no system vocabulary reaches a farmer (§16.5)", () => {
     }
   });
 
+  it("keeps them out of the rendered verdict", async () => {
+    for (const p of PERSONAS) {
+      const v = renderVerdict(await diagnoseRef(p.ref));
+      assert.equal(BANNED.test(v.sentence), false, p.label + " sentence: " + v.sentence);
+      assert.equal(BANNED.test(v.why), false, p.label + " why: " + v.why);
+    }
+  });
+
   it("keeps them out of the INDETERMINATE path too", async () => {
     const d = await diagnoseRef("P1", { mNPCI: { timeout: true }, mUIDAI: { timeout: true } });
-    for (const e of d.evidence) {
+    for (const e of renderEvidence(d)) {
       assert.equal(BANNED.test(e.note), false, e.note);
       assert.equal(BANNED.test(e.field), false, e.field);
     }
+    const v = renderVerdict(d);
+    assert.equal(BANNED.test(v.sentence + " " + v.why), false);
   });
 });

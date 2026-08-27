@@ -44,24 +44,76 @@ export type ReasonCode =
 
 export type Confidence = "certain" | "indeterminate";
 
-/**
- * Why the engine says what it says.
- *
+/* ── Evidence ────────────────────────────────────────────────────────────────
  * §8.5: "Every verdict names the system, the field, the value seen, the value
- * required. This drives the Visit Slip and the grievance draft for free." It is
- * not optional metadata — an officer has to be able to act on it, and §3.7 says
- * a grievance naming the exact field and value resolves faster because nobody
- * has to come back and ask.
+ * required. This drives the Visit Slip and the grievance draft for free."
+ *
+ * Evidence carries CODES AND VALUES ONLY. Every word a user reads is resolved
+ * from the catalogue. S5 renders evidence, so if its prose lived in the engine
+ * then "zero hardcoded user-facing strings" (§16.4) would be false the moment
+ * that screen opened — and that claim is what the entire honesty story rests
+ * on. Data (a date, an amount, a name read from a mock system) passes through
+ * as a value; everything else is a key. */
+
+/** Labels resolve from `evidence.field.<code>`. */
+export type EvidenceFieldCode =
+  | "SCHEME_REGISTRATION" | "APPLICATION_STATUS" | "INCOME_TAX_RECORD"
+  | "EMPLOYMENT_RECORD" | "MONTHLY_PENSION" | "LAND_ACQUIRED_ON" | "FAMILY_RECORD"
+  | "IDENTITY_CHECK" | "LINKED_MOBILE" | "DATE_OF_BIRTH" | "GENDER" | "NAME"
+  | "AADHAAR_BANK_LINK" | "LAND_RECORD" | "LAND_NAME" | "LAND_LINK"
+  | "STATE_APPROVAL" | "BANK_ACCOUNT" | "PAYMENT_ATTEMPT" | "PAYMENT_PROGRESS"
+  | "PAYMENT_RECEIVED" | "CHECKS_PASSED" | "GOVERNMENT_RECORD";
+
+/** Labels resolve from `evidence.value.<code>`. */
+export type EvidenceValueCode =
+  | "NO_RECORD" | "ACCEPTED_REGISTRATION" | "NOT_ACCEPTED" | "ACCEPTED" | "STILL_BEING_CHECKED"
+  | "NO_TAX_PAID" | "GOVT_SERVICE" | "NOT_GOVT_OR_EXEMPT"
+  | "ANOTHER_MEMBER_PAID" | "ONE_PER_FAMILY"
+  | "NO_IDENTITY_RECORD" | "CHECK_FINISHED" | "CHECK_NOT_FINISHED" | "CHECK_NOT_STARTED"
+  | "NONE_LINKED" | "A_NUMBER_YOU_ANSWER"
+  | "NO_LINK" | "LINK_INACTIVE" | "ACTIVE_LINK" | "LINK_TO_YOUR_ACCOUNT"
+  | "NO_LAND_RECORD" | "LAND_LINKED" | "LAND_NOT_LINKED"
+  | "PAUSED_BY_STATE" | "APPROVED"
+  | "ACCOUNT_OPEN" | "ACCOUNT_IS_DORMANT" | "ACCOUNT_IS_CLOSED"
+  | "RETURNED_BY_BANK" | "ACCEPTED_BY_BANK"
+  | "A_PAYMENT" | "PAID_TO_ACCOUNT" | "IN_PAYMENT_QUEUE" | "STATE_SIGNED_FORWARDED"
+  | "SENT_SETTLING" | "NOT_IN_QUEUE" | "NO_BLOCKER"
+  | "NO_ANSWER" | "CURRENT_RECORD" | "ALL_CLEAR";
+
+/** Sentences resolve from `evidence.note.<code>`. */
+export type EvidenceNoteCode =
+  | "NO_APPLICATION_ON_FILE" | "REGISTRATION_REJECTED" | "REGISTRATION_PENDING"
+  | "INCOME_TAX_PAYER" | "GOVT_EMPLOYEE" | "PENSIONER"
+  | "LAND_ACQUIRED_AFTER_CUTOFF" | "FAMILY_DUPLICATE"
+  | "EKYC_BLOCKS_PAYMENT" | "MOBILE_NOT_LINKED" | "DOB_MISMATCH" | "GENDER_MISMATCH"
+  | "NAME_VARIANCE" | "EKYC_PENDING_ACTION"
+  | "MAPPER_INACTIVE" | "MAPPER_NOT_FOUND" | "MAPPER_DIFFERENT_BANK"
+  | "LAND_NAME_MISMATCH" | "LAND_NOT_SEEDED" | "STATE_HOLD"
+  | "CREDITED" | "ACCOUNT_DORMANT" | "ACCOUNT_CLOSED" | "BANK_RETURNED"
+  | "FTO_IN_QUEUE" | "RFT_SIGNED" | "SETTLEMENT_PENDING" | "NOT_YET_QUEUED"
+  | "NO_BLOCKER" | "SYSTEM_SILENT" | "CHECKS_ALREADY_PASSED";
+
+/**
+ * A value shown in the evidence table.
+ *
+ * `code` is a catalogue key — words we author. `data` is a value read straight
+ * from a mock system of record — a date, an amount, a name — and is shown as-is
+ * because translating it would falsify the record.
  */
+export type EvidenceValue =
+  | { kind: "code"; code: EvidenceValueCode }
+  | { kind: "data"; value: string };
+
 export interface Evidence {
   system: SystemCode;
-  field: string;
+  field: EvidenceFieldCode;
   /** What the system actually holds. */
-  observed: string;
+  observed: EvidenceValue;
   /** What it would need to hold for the money to move. */
-  expected: string;
-  /** One plain sentence an officer could read aloud. No system vocabulary. */
-  note: string;
+  expected: EvidenceValue;
+  note: EvidenceNoteCode;
+  /** Slot values for the note template. */
+  slots?: Record<string, string>;
 }
 
 export interface Diagnosis {

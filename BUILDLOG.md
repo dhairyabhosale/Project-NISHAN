@@ -669,3 +669,108 @@ cleaner and is what §10 implies. Until then the case screen is deliberately thi
 **Verified:** `npm test` 87/87 · `npx tsc --noEmit` exits 0 · all five app routes
 and `/api/mock/*` return 200 · the case page renders all seven §11.2 gates in
 order with the portal string beneath.
+
+---
+
+## Session 8 — 27 August 2026 — E6, verdict content
+
+**Author: Claude (Claude Code).**
+
+### Evidence now carries codes and values only
+
+`Evidence` was rewritten to `{ system, field, observed, expected, note, slots }`
+where `field` and `note` are catalogue key suffixes, and `observed`/`expected`
+are a discriminated union:
+
+```ts
+type EvidenceValue =
+  | { kind: "code"; code: EvidenceValueCode }   // a word we author
+  | { kind: "data"; value: string };            // a record entry, shown as-is
+```
+
+The `data` half matters as much as the `code` half. A date, an amount or a name
+read from a system of record is **the record**, and rewording it would falsify
+what the government actually holds. So data passes through untranslated and
+everything else resolves from the catalogue.
+
+`engine/rules.ts` now contains **not one user-facing word**. The §16.5 jargon
+test was moved onto *rendered* output rather than the codes, which is the
+stronger assertion: it now checks what a farmer would actually read.
+
+### 27 verdicts, tiered
+
+155 new catalogue keys across all three locales (64 → 219, identical key sets):
+27 verdict sentences, 27 "why" passages, an overdue variant, 23 evidence field
+labels, 40 evidence values, 31 evidence notes.
+
+Nine tier-1 verdicts carry the demo and got full craft. The other eighteen are
+accurate and plain and pass every test, which is what was asked of them.
+
+### The overdue variant
+
+Anbu's instalment released 20 June with an expected-by of 27 June. Shown on
+27 August the old copy said *"is on its way, expected by 2026-06-27"*, which is
+worse than saying nothing: it invites a farmer to keep waiting on a payment that
+is stuck.
+
+`isOverdue()` compares `facts.expected_by` against `evaluatedAt` — both already
+on the Diagnosis, so no clock is read and the decision stays deterministic. When
+the date has passed the verdict switches to `PAYMENT_OVERDUE`:
+
+> Your ₹2,000 was due by 2026-06-27. That was **61 days ago** and it has still
+> not arrived.
+
+and the why names the office to take it to. The normal wording still renders
+when the date is ahead — a test diagnoses Anbu at 22 June and asserts the
+promise, not the overdue language. This is the accountability story: §10.5 says
+every wait must state what happens if it does not end, and a stale date states
+nothing.
+
+### The carve-out, in content
+
+`INCOME_TAX_PAYER`'s why now carries the Multi-Tasking Staff / Class IV /
+Group D exemption in two sentences, and a test asserts both phrases are present.
+It is what makes a wrong exclusion contestable, and it is the exemption that is
+missed most often.
+
+### The case screen is no longer thin
+
+The verdict sentence now sits **above** the rail as the page `h1`, with the why
+beneath it, then the rail, then the portal string in mono, then the evidence
+table. §11.7 S4: the rail is evidence for a claim already made, not a puzzle to
+solve.
+
+Two things were fixed while wiring it:
+
+- **`CaseHeader` was rendering a second `h1` at the same 30px size**, competing
+  with the verdict for the page heading. It now carries no heading element at
+  all — reference and amount only. One `h1`, one `h2`, headings in order.
+- **`--stamp` still appears once.** The verdict card is never red even when the
+  news is bad; the single red element is the blocked rail gate. An overdue
+  payment uses `--pending`, which is its own job.
+
+### Two defects fixed in passing
+
+- **A require cycle.** `formatRupees` briefly lived in `engine/diagnose.ts`,
+  which `engine/rules.ts` then imported — while `diagnose` already imports
+  `RULES` from `rules`. Under CommonJS that hands one side an undefined binding
+  depending on load order. Moved to `engine/format.ts`; no module inside
+  `engine/` imports `diagnose` now.
+- **Amounts rendered as `₹2000`.** Now `₹2,000`, grouped Indian-style. Written
+  by hand rather than with `toLocaleString`, which varies by platform ICU build
+  and would make the engine's output differ between this machine and a judge's —
+  §8.5 wants the same inputs to give the same output anywhere.
+
+### Copy rules, enforced rather than intended
+
+Tests over every verdict and evidence note assert: no system vocabulary; no
+"soon", "shortly", "please wait" or "kindly"; no apology and no blame; every
+waiting verdict states what to do if the wait does not end; every verdict that
+needs an office names a concrete one; every verdict sentence stays to one
+sentence. Plus: no unfilled `{slot}` reaches any rendered sentence for any
+persona, on the INDETERMINATE path included, and a missing slot renders as an
+em dash rather than a gap (§10.3).
+
+**Verified:** `npm test` 136/136 · `npx tsc --noEmit` exits 0 · all five app
+routes and `/api/mock/*` return 200 · case page renders one `h1`, `₹2,000`
+grouped, and zero unfilled slots.

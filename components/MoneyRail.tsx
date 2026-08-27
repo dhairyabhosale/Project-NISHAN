@@ -18,7 +18,7 @@ const DOT: Record<GateState, string> = {
   UNREACHED: "bg-rule"
 };
 
-export function MoneyRail({ gates, blockedAtIndex, amount, locale }: { gates: GateState[]; blockedAtIndex: number; amount: number; locale: Locale }) {
+export function MoneyRail({ gates, blockedAtIndex, amount, locale }: { gates: GateState[]; blockedAtIndex: number; amount: string; locale: Locale }) {
   return (
     <section aria-label={resolve("case.rail_label", {}, locale)} className="mt-8">
       <ol className="space-y-2">

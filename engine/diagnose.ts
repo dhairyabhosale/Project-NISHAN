@@ -23,7 +23,8 @@ import type { SystemCode, SystemSnapshot } from "../lib/types/systems";
 import { unreachableSystems } from "../lib/types/systems";
 import type { BlockerCode, DiagnoseOptions, Diagnosis, Evidence } from "../lib/types/diagnosis";
 import { RULESET_VERSION } from "../lib/types/diagnosis";
-import { RULES } from "./rules";
+import { PAYMENT_WINDOW_DAYS, RULES, addDays } from "./rules";
+import { formatRupees } from "./format";
 import type { RuleHit } from "./rules";
 
 /** Slot values for the content layer (§10.3). Everything here is read from a
@@ -40,7 +41,7 @@ function buildFacts(snapshot: SystemSnapshot, opts: DiagnoseOptions, hit: RuleHi
 
   const facts: Record<string, string> = {
     cycle: opts.cycle,
-    amount: String(instalment?.amount ?? credit?.amount ?? 2000)
+    amount: formatRupees(instalment?.amount ?? credit?.amount ?? 2000)
   };
 
   const put = (k: string, v: string | null | undefined) => { if (v != null && v !== "") facts[k] = String(v); };
@@ -63,10 +64,11 @@ function buildFacts(snapshot: SystemSnapshot, opts: DiagnoseOptions, hit: RuleHi
   if (hit) {
     put("blocker", hit.blocker);
     put("reason_code", hit.reason);
-    // The expected-by date is parsed out of the evidence note the rule already
-    // derived from mock data, so no date is ever predicted (§9.2).
-    const expected = hit.evidence.map((e) => e.note).join(" ").match(/Expected by (\d{4}-\d{2}-\d{2})/);
-    if (expected) put("expected_by", expected[1]);
+    // Derived from mSCHEME's release date, never predicted (§9.2). The content
+    // layer compares it against evaluatedAt to choose the overdue wording.
+    if (hit.blocker === "B6a" && instalment) {
+      put("expected_by", addDays(instalment.released_on, PAYMENT_WINDOW_DAYS));
+    }
   }
 
   return facts;
@@ -105,19 +107,20 @@ function indeterminate(
 ): Diagnosis {
   const evidence: Evidence[] = missing.map((system) => ({
     system,
-    field: "Government record",
-    observed: "No answer right now",
-    expected: "A current record",
-    note: "We could not reach this record system, so we will not guess. Your case is saved and we will check again."
+    field: "GOVERNMENT_RECORD",
+    observed: { kind: "code", code: "NO_ANSWER" },
+    expected: { kind: "code", code: "CURRENT_RECORD" },
+    note: "SYSTEM_SILENT"
   }));
 
   if (cleared.length) {
     evidence.unshift({
       system: "mSCHEME",
-      field: "Checks already passed",
-      observed: cleared.join(", ") + " confirmed clear",
-      expected: "All checks clear",
-      note: "These parts of your payment were checked and are fine. The next check is the one we could not reach."
+      field: "CHECKS_PASSED",
+      observed: { kind: "data", value: cleared.join(", ") },
+      expected: { kind: "code", code: "ALL_CLEAR" },
+      note: "CHECKS_ALREADY_PASSED",
+      slots: { cleared: cleared.join(", ") }
     });
   }
 
@@ -185,10 +188,10 @@ export function diagnose(snapshot: SystemSnapshot, opts: DiagnoseOptions): Diagn
     confidence: "certain",
     evidence: [{
       system: "mPFMS",
-      field: "Payment progress",
-      observed: "No blocker found",
-      expected: "Paid into your account",
-      note: "Nothing is blocking this payment."
+      field: "PAYMENT_PROGRESS",
+      observed: { kind: "code", code: "NO_BLOCKER" },
+      expected: { kind: "code", code: "PAID_TO_ACCOUNT" },
+      note: "NO_BLOCKER"
     }],
     facts: buildFacts(snapshot, opts, null),
     portalStatus,
