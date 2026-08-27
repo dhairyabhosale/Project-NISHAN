@@ -208,3 +208,58 @@ deadline.
   timestamps and style, not on git history. Every change from here on does have
   verifiable authorship.
 - No remote is configured. Deployment (R7) still does not exist.
+
+---
+
+## Session 3 — 27 August 2026 — Palette replacement and rail retokenisation
+
+**Author: Claude (Claude Code).** Design-system work only. No §14 ticket started.
+
+### What changed
+
+- **CLAUDE.md §11.3 replaced in full.** The ink-blue / ledger-paper /
+  rubber-stamp palette is withdrawn. Theme is `--teal-deep #00796B`,
+  `--green #4CAF50`, `--green-soft #A5D6A7`, `--cyan-pale #E0F7FA`, `--white`;
+  functional additions (`--ink`, `--ink-soft`, `--stop`, `--pending`, `--rule`,
+  `--focus`) appear only when their one job is on screen.
+- **CLAUDE.md §11.4 rewritten** — Anek Latin + IBM Plex Mono, Latin cuts only,
+  loaded through `next/font` so they are self-hosted at build time and §11.9's
+  zero-third-party budget still holds.
+- **§11.2, §11.5, §11.6, §11.7 untouched**, as instructed.
+- Tokens defined once in `app/globals.css` as CSS custom properties;
+  `tailwind.config.ts` maps names onto them so there is one source of truth.
+- All thirteen components and four routes retokenised. `/demo/tokens` added as a
+  dev-only surface — **delete before submission**.
+
+### Decisions and reversals
+
+- **Contrast was measured, and the measurements changed the brief.** Three of
+  the supplied colour rules do not survive WCAG and were amended in §11.3:
+  white-on-`--green` is 2.78:1 (below the 3:1 graphical floor), so the
+  passed-gate check is `--ink`; white-on-`--pending` is 3.08:1, so `--pending`
+  is a fill carrying `--ink` text and never a text colour; `--rule` on
+  `--cyan-pale` is 1.30:1, so hairlines only read on white cards.
+- **Scope widened beyond the three rail components, deliberately.** Replacing
+  the Tailwind palette deleted the `alert`/`rupee`/`stone` names the rest of the
+  tree referenced, which would have rendered those elements colourless. Applying
+  tokens everywhere was the smaller change.
+- **BlockerCard is no longer red.** It sits on the diagnosis screen alongside the
+  blocked rail gate, and §11.3 reserves `--stop` for the blocked gate alone. Two
+  red things means the screen has failed, so the card is now neutral.
+- **Radius discipline restored.** An earlier mechanical rename had put the 999px
+  marker radius on 17 elements. §11.5 reserves it for the money marker; it is now
+  used exactly once.
+
+### Flagged, not resolved
+
+1. **§11.1 still says "no green gradients"** and frames green as agriculture
+   decoration to be avoided. The theme is now green. §11.1 was in neither the
+   update list nor the leave-unchanged list, so it was left alone and the
+   contradiction is live in the spec.
+2. **`--focus` is the same hex as `--teal-deep`.** The 2px outline offset puts
+   the ring on the surrounding background, so it currently reads — but any
+   focusable element placed directly on a teal surface will have an invisible
+   focus ring.
+3. **A "never scrolls away" header** conflicts with the §12.7 persistent banner
+   plus a bottom-pinned primary action on a 360px viewport. The header band was
+   applied without being made sticky; resolve at NSH-301.
