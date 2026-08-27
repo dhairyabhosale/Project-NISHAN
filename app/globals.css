@@ -96,3 +96,16 @@ button, input { font: inherit; }
   .rail-marker,
   .border-l-[6px] { animation: none; }
 }
+
+/* ── Print — the Visit Slip is a physical artifact (§11.7 S7) ─────────────── */
+@media print {
+  :root { --cyan-pale: #ffffff; }
+  body { background: #fff; font-size: 12pt; }
+  /* The prototype banner, header, footer and pinned action are screen furniture. */
+  .fixed, header, footer { display: none !important; }
+  main { padding: 0 !important; max-width: none !important; }
+  @page { margin: 14mm; }
+}
+
+/* Connection strip — §11.8. Only present when genuinely offline. */
+.offline-strip { background: var(--pending); color: var(--ink); }

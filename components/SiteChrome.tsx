@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { LanguageSelector } from "./LanguageSelector";
+import { ConnectionStrip } from "./ConnectionStrip";
 import { NishanLogo } from "./NishanLogo";
 import { useLocale } from "./LocaleProvider";
 import { resolve } from "../content/resolve";
@@ -39,6 +40,8 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           <LanguageSelector />
         </div>
       </header>
+
+      <ConnectionStrip />
 
       <div className="flex-1">{children}</div>
 

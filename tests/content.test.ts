@@ -13,6 +13,7 @@ import { MISSING_SLOT, resolve } from "../content/resolve";
 import { daysBetween, isOverdue, renderEvidence, renderVerdict } from "../content/verdict";
 import { readSnapshot } from "../mocks";
 import { CURRENT_CYCLE, PERSONAS } from "../mocks/fixtures";
+import { authorityFor, fixPathFor, needsOfficer } from "../content/fixPaths";
 import type { CatalogueKey } from "../lib/content";
 
 const ROOT = path.join(__dirname, "..", "..");
@@ -249,5 +250,98 @@ describe("E6 — no placeholder ever reaches a screen (§10.2)", () => {
     // not flatten values that are actually translated.
     assert.equal(resolve("language.hi" as CatalogueKey, {}, "hi"), HI["language.hi"]);
     assert.equal(HI["language.hi"].startsWith("TODO_"), false);
+  });
+});
+
+describe("E7 — Fix Paths (§10.4)", () => {
+  it("authors the three the demo needs", () => {
+    for (const r of ["MOBILE_NOT_LINKED", "MAPPER_INACTIVE", "LAND_NAME_MISMATCH"] as const) {
+      assert.ok(fixPathFor(r), r + " has no Fix Path");
+    }
+  });
+
+  it("gives every other ReasonCode a concrete authority to fall back to", () => {
+    for (const r of REASON_CODES) {
+      const a = authorityFor(r as never);
+      assert.ok(EN["authority." + a.toLowerCase()], r + " -> " + a + " has no label");
+    }
+  });
+
+  it("rules an impossible route OUT, with the reason, never hidden", () => {
+    // The portal offers Lakshmi an OTP by default. It is the one route that
+    // cannot reach her, and saying so is the most useful line in the product.
+    const path = fixPathFor("MOBILE_NOT_LINKED")!;
+    const otp = path.routes.find((r) => r.id === "otp")!;
+    assert.equal(otp.available, false);
+    assert.ok(otp.unavailableBecauseKey, "a ruled-out route must say why");
+    const why = EN[otp.unavailableBecauseKey!];
+    assert.match(why, /no phone number is linked/i);
+  });
+
+  it("gives every ruled-out route a reason, in every Fix Path", () => {
+    for (const r of ["MOBILE_NOT_LINKED", "MAPPER_INACTIVE", "LAND_NAME_MISMATCH"] as const) {
+      for (const route of fixPathFor(r)!.routes) {
+        if (route.available) continue;
+        assert.ok(route.unavailableBecauseKey && EN[route.unavailableBecauseKey], r + "/" + route.id);
+      }
+    }
+  });
+
+  it("resolves every step, carry item and label it references", () => {
+    for (const r of ["MOBILE_NOT_LINKED", "MAPPER_INACTIVE", "LAND_NAME_MISMATCH"] as const) {
+      const path = fixPathFor(r)!;
+      assert.ok(EN[path.requestKey], r + " request missing");
+      for (const route of path.routes) {
+        assert.ok(EN[route.labelKey], r + "/" + route.id + " label");
+        for (const s of route.stepKeys) assert.ok(EN[s], r + " step " + s);
+        for (const c of route.carryKeys) assert.ok(EN[c], r + " carry " + c);
+      }
+    }
+  });
+
+  it("sends the land case to an officer and the bank case to a branch", () => {
+    assert.equal(needsOfficer("LAND_NAME_MISMATCH"), true);
+    assert.equal(authorityFor("LAND_NAME_MISMATCH"), "VILLAGE_REVENUE_OFFICER");
+    assert.equal(authorityFor("MAPPER_INACTIVE"), "BANK_BRANCH");
+    assert.equal(needsOfficer("MAPPER_INACTIVE"), false);
+  });
+
+  it("keeps farmer-facing fix copy free of system vocabulary (§16.5)", () => {
+    // The slip's officer-facing request line is exempt: it is addressed to an
+    // officer, in the officer's own vocabulary, and is not farmer-facing prose.
+    const BANNED = /\b(npci|fto|mapper|seeding|seeded|dbt|pfms|rft)\b/i;
+    for (const [k, v] of Object.entries(EN)) {
+      if (!k.startsWith("fix.") && !k.startsWith("carry.") && !k.startsWith("authority.")) continue;
+      if (k.startsWith("fix.request.")) continue;
+      assert.equal(BANNED.test(v), false, k + ": " + v);
+    }
+  });
+});
+
+describe("E7 — the Visit Slip ask fills from real case facts", () => {
+  it("uses only slots Diagnosis.facts actually carries", async () => {
+    // The slip is the artifact someone carries to an office. A hole in it —
+    // "correct the owner name from — to ..." — wastes the trip it was printed
+    // for, and no type checks a template string.
+    const factKeys = new Set<string>();
+    for (const p of PERSONAS) {
+      const d = await diagnoseRef(p.ref);
+      for (const k of Object.keys(d.facts)) factKeys.add(k);
+    }
+    for (const r of ["MOBILE_NOT_LINKED", "MAPPER_INACTIVE", "LAND_NAME_MISMATCH"] as const) {
+      const template = EN[fixPathFor(r)!.requestKey];
+      for (const raw of template.match(/\{(\w+)\}/g) ?? []) {
+        const slot = raw.slice(1, -1);
+        assert.ok(factKeys.has(slot), r + " asks for {" + slot + "}, which no case provides");
+      }
+    }
+  });
+
+  it("renders the land ask with both real names, not an em dash", async () => {
+    const d = await diagnoseRef("P3");
+    const ask = resolve(fixPathFor("LAND_NAME_MISMATCH")!.requestKey, d.facts, "en");
+    assert.match(ask, /Murugesan Kandasamy/);
+    assert.match(ask, /Sarala Murugesan/);
+    assert.equal(ask.includes(MISSING_SLOT), false, ask);
   });
 });
