@@ -453,3 +453,113 @@ and test code simply have different contracts, which is correct.
 
 **Verified:** `npm test` 39/39 · `npx tsc --noEmit` exits 0 · all five app routes
 200 · live credential scan clean.
+
+---
+
+## Session 6 — 27 August 2026 — E3, the diagnosis engine
+
+**Author: Claude (Claude Code).** Pushed the two outstanding commits first;
+`main` is in sync with origin.
+
+### What was built
+
+| File | What |
+|---|---|
+| `lib/types/diagnosis.ts` | The §8.5 contract: `BlockerCode`, `ReasonCode`, `Evidence`, `Diagnosis`, `RULESET_VERSION` |
+| `engine/names.ts` | Name comparison for B5 |
+| `engine/rules.ts` | The six gate rules, each declaring the systems it needs |
+| `engine/diagnose.ts` | Orchestration, INDETERMINATE, facts, observations |
+| `tests/engine.test.ts` | 29 tests |
+
+`engine/diagnose.ts` previously threw. It now implements
+`diagnose(snapshot, { cycle, now }) → Diagnosis`.
+
+### Every persona returns its expected verdict
+
+| Persona | Blocker | ReasonCode | Also live | Portal shows |
+|---|---|---|---|---|
+| Lakshmi D. | B3 | `MOBILE_NOT_LINKED` | — | eKYC Required |
+| Ramesh P. | B4 | `MAPPER_INACTIVE` | — | Aadhaar Seeding Status: No |
+| Sarala M. | B5 | `LAND_NAME_MISMATCH` | — | Stopped by State |
+| Anbu K. | B6a | `FTO_IN_QUEUE` | — | FTO Generated, Payment Under Process |
+| Fatima B. | B6b | `ACCOUNT_DORMANT` | — | Rejected by Bank |
+| Govindan S. | B6c | `CREDITED` | — | Payment Success |
+| Murugan V. | B2 | `INCOME_TAX_PAYER` | B5 | Stopped by State |
+| Selvi R. | B1 | `REGISTRATION_REJECTED` | B2, B3, B4, B5 | eKYC Required |
+
+**Selvi has five live blockers, not four.** E2 seeded B1, B3, B4 and B5
+deliberately; her land was also acquired after the 2019-02-01 cut-off, so B2
+fires too. She still returns B1 alone. The extra gate makes her a stronger
+precedence test than intended, and it is recorded here so the count is not a
+surprise later.
+
+**Murugan carries a secondary B5** because his portal status is
+`Stopped by State`, which the B5 rule reads as `STATE_HOLD`. That is correct and
+causally right: the state paused him *because* of the tax flag. B2 wins, B5 is
+noted for the officer.
+
+### Decisions
+
+- **Two kinds of "no answer" are kept apart, and that is what makes §16.8
+  enforceable.** Each rule declares `requires: SystemCode[]`. Before a gate is
+  judged, the orchestrator checks those systems actually answered; if any did
+  not, it returns INDETERMINATE and does **not** descend. Ramesh is genuinely
+  B4, but with `mUIDAI` silenced the engine returns B0 rather than the blocker
+  it could still see — because it cannot rule out B3, and a farmer sent to the
+  bank for an identity problem loses a day's wage. E1's `SystemResult` split is
+  what makes this checkable rather than aspirational.
+- **INDETERMINATE reports what is already known**, per §7.2 B0. Silence `mNPCI`
+  for Ramesh and the verdict names "B1, B2 confirmed clear" alongside the system
+  that did not answer.
+- **A silent system that was only needed lower down does not weaken the
+  verdict.** Lakshmi with `mNPCI` down is still B3, still `certain`, with
+  `mNPCI` listed in `unreachableSystems`. Honesty about a gap is not the same as
+  doubt about an answer.
+- **B5's name rule turns on one guard: the leading given name must be
+  compatible.** Both failure modes are expensive and pull in opposite
+  directions — too strict and "Ramesh P." is flagged against "Ramesh Pandian",
+  costing a wasted trip; too loose and "Murugesan Kandasamy" passes as "Sarala
+  Murugesan", so the real blocker is missed and she waits for money that will
+  never come. Sharing a surname is not sharing an identity: land held by a
+  father and claimed by a daughter shares "Murugesan" and is still a different
+  person. Transliteration folding (th→t, ksh→x, doubled letters) handles
+  Fathima/Fatima and Lakshmi/Laxmi; initial expansion handles "Ramesh P.".
+- **`secondaryObservations` never touch the verdict.** Gathered after the
+  primary is decided, only from systems that answered. B6a is excluded — "not
+  yet queued" is trivially true for anything blocked earlier, so listing it
+  would be noise; B6b and B6c are kept because a returned payment or an existing
+  credit deserves an officer's attention.
+- **No date is predicted.** §9.2 forbids predicting a payment date not derived
+  from mock system data. The B6a expected-by is `released_on + 7 days`, read
+  from `mSCHEME`, and it is parsed back out of the evidence the rule already
+  produced rather than computed twice.
+- **Evidence is farmer-facing, so §16.5 applies to it.** S5 renders it, so field
+  labels are plain language ("Aadhaar linked to a bank account"), never column
+  names. A test asserts `npci|fto|mapper|seeding|seeded|dbt|pfms|rft` appear
+  nowhere in any evidence field or note, on the INDETERMINATE path included.
+  Officer-facing precision belongs in the Visit Slip at E7.
+- **Determinism is asserted, not assumed.** Every persona is diagnosed twice and
+  deep-compared; `evaluatedAt` comes from the injected `now`; there is no
+  `Date.now()` in the path and no model of any kind (§16.2).
+
+### Flagged for E6, not fixed
+
+**The B6a expected-by date is already in the past.** Anbu's instalment released
+2026-06-20, so the derived expected-by is 2026-06-27 — two months before the
+demo date. Telling a farmer in August that her money is "expected by 27 June" is
+nonsense.
+
+The fixture is not wrong; the two-month gap **is** the story, and §3.6 puts
+simple issues at 7-10 working days. The fix belongs in content: §10.5 requires
+that "every wait states what happens when it ends and what happens if it does
+not", so the B6a copy needs an overdue variant rather than a bare date. Raised
+here so E6 handles it deliberately.
+
+### Known conflict, unchanged
+
+`lib/types/blocker.ts` and `content/statusCodes.json` still carry the older,
+incompatible taxonomy that the case screen reads (§13.2). `lib/types/diagnosis.ts`
+is now the authority. E4 reconciles them.
+
+**Verified:** `npm test` 68/68 (29 new) · `npx tsc --noEmit` exits 0 · all five
+app routes and `/api/mock/*` return 200.
