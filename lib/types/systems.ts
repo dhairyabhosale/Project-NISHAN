@@ -36,6 +36,9 @@ export interface SchemeRecord {
    *  derive the B3 sub-cause DOB_MISMATCH (§7.3). Transposed digits are the
    *  common real case, and they block e-KYC without ever being explained. */
   dob_on_record?: string;
+  /** Gender as the scheme holds it, compared against mUIDAI.gender to derive
+   *  the B3 sub-cause GENDER_MISMATCH (§7.3). */
+  gender_on_record?: "F" | "M" | "O";
   registration_state: "REGISTERED" | "PENDING" | "REJECTED";
   /** Populated only when registration_state is REJECTED. */
   rejection_reason?: string;

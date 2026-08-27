@@ -136,3 +136,26 @@ describe("MGSL — fault spec parsing", () => {
     assert.deepEqual(parseFaultSpec(null), {});
   });
 });
+
+describe("MGSL — snapshots are copies, not the fixture store", () => {
+  it("mutating a snapshot cannot corrupt later reads", async () => {
+    const first = await readSystem("mPFMS", LAKSHMI);
+    assert.ok(first.ok && first.record);
+    const before = first.record.fto_state;
+
+    // A caller does something careless.
+    first.record.fto_state = "PAID";
+
+    const second = await readSystem("mPFMS", LAKSHMI);
+    assert.ok(second.ok && second.record);
+    assert.equal(second.record.fto_state, before, "the store must be untouched");
+  });
+
+  it("hands out a fresh object each read", async () => {
+    const a = await mUIDAI(LAKSHMI);
+    const b = await mUIDAI(LAKSHMI);
+    assert.ok(a.ok && b.ok && a.record && b.record);
+    assert.notEqual(a.record, b.record, "different objects");
+    assert.deepEqual(a.record, b.record, "identical values");
+  });
+});

@@ -94,3 +94,41 @@ export interface DiagnoseOptions {
 
 /** Bumped whenever a rule changes. Stamped on every case (§8.5, §8.8). */
 export const RULESET_VERSION = "1.0.0";
+
+/* ── The Money Rail — §11.2 ──────────────────────────────────────────────── */
+
+/** Seven gates, in pipeline order. */
+export type RailGateCode =
+  | "REGISTERED" | "ELIGIBLE" | "IDENTITY_VERIFIED" | "STATE_SIGNED"
+  | "PAYMENT_FILE" | "BANK_LINKED" | "CREDITED";
+
+export const RAIL_GATES: readonly RailGateCode[] = [
+  "REGISTERED", "ELIGIBLE", "IDENTITY_VERIFIED", "STATE_SIGNED",
+  "PAYMENT_FILE", "BANK_LINKED", "CREDITED"
+];
+
+/**
+ * Which gate the money is standing at.
+ *
+ * §11.2: **rail order is deliberately not rule precedence.** B4 is *evaluated*
+ * before B5 because an unpayable account is the more actionable of the two, but
+ * on the rail the state gate sits earlier, because that is where the money
+ * physically stops. The rail shows the pipeline; the engine shows what to fix.
+ *
+ * Returns the index of the shut gate. The marker sits immediately before it.
+ * B6c returns RAIL_GATES.length — every gate cleared, marker at the bottom.
+ */
+export function stoppedAt(blocker: BlockerCode): number {
+  switch (blocker) {
+    case "B1": return 0;  // Scheme approved you
+    case "B2": return 1;  // Eligibility checked
+    case "B3": return 2;  // Identity check done
+    case "B5": return 3;  // Your state signed the request
+    case "B4": return 5;  // Aadhaar linked to your account
+    case "B6a":
+    case "B6b": return 6; // Bank credited your account
+    case "B6c": return RAIL_GATES.length; // all cleared
+    case "B0":
+    default: return -1;   // last known position unknown; rendered dashed
+  }
+}

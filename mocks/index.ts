@@ -68,7 +68,14 @@ export async function readSystem<S extends SystemCode>(
     findPersonaByRef(reference) ?? findPersonaByIdentifier(reference);
 
   const observedAt = fault.staleBy ? shiftBack(now(), fault.staleBy) : now();
-  const record = (persona ? persona[system] : null) as RecordBySystem[S] | null;
+
+  // Hand out a COPY, never the fixture itself. A caller that mutates a snapshot
+  // — a rule experimenting, a route handler, a test — would otherwise corrupt
+  // the shared persona store for the life of the process, and every later read
+  // would silently return different data. That breaks the determinism §8.5
+  // requires, and it breaks it invisibly.
+  const source = persona ? persona[system] : null;
+  const record = (source ? structuredClone(source) : null) as RecordBySystem[S] | null;
 
   return fault.staleBy
     ? { system, ok: true, record, observedAt, stale: true }

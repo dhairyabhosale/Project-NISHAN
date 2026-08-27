@@ -3,12 +3,12 @@ import { RailGate, type GateState } from "./RailGate";
 import type { CatalogueKey, Locale } from "../lib/content";
 import { resolve } from "../content/resolve";
 
-// NOTE (§11.2): this is 8 gates with labels that do not match the 7-gate table in
-// CLAUDE.md §11.2, and it lives here rather than in the content layer. Both are
-// known divergences recorded in §13.2. Retokenised, not restructured.
+// §11.2's seven gates, in pipeline order. The order comes from RAIL_GATES in the
+// type layer; these are only the catalogue keys that label them, so the gate
+// taxonomy has one home and the labels have another.
 const GATE_KEYS: CatalogueKey[] = [
-  "rail.scheme", "rail.aadhaar", "rail.ekyc", "rail.land",
-  "rail.exclusion", "rail.treasury", "rail.bank_mapping", "rail.credited"
+  "rail.registered", "rail.eligible", "rail.identity", "rail.state_signed",
+  "rail.payment_file", "rail.bank_linked", "rail.credited"
 ];
 
 // §11.3: rail line is --teal-deep above the block, --rule below it.

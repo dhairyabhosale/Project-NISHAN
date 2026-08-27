@@ -563,3 +563,109 @@ is now the authority. E4 reconciles them.
 
 **Verified:** `npm test` 68/68 (29 new) · `npx tsc --noEmit` exits 0 · all five
 app routes and `/api/mock/*` return 200.
+
+---
+
+## Session 7 — 27 August 2026 — E4, taxonomy reconciliation
+
+**Author: Claude (Claude Code).**
+
+### One taxonomy
+
+Deleted outright:
+
+| File | Why |
+|---|---|
+| `lib/types/blocker.ts` | `Blocker`/`Verdict`/`Precedence` — a three-field verdict superseded by the ten-field `Diagnosis` |
+| `engine/precedence.ts` | Duplicated `PRECEDENCE`; rule order now lives in `RULES` in `engine/rules.ts`, where it is actually consumed |
+| `content/statusCodes.json` | The invented taxonomy — `FTO_REJECTED`, `NPCI_UNMAPPED`, and blocker numbers that contradicted §7.2 |
+
+`lib/types/case.ts` now carries a full `Diagnosis` and the §8.6 state set (13
+states, with the seven reachable in Stage 1 marked; the grievance and escalation
+states are defined because the process has that shape even though NSH-401/402/403
+are cut). `lib/types/diagnosis.ts` is the sole authority.
+
+Also removed from all three catalogues: every `cause.*` and `action.*` key. Their
+names encoded the deleted numbering — `cause.b2.aadhaar_not_seeded` called
+Aadhaar seeding B2 where §7.2 says B4 — so keeping them would have kept the
+second taxonomy alive in the content layer. `owner.*` keys were kept; authority
+labels are reusable. Catalogues went 64 → 64 keys across en/hi/ta, still
+identical sets.
+
+Four tests now stop the second taxonomy growing back: the three deleted files
+must not exist, no invented code string may appear in any catalogue, and no key
+may match `^(cause|action)\.b\d`.
+
+### Real portal vocabulary
+
+`PortalStatusString` is exactly the seven strings a farmer will have seen, and
+tests assert every persona carries one of them **and** that none of them appears
+in any farmer-facing catalogue value. They belong in `portalStatus`, rendered as
+mono secondary text on S4 so she can match what the official site told her.
+
+`StatusCodeChip` was rewritten to render that string and nothing else. This is
+the one place system vocabulary is allowed on a farmer-facing screen: "FTO
+Generated, Payment Under Process" is the government's own wording, quoted.
+**§16.5 governs what we write, not what we quote.**
+
+### The Money Rail now runs on §11.2
+
+The eight ad-hoc gates are gone. `RAIL_GATES` and `stoppedAt()` live in
+`lib/types/diagnosis.ts` with §11.2's seven gates and exact labels, and
+`data/sample-case.json` is generated from a real engine verdict rather than
+hand-written.
+
+`stoppedAt` encodes the deliberate inversion: **B5 maps to an earlier gate than
+B4**, because B4 is *judged* first (an unpayable account is more actionable) but
+the money physically stops at the state gate earlier in the pipeline. A test
+asserts `stoppedAt("B5") < stoppedAt("B4")` so that inversion cannot be
+"corrected" by someone tidying up later. This makes NSH-304 pure wiring.
+
+### A real defect the coverage probe exposed
+
+`readSystem` was returning the fixture object **by reference**. Any caller that
+mutated a snapshot corrupted the shared persona store for the life of the
+process, and every later read silently returned different data.
+
+The E3 carve-out test was doing exactly that — permanently flipping Anbu's
+`is_mts_class_iv_group_d` — and passing only because declaration order put the
+persona assertions first. It was luck, not correctness.
+
+`readSystem` now returns a `structuredClone`. Two tests lock it: mutating a
+result cannot change a later read, and two reads return distinct objects with
+identical values. This matters beyond tidiness — §8.5 requires determinism, and
+shared mutable fixtures break it invisibly, which is the worst way to break it.
+
+### ReasonCode coverage — E6's true surface area
+
+All **27** ReasonCodes in §7.3, probed by constructing targeted snapshots:
+
+- **9 are demonstrated by a persona** — one per blocker, plus `SYSTEM_UNREACHABLE`
+  via fault injection.
+- **18 are reachable** but not demoed.
+- **0 are unreachable.**
+
+`GENDER_MISMATCH` was the one dead code: `SchemeRecord` had no gender to compare
+against Aadhaar's. Added `gender_on_record` and the B3 branch, mirroring
+`DOB_MISMATCH`. Leaving a specified sub-cause structurally unreachable would have
+meant §7.3 was partly fiction.
+
+**E6 therefore authors 27 verdicts, not 9.** The nine demoed ones carry the demo;
+the other eighteen still need a sentence, because the engine can emit them.
+
+### Flagged for E6
+
+**Evidence carries English authored in `engine/rules.ts`, not in the catalogue.**
+§10 requires every user-facing string to come from a keyed content table, and S5
+renders evidence. So the case screen currently shows the rail and the portal
+string but **not** the verdict sentence or the evidence table — rendering them
+would put non-catalogue prose on the primary path, which §16.4 forbids and which
+is the claim the whole build rests on.
+
+E6 has to decide: move the notes into catalogue keys, or reduce `Evidence` to
+codes and values and render the words from the content layer. The second is
+cleaner and is what §10 implies. Until then the case screen is deliberately thin.
+
+**Verified:** `npm test` 87/87 · `npx tsc --noEmit` exits 0 · all five app routes
+and `/api/mock/*` return 200 · the case page renders all seven §11.2 gates in
+order with the portal string beneath.

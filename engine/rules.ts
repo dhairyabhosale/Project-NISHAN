@@ -242,6 +242,18 @@ const b3: Rule = {
       };
     }
 
+    if (s?.gender_on_record && s.gender_on_record !== u.gender) {
+      return {
+        blocker: "B3", reason: "GENDER_MISMATCH",
+        evidence: [{
+          system: "mSCHEME", field: "Gender",
+          observed: s.gender_on_record + " on the scheme record",
+          expected: u.gender + ", as on your Aadhaar",
+          note: "The two records hold different genders, so the identity check cannot complete."
+        }]
+      };
+    }
+
     if (s && !compareNames(s.name, u.name).match) {
       return {
         blocker: "B3", reason: "NAME_VARIANCE",

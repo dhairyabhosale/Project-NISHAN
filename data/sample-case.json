@@ -1,7 +1,59 @@
 {
-  "id": "NSH-4F2A",
+  "reference": "NSH-4F2A",
+  "beneficiaryRef": "P1",
+  "cycle": "2026-23",
   "state": "DIAGNOSED",
-  "amount": 2000,
-  "verdict": { "blocker": "B3", "subCause": "EKYC_OTP_UNAVAILABLE", "statusCode": "EKYC_OTP_UNAVAILABLE" },
-  "gates": ["PASSED", "PASSED", "BLOCKED", "UNREACHED", "UNREACHED", "UNREACHED", "UNREACHED", "UNREACHED"]
+  "gates": [
+    "PASSED",
+    "PASSED",
+    "BLOCKED",
+    "UNREACHED",
+    "UNREACHED",
+    "UNREACHED",
+    "UNREACHED"
+  ],
+  "diagnosis": {
+    "primaryBlocker": "B3",
+    "reason": "MOBILE_NOT_LINKED",
+    "confidence": "certain",
+    "evidence": [
+      {
+        "system": "mUIDAI",
+        "field": "Identity check",
+        "observed": "Not finished",
+        "expected": "Finished",
+        "note": "Your identity check is not finished, so no instalment can be paid."
+      },
+      {
+        "system": "mUIDAI",
+        "field": "Phone number linked to your Aadhaar",
+        "observed": "None linked",
+        "expected": "A phone number you can answer",
+        "note": "No phone number is linked to your Aadhaar, so a one-time code cannot reach you. The online route will not work — you need a route that does not use a code."
+      }
+    ],
+    "facts": {
+      "cycle": "2026-23",
+      "amount": "2000",
+      "reg_no": "NSHDEMO-1001",
+      "name": "Lakshmi Devi",
+      "village": "Ariyur",
+      "state": "Tamil Nadu",
+      "released_on": "2026-06-20",
+      "aadhaar_name": "Lakshmi Devi",
+      "land_owner_name": "Lakshmi D.",
+      "khata_id": "KH-88231",
+      "account_ref": "MOCKACC-4471",
+      "ifsc": "MOCK0000001",
+      "bank_name": "MOCK BANK OF THE SOUTH",
+      "last4": "4471",
+      "blocker": "B3",
+      "reason_code": "MOBILE_NOT_LINKED"
+    },
+    "portalStatus": "eKYC Required",
+    "secondaryObservations": [],
+    "unreachableSystems": [],
+    "rulesetVersion": "1.0.0",
+    "evaluatedAt": "2026-08-27T09:00:00.000Z"
+  }
 }
