@@ -956,30 +956,104 @@ marker sits at the bottom in `--cleared`, and the answer is "your money arrived 
 
 ### 11.3 Design tokens — colour
 
+**Replaced 27 Aug 2026.** The previous ink-blue / ledger-paper / rubber-stamp
+palette is withdrawn in full. The palette below is the theme: a screenshot of any
+screen should read as these five colours.
+
+#### Theme colours — what the product looks like
+
 | Token | Hex | Role |
 |---|---|---|
-| `--ink` | `#16213B` | Text, rail, primary surfaces. Registrar's ink blue. |
-| `--ink-soft` | `#4A5670` | Secondary text |
-| `--paper` | `#F7F5F0` | Page background. Ledger paper, warm but desaturated. |
-| `--rule` | `#DCD6C9` | Hairlines, dividers, inactive rail |
-| `--stamp` | `#B4331F` | The stop marker, blockers. Rubber-stamp red. |
-| `--cleared` | `#1D6B52` | Completed gates, credited state |
-| `--pending` | `#C4841D` | In-flight, waiting, SLA clock. Turmeric. |
-| `--focus` | `#2F6BE0` | Focus ring only. Never decorative. |
+| `--teal-deep` | `#00796B` | Primary. Header band, primary buttons, the rail line, the money marker. |
+| `--green` | `#4CAF50` | Cleared gates, credited state, success |
+| `--green-soft` | `#A5D6A7` | Passed-gate fills, quiet success backgrounds |
+| `--cyan-pale` | `#E0F7FA` | Page background, card wells, section separation |
+| `--white` | `#FFFFFF` | Card surfaces |
 
-**`--stamp` appears at most once per screen** — on the thing that is wrong. If two
-things are red, the screen has failed.
+#### Functional additions — not theme colours
 
-No dark mode in Stage 1. Real users are outdoors in daylight; high-contrast light
-is correct.
+Each has exactly one job and appears **only when that job is on screen**. Never
+decorative, never a background, never used to add visual interest.
+
+| Token | Hex | Role |
+|---|---|---|
+| `--ink` | `#10241F` | Body text. Teal-cast near-black, so it sits inside the family rather than fighting it. |
+| `--ink-soft` | `#486B64` | Secondary text and labels **only**. Never body copy. |
+| `--stop` | `#C62828` | **The blocked gate and nothing else.** At most once per screen. If two things are red, the screen has failed. |
+| `--pending` | `#EF6C00` | In-flight state, SLA countdown, offline strip. Only when one of those three is actually present. |
+| `--rule` | `#B2DFDB` | Hairlines, dividers, inactive rail segments |
+| `--focus` | `#00796B` | Focus ring, 3px, offset 2px. Reuses the theme teal. |
+
+Practical consequence: most screens show only the five theme colours plus `--ink`
+for text. `--stop` appears on the diagnosis screen when a gate is blocked, and
+nowhere else in the product. `--pending` appears only while something is
+genuinely waiting or offline.
+
+No dark mode. No gradients. Green is structural, not an atmospheric wash.
+
+#### Measured contrast — binding usage rules
+
+§11.9 requires **7:1 for body text**. These ratios are computed, not estimated,
+and the showcase route at `/demo/tokens` renders them live. The rules below are
+what make this palette compliant; they are not advisory.
+
+| Pair | Ratio | Verdict |
+|---|---|---|
+| `--ink` on `--white` | **16.23** | Body text. Use this by default. |
+| `--ink` on `--cyan-pale` | **14.57** | Body text on the page background. |
+| `--ink` on `--green-soft` | **9.87** | Passes body. |
+| `--ink` on `--green` | 5.84 | AA only — never body copy. |
+| `--ink` on `--pending` | 5.27 | AA only — the **only** legible text on `--pending`. |
+| `--ink-soft` on `--white` | 5.89 | AA only. This is why `--ink-soft` is barred from body copy. |
+| `--white` on `--teal-deep` | 5.32 | AA. Fails 7:1 — see rule 2. |
+| `--white` on `--stop` | 5.62 | AA. Large/UI text only. |
+| `--white` on `--green` | **2.78** | Fails everything, including the 3:1 non-text floor. |
+| `--white` on `--pending` | **3.08** | Fails normal text. Never use. |
+| `--rule` on `--cyan-pale` | **1.30** | Effectively invisible — see rule 4. |
+
+1. **`--green` and `--green-soft` are fills only.** Never text, and no white
+   glyph on them either — white-on-`--green` is 2.78:1, below the 3:1 floor for
+   graphical objects. **A check mark on a passed gate is drawn in `--ink`**
+   (5.84:1), not white.
+2. **No body copy on `--teal-deep`.** White on teal is 5.32:1, under the 7:1 body
+   requirement. It is fine for the header band, button labels and other large or
+   UI-weight text (≥18px semibold clears AAA-large at 4.5:1). Body paragraphs go
+   on `--white` or `--cyan-pale`.
+3. **`--pending` is a fill, never a text colour.** Orange text on white is 3.08:1
+   and on `--cyan-pale` 2.77:1 — both fail. When `--pending` is on screen it is a
+   background carrying `--ink` text.
+4. **`--rule` hairlines only read on `--white`.** At 1.30:1 against
+   `--cyan-pale` they vanish. On the page background, separate sections with the
+   background/card boundary itself, not a `--rule` line.
+5. **Every state carries an icon plus a text label.** Colour never carries
+   meaning alone — this is §11.8, and it is what makes the AA-only pairs
+   acceptable: none of them is the sole signal.
+
+#### Money Rail colour mapping
+
+| Element | Treatment |
+|---|---|
+| Passed gate | `--green` fill, `--ink` check (see rule 1), `--ink-soft` label |
+| Blocked gate | `--stop`, drawn shut |
+| Unreached gate | `--rule` outline, `--ink-soft` label, no fill |
+| Money marker | `--teal-deep` fill, `--white` text. The only `999px` radius in the UI. |
+| Rail line | `--teal-deep` above the block, `--rule` below it |
 
 ### 11.4 Typography
 
 | Role | Face | Why |
 |---|---|---|
-| Display | **Anek Latin** (variable) + **Anek Tamil** + **Anek Devanagari** | The Anek superfamily is designed for cross-script parity. Tamil and Devanagari get the *same* optical weight and rhythm as Latin — so the Tamil UI is not a degraded translation of an English design. The single most defensible type decision in the project. |
-| Body | Anek (lighter weights, wider tracking) | One family, three scripts, no mismatch |
-| Data | **IBM Plex Mono** | Reference numbers, UTR, amounts, dates. Monospace signals "this is a record, not prose" — the passbook logic. |
+| Display / body | **Anek Latin** (variable) | One variable family across every text role. Anek is designed for cross-script parity, so adding the Tamil and Devanagari cuts later is a drop-in, not a redesign. |
+| Data | **IBM Plex Mono** | Reference numbers, amounts, dates, and the raw portal status string. Monospace signals "this is a record, not prose" — the passbook logic. |
+
+**Latin only in this build.** `Anek Tamil` and `Anek Devanagari` are **not**
+loaded. This is a font-loading decision, not a language decision: §10.2 still
+requires en / ta / hi across the primary path, and the catalogues still ship
+three locales. Until the Tamil and Devanagari cuts are added, those two locales
+render in a system fallback face and will not match the Latin rhythm — which is
+the exact degradation the original §11.4 rationale warned about. **Adding
+`Anek Devanagari` and `Anek Tamil` is a prerequisite for shipping ta/hi as
+finished work**, and is recorded as such in §13.
 
 | Token | Size / line-height | Use |
 |---|---|---|
@@ -987,7 +1061,7 @@ is correct.
 | `--t-head` | 22px / 1.3, weight 600 | Screen titles |
 | `--t-body` | 18px / 1.55, weight 400 | Everything readable. **Never below 18px.** |
 | `--t-label` | 15px / 1.4, weight 500, tracking 0.02em | Rail labels, field labels |
-| `--t-data` | 17px / 1.4, Plex Mono | References, amounts, dates |
+| `--t-data` | 17px / 1.4, IBM Plex Mono | References, amounts, dates |
 
 ### 11.5 Space, shape, motion
 

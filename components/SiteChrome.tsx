@@ -8,5 +8,5 @@ import { useLocale } from "./LocaleProvider";
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const { locale } = useLocale();
-  return <div className="min-h-screen bg-[#F8F7F4] text-ink"><header className="border-b border-stone bg-white"><div className="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-3 px-4 py-4"><Link href="/"><NishanLogo locale={locale}/></Link><LanguageToggle/></div></header>{children}</div>;
+  return <div className="min-h-screen bg-cyan-pale text-ink"><header className="border-b border-rule bg-teal-deep text-paper"><div className="mx-auto flex max-w-2xl flex-wrap items-center justify-between gap-3 px-4 py-4"><Link href="/"><NishanLogo locale={locale}/></Link><LanguageToggle/></div></header>{children}</div>;
 }
