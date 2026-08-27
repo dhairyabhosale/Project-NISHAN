@@ -899,9 +899,12 @@ Authorities are **roles, never named individuals**: `SELF_ONLINE`, `CSC`,
 
 The subject's world is **the ledger**: the bank passbook line, the village land
 record, the stamped receipt, the queue at the block office. **Not "agriculture"**
-— no wheat sheaves, no green gradients, no farmer-in-a-field photography. Those
-are decoration about farming; this product is about **money that has a location
-and won't move.**
+— no wheat sheaves, no farmer-in-a-field photography, no gradients of any kind.
+Those are decoration about farming; this product is about **money that has a
+location and won't move.**
+
+Green is the theme (§11.3), and it is **structural, not agricultural**: it marks
+a gate the money has cleared. It is never a mood, a wash, or a nod to farming.
 
 The visual language is a **transit record**: a thing moving through numbered
 custody points, stamped at each, currently stopped at one.
@@ -983,6 +986,7 @@ decorative, never a background, never used to add visual interest.
 | `--pending` | `#EF6C00` | In-flight state, SLA countdown, offline strip. Only when one of those three is actually present. |
 | `--rule` | `#B2DFDB` | Hairlines, dividers, inactive rail segments |
 | `--focus` | `#00796B` | Focus ring, 3px, offset 2px. Reuses the theme teal. |
+| `--focus-on-teal` | `#FFFFFF` | Focus ring **on `--teal-deep` surfaces only** — see below. |
 
 Practical consequence: most screens show only the five theme colours plus `--ink`
 for text. `--stop` appears on the diagnosis screen when a gate is blocked, and
@@ -1028,6 +1032,11 @@ what make this palette compliant; they are not advisory.
 5. **Every state carries an icon plus a text label.** Colour never carries
    meaning alone — this is §11.8, and it is what makes the AA-only pairs
    acceptable: none of them is the sole signal.
+6. **The focus ring switches colour on teal.** `--focus` is the same hex as
+   `--teal-deep`, so a teal ring on a teal surface is invisible (1:1). On any
+   `--teal-deep` surface the ring is `--white` (5.32:1); everywhere else it is
+   `--teal-deep`. Implemented as a `.on-teal` scope in `app/globals.css`, applied
+   to the header band. **Any new teal surface must carry `.on-teal`.**
 
 #### Money Rail colour mapping
 
@@ -1192,6 +1201,20 @@ switch ("Break the network" / "Make a government system slow" / "Make a governme
 system unreachable"). Time travel ("Advance this case by 15 days").
 
 ### 11.8 Cross-cutting behaviours
+
+**Fixed elements — at most two, decided 27 Aug 2026**
+
+Three fixed bands at 360px leaves no room for content. The budget is two:
+
+| Band | Behaviour |
+|---|---|
+| §12.7 disclosure banner | **Fixed top.** Non-dismissible, every screen. |
+| Primary action | **Fixed bottom** for thumb reach (§11.5). |
+| Site header (logo, language toggle) | **Scrolls away.** Not sticky. |
+
+The header is a solid `--teal-deep` band that anchors the top of the page, but it
+is not pinned — the banner already occupies the fixed-top slot, and the banner is
+the more important of the two.
 
 **Connection states**
 
@@ -1379,6 +1402,10 @@ there are no accounts, there is no orphaned identity.
    integration.
 7. The prototype cannot verify whether an officer acted — only whether money
    arrived in the mock bank record.
+8. The refund / voluntary-surrender / revocation cluster on the official portal
+   is **deliberately out of scope**: it is the inverse of "my instalment did not
+   arrive," and R2 requires one clearly defined problem. Named here so the
+   omission reads as a decision, not an oversight.
 
 ### 12.9 Incident procedure
 
@@ -1492,77 +1519,118 @@ and all three are required either by this document or by the hackathon rules.
 
 ---
 
-## 14. Remaining work
+## 14. Remaining work — rescheduled 27 August 2026
 
-**Today is 26 August. Two build days remain.** Submit by **18:00 on 28 August**,
-not 20:00.
+**Why this replaces the previous schedule.** The old §14 sequenced nine screen
+tickets on the assumption that the engine, the mock systems, the personas and the
+Fix Paths were finished. The audit in §13 found all of them unbuilt. §8.1 calls
+the Mock Government Systems Layer and the Diagnosis Engine "the product" and says
+the UI is the thin part; §15 says the engine may never be cut. So the engine is
+built first and the screens wait.
 
-### Day 3 — Thursday 27 August (~10h)
+Submit by **18:00 on 28 August**, not 20:00.
 
-| ID | Task | P | Est |
-|---|---|---|---|
-| NSH-301 | App shell, persistent disclosure banner, routing, footer `/whats-real` link on every screen | P0 | 1h |
-| NSH-302 | **S1 Entry** — language switch on first paint, disabled mic button with Bhashini caption, four tap choices, assisted-mode entry. No captcha, no login, primary action above the fold. | P0 | 1h |
-| NSH-303 | **S2 Identify + S3 simulated OTP** — three equal routes, "Don't have this?" never dead-ends, in-place simulation disclosure under the OTP field, consent panel in assisted mode | P0 | 1.5h |
-| NSH-304 | **S4 Diagnosis + Money Rail** — the signature component. Verdict above the rail, marker at the stopped gate, shut-gate treatment, raw status string as mono secondary. Variants: `INDETERMINATE` (dashed), B6c (bottom, `--cleared`). **DoD: all nine blocker variants render; one `--stamp` per screen; `prefers-reduced-motion` respected.** | P0 | 2.5h |
-| NSH-305 | **S6 Fix Path + S7 Visit Slip** — resumable checklist with persisted progress, inline simulated e-KYC, print-optimised slip with officer's-note space, WhatsApp-safe text share | P0 | 2h |
-| NSH-306 | **S9 Timeline** — events from `case_events`, actor attribution, SLA days-remaining as a number, distinct terminal styling with "Reopen this" | P0 | 1h |
-| NSH-307 | **Offline outbox + service worker** — IndexedDB write before any network attempt, replay on `online`, connection strip, duplicate-action guard. **DoD: Playwright goes offline mid-journey; zero data loss, no duplicate on reconnect.** | P0 | 2h |
-| NSH-308 | **Language layer** — en/ta/hi across the entire primary path, `lang` attribute per language, every button tested at the longest string | P0 | 1.5h |
-| NSH-309 | **Voice-out** — 🔊 on every verdict, instruction and error. Browser TTS with pre-generated fallback. | P1 | 1h |
+### Today — 27 August: the product, nothing visual (~12.5h)
 
-> **Case persistence (§13.2, §13.3) must land before or alongside NSH-304**, or the
-> diagnosis screen has nothing to read from.
+| ID | Task | Est |
+|---|---|---|
+| **E1** | **MGSL** — seven modules with typed records per §8.4, plus fault-injection middleware (`FaultProfile`, `X-NISHAN-Fault` header, `?fault=` param) | 2.5h |
+| **E2** | **Eight persona fixtures** — deliberately inconsistent across `mUIDAI` / `mLAND` / `mBANK` per §8.4. Do not seed clean data and add faults later. | 1.5h |
+| **E3** | **Diagnosis engine** — B1→B6 precedence, first blocking rule wins and evaluation stops, evidence-carrying. `INDETERMINATE` when a system needed to rule out a higher-precedence blocker is unreachable. **Never guess past a gap; never fall through to a lower-precedence guess.** | 2.5h |
+| **E4** | **`ReasonCode` sub-cause derivation** per §7.3. Replace the invented `statusCodes.json` entries with the real portal strings: `FTO Generated, Payment Under Process` · `Rft Signed by State Government` · `Rejected by Bank` · `Stopped by State` · `eKYC Required` · `Aadhaar Seeding Status: No` | 1h |
+| **E5** | **Table-driven tests** — 8 personas × expected blocker, plus precedence cases where two blockers co-exist and only the higher one is returned | 1h |
+| **E6** | **Content** — verdicts keyed on `ReasonCode`. **English only** (see the note below) | 1.5h |
+| **E7** | **Fix Paths** per §10.4, including the **Multi-Tasking Staff / Class IV / Group D carve-out** from the exclusion criteria — that carve-out is what makes a wrong B2 flag contestable | 1.5h |
+| **E8** | **Minimal case persistence** — create, read by reference, append event | 1h |
 
-### Day 4 — Friday 28 August (~7h, ending 18:00)
+> **E6 consequence, stated not hidden.** §10.2 requires en/ta/hi across the
+> entire primary path and §6.3 makes "language switch changes **every** string on
+> the primary path" a demo success criterion. Authoring the new verdict and
+> Fix Path content in English only means the primary path is **partially
+> translated**: the original 80 catalogue keys exist in en/hi/ta, the new
+> `ReasonCode` content exists in en alone. Switching to Hindi or Tamil will show
+> English verdicts. This is a deliberate time trade, and it means §6.3's language
+> criterion is not met and `/whats-real` must not claim three full languages.
 
-> **Nothing new after 13:00.** The afternoon is testing, video and submission.
+### Tomorrow — 28 August: the journey. **Nothing new after 13:00.**
 
-| ID | Task | P | Est |
-|---|---|---|---|
-| NSH-401 | **S8 Grievance draft + simulated filing** — fact-chip row, editable draft in the user's language, routing explained plainly, in-place "not sent anywhere" disclosure at the file button, reference + expected-by date on confirmation | P0 | 1.5h |
-| NSH-402 | **SLA clocks + auto-escalation** — T1 15d → T2 +15d → T3 +30d, cron appends escalation events, CPGRAMS text at day 30 | P0 | 1h |
-| NSH-403 | **Time travel demo control** — "Advance this case by 15 days," same code path as the cron, labelled as a demo control | P0 | 30m |
-| NSH-404 | **S11 Persona picker** — 8 cards, each naming the blocker it demonstrates | P0 | 45m |
-| NSH-405 | **Fault switch UI** | P1 | 45m |
-| NSH-406 | **S10 `/whats-real`** — the §12.2 table verbatim, "Delete this case" control | P0 | 45m |
-| NSH-407 | **Accessibility + performance pass** — axe clean on the primary path, contrast ≥ 7:1 body, targets ≥ 56/48px, focus visible, JS ≤ 150KB gzipped, FCP < 2s throttled 3G | P1 | 1h |
-| NSH-408 | **Final cross-device test** — real Android phone, real mobile data, incognito, all three languages, full journey. Then a laptop. **DoD: completed twice with zero intervention.** | P0 | 45m |
-| NSH-409 | **Video** — §17 storyboard. Record, do not improvise. Two takes maximum. | P0 | 1.5h |
-| NSH-410 | **Project summary (<250 words) + submission. SUBMIT BY 18:00.** | P0 | 45m |
+| ID | Task | Est |
+|---|---|---|
+| NSH-301 | App shell + §12.7 persistent disclosure banner + footer `/whats-real` link on every screen | 30m |
+| NSH-302 | **S1 Entry** | 45m |
+| NSH-303 | **S2 Identify + S3 simulated OTP** | 1h |
+| NSH-304 | **Wire the existing Money Rail to real verdicts** — the component exists (§13.1); it needs data, not a rebuild | 1.5h |
+| NSH-305 | **S6 Fix Path + S7 Visit Slip** | 1.5h |
+| — | **Light offline** — `localStorage` Fix Path progress, connection strip, duplicate-action guard | 45m |
+| NSH-406 | **S10 `/whats-real`** — the §12.2 table, "Delete this case" | 30m |
+| NSH-404 | **S11 persona picker** | 30m |
+| — | **Deploy + cross-device test** | 45m |
+| — | **Video + submit by 18:00** | — |
 
-### Deployment — do this first, today
+### Cut — removed from the plan, do not build
 
-The public URL must exist and work from now on. Every commit redeploys. Open the
-production link in an incognito window on mobile data before ending each build
-day. **A working public URL is the single cheapest insurance policy in this
-build**, and R7 demands it.
+`NSH-307` service worker and outbox · `NSH-306` timeline · `NSH-401` grievance ·
+`NSH-402` SLA clocks · `NSH-403` time travel · `NSH-405` fault switch UI ·
+`NSH-309` voice-out.
 
-### Stage 2 backlog — do not touch before 28 August
+**Keep the fault-injection capability from E1** — only its UI is cut. Trigger it
+by URL parameter in the video.
 
-Bhashini voice input; SMS/IVR channel; WebRTC in-browser face auth; officer-side
-view; multi-state land-record semantics; generalisation demo (same engine over
-EPFO claim rejection or Jeevan Pramaan stoppage); real accessibility audit with a
-screen-reader user; rejection-code distribution research; PWA install prompt.
+### If E1–E8 finish ahead of schedule
+
+Add **NSH-401 grievance** back first. It is the accountability story, and §3.7 —
+that the system already holds every fact a farmer cannot write down — is the
+strongest single claim in the product.
+
+### Deployment
+
+The public URL must exist and work from now on. **A working public URL is the
+cheapest insurance policy in this build**, and R7 demands it.
 
 ---
 
-## 15. Cut list — if behind schedule
+## 15. Cut list
 
-Cut in this order. **Do not improvise the order on the day.**
+**Updated 27 August 2026.** The items below are no longer contingency — they are
+decided cuts, recorded in §14. This section previously listed a five-step
+descope order to follow "if behind schedule"; that order has been overtaken.
 
-1. **NSH-405** fault switch UI → keep the fault capability, trigger via URL param
-   in the video.
-2. **NSH-309** voice-out → keep it on the diagnosis screen only.
-3. **NSH-308** → ship two languages instead of three.
-4. **NSH-403** time travel → pre-seed one already-escalated case instead.
-5. **NSH-306** timeline → fold the essential events into the diagnosis screen.
+### Already cut, by decision
 
-Also on the cut list, and not currently scheduled: WebRTC face capture, any
-Bhashini integration, a third+ language beyond en/ta/hi.
+| Ticket | What was cut | What survives |
+|---|---|---|
+| NSH-307 | Service worker + offline outbox | `localStorage` Fix Path progress, connection strip, duplicate-action guard |
+| NSH-306 | Case timeline screen | Events still appended by E8; not rendered |
+| NSH-401 | Grievance draft and filing | — **first item back if E1–E8 finish early** |
+| NSH-402 | SLA clocks and auto-escalation | — |
+| NSH-403 | Time travel demo control | — |
+| NSH-405 | Fault switch UI | The fault-injection capability itself (E1) |
+| NSH-309 | Voice-out / TTS | — |
 
-**Never cut:** the diagnosis engine, the Money Rail, the offline recovery moment,
-`/whats-real`, or the deployment. **Those five are the submission.**
+Also cut and not scheduled: WebRTC face capture, any Bhashini integration, a
+fourth language.
+
+### Never cut
+
+The **diagnosis engine**, the **Money Rail**, **`/whats-real`**, and the
+**deployment**. Those four are the submission.
+
+> **Changed from the previous version of this list:** "the offline recovery
+> moment" was previously in the never-cut set. NSH-307 is now cut, so what
+> survives is the *light* version above — progress that persists and a
+> duplicate-action guard, but no service worker and no replay queue. The video
+> should demonstrate what actually exists and claim nothing more.
+
+### If still behind on 28 August
+
+Cut in this order, and do not improvise the order on the day:
+
+1. NSH-404 persona picker → hard-code one persona per demo URL.
+2. NSH-305 Visit Slip → keep the Fix Path, drop the printable slip.
+3. NSH-303 OTP screen → identify goes straight to diagnosis.
+
+**Protect the deployment and the cross-device test above all else.** A build that
+does not open on a reviewer's phone scores nothing regardless of what is in it.
 
 ---
 

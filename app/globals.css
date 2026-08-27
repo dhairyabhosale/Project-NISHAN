@@ -21,6 +21,7 @@
   --pending: #ef6c00;
   --rule: #b2dfdb;
   --focus: #00796b;
+  --focus-on-teal: #ffffff;
 
   /* type scale — §11.4 */
   --t-answer: 30px;
@@ -61,11 +62,16 @@ button, input { font: inherit; }
   line-height: 1.4;
 }
 
-/* Focus ring — §11.3. Reuses the theme teal. Never decorative. */
+/* Focus ring — §11.3 rule 6. Never decorative.
+   --focus is the same hex as --teal-deep, so a teal ring on a teal surface is
+   invisible. Any --teal-deep surface carries .on-teal, which flips the ring to
+   white. Set as a variable so nesting resolves to the nearest surface. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 3px solid var(--focus);
+  outline: 3px solid var(--ring, var(--focus));
   outline-offset: 2px;
 }
+
+.on-teal { --ring: var(--focus-on-teal); }
 
 /* ── The one orchestrated motion — §11.5 ─────────────────────────────────────
    The rail marker settling into position on the diagnosis screen. Everything
