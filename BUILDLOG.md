@@ -263,3 +263,84 @@ deadline.
 3. **A "never scrolls away" header** conflicts with the §12.7 persistent banner
    plus a bottom-pinned primary action on a 360px viewport. The header band was
    applied without being made sticky; resolve at NSH-301.
+
+---
+
+## Session 4 — 27 August 2026 — Spec answers, §14 reschedule, E1 (MGSL)
+
+**Author: Claude (Claude Code).**
+
+### Spec decisions applied
+
+- **§11.1** — colour sentence rewritten only. Green is now the theme and is
+  described as structural, not agricultural. The ledger metaphor, the ban on
+  wheat sheaves, farmer photography, gradients and decoration about farming all
+  stand unchanged.
+- **§11.3** — added `--focus-on-teal #FFFFFF` and rule 6. `--focus` is the same
+  hex as `--teal-deep`, so a teal ring on a teal surface is invisible (1:1).
+  Implemented in `app/globals.css` as `.on-teal { --ring: var(--focus-on-teal) }`
+  with the ring declared `var(--ring, var(--focus))`, so nesting resolves to the
+  nearest surface. Applied to the header band. **Any new teal surface must carry
+  `.on-teal`.**
+- **§11.8** — fixed-element budget recorded: disclosure banner fixed top,
+  primary action fixed bottom, site header scrolls away. Three fixed bands at
+  360px is unusable.
+- **§12.8** — item 8 added: the refund / voluntary-surrender / revocation
+  cluster is deliberately out of scope under R2, named so the omission reads as
+  a decision.
+- **§14 rewritten** to the E1–E8 then NSH schedule. **§15 also rewritten**,
+  because the enumerated cuts turned it from a contingency list into a record of
+  decisions; it now carries the decided cuts, what survives of each, and a fresh
+  three-step order for 28 August. The previous never-cut set listed "the offline
+  recovery moment", which NSH-307's cut contradicts — the entry now says what
+  actually survives.
+
+### E1 — Mock Government Systems Layer
+
+| File | What it is |
+|---|---|
+| `lib/types/systems.ts` | Seven record types with the real §8.4 fields, replacing seven field-less interfaces over a generic PASS/FAIL shape. Adds `SystemResult` and `SystemSnapshot`. |
+| `mocks/fault.ts` | `FaultProfile`, the `?fault=` / `X-NISHAN-Fault` grammar, deterministic seeding |
+| `mocks/fixtures.ts` | Persona store and identifier lookup. **One persona seeded (Lakshmi, B3)** so E1 is verifiable end to end; the other seven are E2. |
+| `mocks/index.ts` | Seven readers plus `readSnapshot`, replacing stubs that returned `null` |
+| `app/api/mock/[system]/route.ts` | HTTP surface for the MGSL |
+| `tests/mgsl.test.ts` | 17 tests |
+| `tsconfig.test.json` | Test build config |
+
+**Decisions**
+
+- **`SystemResult` separates "reachable but holds no record" from "did not
+  answer".** This is the load-bearing distinction in the whole layer: §16.8
+  forbids guessing past a gap, and the engine cannot honour that if an
+  unreachable system and an empty one look the same. E3 depends on it.
+- **`failureRate` is seeded, not random.** §8.5 requires same inputs → same
+  output, always. A `Math.random()` failure rate would have made the engine
+  nondeterministic through the back door. It is now a stable function of
+  (system, reference), so a given case plus a given fault always produces the
+  same outcome, while still looking random across cases.
+- **The engine will call the readers in-process, not over HTTP.** A network hop
+  inside a single deployable would spend most of §11.9's 400ms p95 budget on
+  itself. The `/api/mock/*` routes exist for the §17 1:00–1:15 shot and to
+  trigger faults by URL now that NSH-405 is cut.
+- **Test runner: Node built-in, zero new dependencies.** Node 24 strips
+  TypeScript natively. Its ESM loader needs explicit file extensions, which this
+  repo's Next-style imports do not use, so `npm test` compiles to CommonJS in
+  `.test-build/` first. No library was added and the lockfile is unchanged —
+  §16.11, and §12.6 on final-day dependencies.
+- **Hand-rolled validation, not Zod.** §12.6 asks for Zod at API boundaries.
+  Adding a dependency the day before submission is the risk §12.6 itself warns
+  about, and the only untrusted inputs here are one enum and one string. Noted
+  as a deviation.
+- **Deliberate cross-system inconsistency is seeded from the start** (§8.4).
+  Lakshmi's land record reads "Lakshmi D." against Aadhaar's "Lakshmi Devi" — a
+  benign variance the B5 rule must normalise and correctly decline to flag.
+
+**Known deviation from §12.6:** MGSL endpoints are supposed not to be publicly
+routable. In a single Next deployable that cannot be enforced at the network
+layer, so the handler applies a same-origin check instead. This is weaker than
+§12.6 describes and must be disclosed on `/whats-real` (NSH-406).
+
+**Verified:** `npm test` 17/17 pass · `npx tsc --noEmit` exits 0 · all five app
+routes still 200 · live endpoint checks: healthy read 200, timeout 504 after
+1.25s, forced 503, header transport 502, unknown system 404, missing ref 400,
+cross-origin 403.

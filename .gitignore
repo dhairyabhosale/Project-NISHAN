@@ -26,3 +26,6 @@ outputs/
 Thumbs.db
 .DS_Store
 *.swp
+
+# test build output
+.test-build/

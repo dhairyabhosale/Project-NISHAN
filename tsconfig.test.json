@@ -1,0 +1,24 @@
+{
+  // Test build. Node's ESM loader requires explicit file extensions, which the
+  // Next-style extensionless imports in this repo do not use. Compiling to
+  // CommonJS restores extensionless resolution and lets the Node built-in test
+  // runner run the suite with no added dependency (§16.11, and no lockfile
+  // change on the final day — §12.6).
+  //
+  // app/ is excluded: the engine, mocks and content layer are what is tested,
+  // and pulling in JSX would drag the whole Next toolchain into the test build.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2022",
+    "noEmit": false,
+    "outDir": ".test-build",
+    "incremental": false,
+    "jsx": "react-jsx",
+    "isolatedModules": false,
+    "types": ["node"]
+  },
+  "include": ["lib/**/*.ts", "mocks/**/*.ts", "engine/**/*.ts", "content/**/*.ts", "tests/**/*.ts", "content/*.json"],
+  "exclude": ["node_modules", ".next", "app", "components"]
+}
