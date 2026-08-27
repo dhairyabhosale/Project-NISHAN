@@ -109,3 +109,7 @@ button, input { font: inherit; }
 
 /* Connection strip — §11.8. Only present when genuinely offline. */
 .offline-strip { background: var(--pending); color: var(--ink); }
+
+/* A white ring is correct on a teal surface and invisible on a panel that sits
+   above one. Any light surface nested inside .on-teal resets it. */
+.on-paper { --ring: var(--focus); }

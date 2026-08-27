@@ -13,7 +13,6 @@
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MicButton } from "../../../components/MicButton";
 import { useLocale } from "../../../components/LocaleProvider";
 import { resolve } from "../../../content/resolve";
 
@@ -92,8 +91,6 @@ function VerifyForm() {
           </button>
         </div>
       </div>
-
-      <MicButton locale={locale} />
     </main>
   );
 }

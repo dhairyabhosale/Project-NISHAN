@@ -14,7 +14,6 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { MicButton } from "../../../../components/MicButton";
 import { useLocale } from "../../../../components/LocaleProvider";
 import { resolve } from "../../../../content/resolve";
 import { renderVerdict } from "../../../../content/verdict";
@@ -185,8 +184,6 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
           </Link>
         </div>
       </div>
-
-      <MicButton locale={locale} />
     </main>
   );
 }

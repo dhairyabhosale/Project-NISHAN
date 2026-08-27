@@ -774,3 +774,71 @@ em dash rather than a gap (§10.3).
 **Verified:** `npm test` 136/136 · `npx tsc --noEmit` exits 0 · all five app
 routes and `/api/mock/*` return 200 · case page renders one `h1`, `₹2,000`
 grouped, and zero unfilled slots.
+
+---
+
+## Session 9 — 28 August 2026 — Final build
+
+**Author: Claude (Claude Code).** Three checkpoints, committed and pushed at
+each.
+
+### Checkpoint 1 — the journey
+
+E8 persistence, app shell, S1 entry, language selector, S2/S3, persona picker,
+`/whats-real`.
+
+**The E8 design decision that matters: a case reference is DERIVED, not
+allocated.** `referenceFor(beneficiaryRef, cycle)` is a pure function, the
+engine is deterministic and the fixtures are static, so a case is reconstructed
+from its reference alone. No state passes between the request that creates a
+case and the request that reads it — which is what makes it safe on a
+serverless host where those land on different instances. A store that allocated
+random references would hand out links that 404 a second later. In-memory only;
+Vercel's filesystem is read-only and R7 does not survive a write.
+
+**S1 has no case-ID field, and that absence is the product.** Demanding a
+reference the farmer does not hold is P2. Identification moved to S2 where any
+one of three identifiers works; a case reference still opens a case, but as
+reference mode at the bottom of that screen (§12.4).
+
+**The `TODO_` guard.** `resolve()` falls back to English silently for any value
+still carrying a placeholder. A farmer seeing `TODO_TA: Your identity check is
+not finished` is worse served than one seeing plain English, and the selector
+has already told her the language is unresolved — an apology inside every
+sentence would say it twenty more times per screen. Four tests, including one
+asserting genuinely translated values are not flattened.
+
+### Checkpoint 2 — the substance
+
+Three Fix Paths, the Visit Slip, the connection strip.
+
+**A route that cannot work is shown ruled out WITH THE REASON.** The portal
+offers Lakshmi an OTP by default and it is the one route that cannot reach her.
+
+**A defect the slip surfaced.** The land request template asked for
+`{land_name}` while facts carry `land_owner_name`, so the printed ask read
+"correct the owner name from — to Sarala Murugesan". A hole in the one artifact
+someone carries to an office wastes the trip it was printed for, and no type
+checks a template string. There is now a test asserting every slip template slot
+is a key some case actually provides.
+
+### Checkpoint 3 — polish
+
+**Two real defects found in the accessibility pass:**
+
+- **The focus ring was invisible in the language panel.** `.on-teal` sets the
+  ring to white for the header band, and the dropdown panel nests inside it —
+  so a white ring landed on a white panel. Added `.on-paper`, which resets the
+  ring for any light surface nested in a teal one.
+- **The floating microphone collided with the pinned primary action.** It sat
+  at `bottom-4` behind a `z-40` action bar on five screens, so §9.4's
+  "prominent" control was hidden behind another control. It is now inline on
+  the entry screen, where it is actually seen, and removed from screens that
+  carry a pinned action.
+
+`/demo/tokens` deleted.
+
+**Verified:** `npm test` 149/149 · `tsc --noEmit` exits 0 · production build
+compiles · **First Load JS 128–131 KB against the 150 KB budget** · every route
+200 and `/demo/tokens` 404 · zero `TODO_` strings in any rendered page · one
+`h1` per screen.

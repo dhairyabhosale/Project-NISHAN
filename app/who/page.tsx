@@ -13,7 +13,6 @@
 
 import { Suspense, useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { MicButton } from "../../components/MicButton";
 import { useLocale } from "../../components/LocaleProvider";
 import { resolve } from "../../content/resolve";
 import type { CatalogueKey } from "../../lib/content";
@@ -156,8 +155,6 @@ function IdentifyForm() {
           </div>
         </div>
       </form>
-
-      <MicButton locale={locale} />
     </main>
   );
 }

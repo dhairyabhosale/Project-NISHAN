@@ -10,7 +10,6 @@
 import Link from "next/link";
 import { CaseHeader } from "../../../components/CaseHeader";
 import { EvidenceTable } from "../../../components/EvidenceTable";
-import { MicButton } from "../../../components/MicButton";
 import { MoneyRail } from "../../../components/MoneyRail";
 import { StatusCodeChip } from "../../../components/StatusCodeChip";
 import { Verdict } from "../../../components/Verdict";
@@ -66,8 +65,6 @@ export function CaseView({
           </Link>
         </div>
       </div>
-
-      <MicButton locale={locale} />
     </main>
   );
 }

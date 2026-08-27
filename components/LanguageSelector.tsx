@@ -63,7 +63,7 @@ export function LanguageSelector() {
         <div
           role="listbox"
           aria-label={resolve("lang.choose", {}, "en")}
-          className="absolute right-0 z-40 mt-2 max-h-[60vh] w-[17rem] overflow-y-auto rounded-card border border-rule bg-paper shadow-lg"
+          className="on-paper absolute right-0 z-40 mt-2 max-h-[60vh] w-[17rem] overflow-y-auto rounded-card border border-rule bg-paper shadow-lg"
         >
           <p className="border-b border-rule px-4 py-3 text-label font-semibold text-ink-soft">
             {resolve("lang.choose", {}, "en")}
@@ -98,7 +98,7 @@ export function LanguageSelector() {
       )}
 
       {note && (
-        <p className="absolute right-0 top-full z-30 mt-2 w-[17rem] rounded-card border border-rule bg-paper p-3 text-label text-ink">
+        <p className="on-paper absolute right-0 top-full z-30 mt-2 w-[17rem] rounded-card border border-rule bg-paper p-3 text-label text-ink">
           {note}
         </p>
       )}
