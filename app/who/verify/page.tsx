@@ -37,9 +37,9 @@ function VerifyForm() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 pb-40 pt-8">
+    <main className="shell pb-40 pt-8">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("otp.title", {}, locale)}</h1>
-      <p className="mt-3 max-w-[58ch] text-body text-ink">{resolve("otp.standfirst", {}, locale)}</p>
+      <p className="mt-3 prose-measure text-body text-ink">{resolve("otp.standfirst", {}, locale)}</p>
 
       <label htmlFor="otp" className="mt-8 block text-label font-semibold text-ink">
         {resolve("otp.label", {}, locale)}
@@ -69,7 +69,7 @@ function VerifyForm() {
         <summary className="cursor-pointer text-body font-semibold text-teal-deep">
           {resolve("otp.didnt_get", {}, locale)}
         </summary>
-        <p className="mt-3 max-w-[58ch] text-body text-ink">{resolve("otp.didnt_get_body", {}, locale)}</p>
+        <p className="mt-3 prose-measure text-body text-ink">{resolve("otp.didnt_get_body", {}, locale)}</p>
         <button
           type="button"
           onClick={go}
@@ -80,7 +80,7 @@ function VerifyForm() {
       </details>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4">
-        <div className="mx-auto max-w-2xl">
+        <div className="shell">
           <button
             type="button"
             onClick={submit}

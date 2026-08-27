@@ -37,13 +37,13 @@ export default function WhatsRealPage() {
   const k = (s: string) => s as CatalogueKey;
 
   return (
-    <main className="mx-auto max-w-2xl px-4 pb-16 pt-8">
+    <main className="shell pb-16 pt-8">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("real.title", {}, locale)}</h1>
-      <p className="mt-4 max-w-[58ch] text-body text-ink">{resolve("real.intro", {}, locale)}</p>
+      <p className="mt-4 prose-measure text-body text-ink">{resolve("real.intro", {}, locale)}</p>
 
-      <ul className="mt-8 space-y-3">
+      <ul className="mt-8 grid gap-3 lg:grid-cols-2">
         {STATUSES.map((status, i) => (
-          <li key={i} className="rounded-card border border-rule bg-paper p-4">
+          <li key={i} className="h-full rounded-card border border-rule bg-paper p-5">
             <div className="flex flex-wrap items-start justify-between gap-2">
               <h2 className="text-body font-semibold text-ink">
                 {resolve(k("real.row." + i + ".component"), {}, locale)}
@@ -52,7 +52,7 @@ export default function WhatsRealPage() {
                 {resolve(k("real.row." + i + ".label"), {}, locale)}
               </span>
             </div>
-            <p className="mt-2 max-w-[58ch] text-label text-ink">
+            <p className="mt-2 prose-measure text-label text-ink">
               {resolve(k("real.row." + i + ".note"), {}, locale)}
             </p>
           </li>
@@ -60,18 +60,18 @@ export default function WhatsRealPage() {
       </ul>
 
       <h2 className="mt-12 text-head font-semibold text-ink">{resolve("real.limits_heading", {}, locale)}</h2>
-      <ul className="mt-4 space-y-3">
+      <ul className="mt-4 grid gap-3 lg:grid-cols-2">
         {Array.from({ length: LIMIT_COUNT }, (_, i) => (
           <li key={i} className="flex gap-3 text-body text-ink">
             <span aria-hidden="true" className="mt-2.5 size-1.5 shrink-0 rounded-full bg-ink-soft" />
-            <span className="max-w-[58ch]">{resolve(k("real.limit." + i), {}, locale)}</span>
+            <span className="prose-measure">{resolve(k("real.limit." + i), {}, locale)}</span>
           </li>
         ))}
       </ul>
 
       <section className="mt-12 rounded-card border border-rule bg-paper p-4">
         <h2 className="text-head font-semibold text-ink">{resolve("real.delete_heading", {}, locale)}</h2>
-        <p className="mt-2 max-w-[58ch] text-body text-ink">{resolve("real.delete_body", {}, locale)}</p>
+        <p className="mt-2 prose-measure text-body text-ink">{resolve("real.delete_body", {}, locale)}</p>
       </section>
     </main>
   );

@@ -26,14 +26,14 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
       {/* §12.7 — non-dismissible, every screen. */}
       <div className="fixed inset-x-0 top-0 z-50 bg-pending px-4 py-2 text-center">
-        <p className="mx-auto max-w-2xl text-[13px] font-semibold leading-snug text-ink">
+        <p className="shell text-[13px] font-semibold leading-snug text-ink">
           {resolve("banner.prototype", {}, locale)}
         </p>
       </div>
 
       {/* Solid band that anchors the page. Scrolls, per §11.8. */}
       <header className="on-teal mt-[42px] bg-teal-deep text-paper">
-        <div className="mx-auto flex max-w-2xl items-center justify-between gap-3 px-4 py-4">
+        <div className="shell flex items-center justify-between gap-3 px-4 py-4">
           <Link href="/" className="rounded-card">
             <NishanLogo locale={locale} />
           </Link>
@@ -46,7 +46,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
       <div className="flex-1">{children}</div>
 
       <footer className="mt-16 border-t border-rule bg-paper">
-        <div className="mx-auto flex max-w-2xl flex-col gap-2 px-4 py-8">
+        <div className="shell flex flex-col gap-2 px-4 py-8">
           <Link href="/whats-real" className="text-body font-semibold text-teal-deep underline underline-offset-4">
             {resolve("footer.whats_real", {}, locale)}
           </Link>

@@ -63,9 +63,9 @@ function IdentifyForm() {
   }
 
   return (
-    <main className="mx-auto max-w-2xl px-4 pb-40 pt-8">
+    <main className="shell pb-40 pt-8">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("who.title", {}, locale)}</h1>
-      <p className="mt-3 max-w-[58ch] text-body text-ink">{resolve("who.standfirst", {}, locale)}</p>
+      <p className="mt-3 prose-measure text-body text-ink">{resolve("who.standfirst", {}, locale)}</p>
 
       {assisted && (
         <p className="mt-6 rounded-card border border-rule bg-paper p-4 text-body text-ink">
@@ -91,9 +91,10 @@ function IdentifyForm() {
       </div>
 
       <form
-        className="mt-6"
+        className="mt-6 grid gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
         onSubmit={(e: FormEvent) => { e.preventDefault(); void lookup(value); }}
       >
+        <div>
         <label htmlFor="identifier" className="block text-label font-semibold text-ink">
           {resolve(active.label, {}, locale)}
         </label>
@@ -113,6 +114,8 @@ function IdentifyForm() {
           </p>
         )}
 
+        </div>
+        <div>
         <details className="mt-6 rounded-card border border-rule bg-paper p-4">
           <summary className="cursor-pointer text-body font-semibold text-teal-deep">
             {resolve("who.dont_have", {}, locale)}
@@ -142,9 +145,11 @@ function IdentifyForm() {
           </button>
         </section>
 
+        </div>
+
         {/* §11.5 — primary action pinned to the bottom for thumb reach. */}
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4">
-          <div className="mx-auto max-w-2xl">
+          <div className="shell">
             <button
               type="submit"
               disabled={busy || !value.trim()}

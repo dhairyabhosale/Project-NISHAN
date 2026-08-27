@@ -28,7 +28,7 @@ export function ConnectionStrip() {
 
   return (
     <div role="status" className="offline-strip px-4 py-2 text-center print:hidden">
-      <p className="mx-auto max-w-2xl text-label font-semibold">{resolve("offline.strip", {}, locale)}</p>
+      <p className="shell text-label font-semibold">{resolve("offline.strip", {}, locale)}</p>
     </div>
   );
 }

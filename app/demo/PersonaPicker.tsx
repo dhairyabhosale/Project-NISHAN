@@ -17,21 +17,21 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   const { locale } = useLocale();
 
   return (
-    <main className="mx-auto max-w-2xl px-4 pb-16 pt-8">
+    <main className="shell pb-16 pt-8">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("demo.title", {}, locale)}</h1>
-      <p className="mt-3 max-w-[58ch] text-body text-ink">{resolve("demo.standfirst", {}, locale)}</p>
+      <p className="mt-3 prose-measure text-body text-ink">{resolve("demo.standfirst", {}, locale)}</p>
 
       {/* §12.3 — persona names are fictional and labelled as such. */}
       <p className="mt-6 rounded-card border border-pending bg-paper p-4 text-label font-semibold text-ink">
         {resolve("demo.disclaimer", {}, locale)}
       </p>
 
-      <ul className="mt-8 space-y-3">
+      <ul className="mt-8 grid gap-3 md:grid-cols-2">
         {personas.map((p) => (
           <li key={p.ref}>
             <Link
               href={"/case/" + encodeURIComponent(p.reference)}
-              className="block rounded-card border border-rule bg-paper p-4 hover:bg-white/70"
+              className="card-lift block h-full rounded-card border border-rule bg-paper p-5 hover:bg-white"
             >
               <div className="flex items-baseline justify-between gap-3">
                 <span className="text-body font-semibold text-ink">{p.label}</span>
@@ -48,7 +48,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
 
       <section className="mt-10 rounded-card border border-rule bg-paper p-4">
         <h2 className="text-head font-semibold text-ink">{resolve("demo.fault_heading", {}, locale)}</h2>
-        <p className="mt-2 max-w-[58ch] text-body text-ink">{resolve("demo.fault_body", {}, locale)}</p>
+        <p className="mt-2 prose-measure text-body text-ink">{resolve("demo.fault_body", {}, locale)}</p>
       </section>
     </main>
   );

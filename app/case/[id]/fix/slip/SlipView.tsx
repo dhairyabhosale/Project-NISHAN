@@ -31,7 +31,7 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
   const carry = path?.routes.find((r) => r.available)?.carryKeys ?? [];
 
   return (
-    <main className="mx-auto max-w-2xl px-4 pb-40 pt-8 print:px-0 print:pb-0 print:pt-0">
+    <main className="shell pb-40 pt-8 print:px-0 print:pb-0 print:pt-0">
       <div className="print:hidden">
         <Link href={"/case/" + encodeURIComponent(reference) + "/fix"}
               className="inline-flex min-h-12 items-center text-label font-bold text-ink underline underline-offset-4">
@@ -39,7 +39,7 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
         </Link>
       </div>
 
-      <article className="mt-4 rounded-card border-2 border-ink bg-paper p-6 print:rounded-none print:border-0 print:p-0">
+      <article className="mt-4 max-w-3xl rounded-card border-2 border-ink bg-paper p-6 md:p-8 print:max-w-none print:rounded-none print:border-0 print:p-0">
         <p className="text-label font-semibold uppercase tracking-wide text-ink-soft">
           {resolve("slip.title", {}, locale)} · {resolve("slip.for_officer", {}, locale)}
         </p>
@@ -114,7 +114,7 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
       </article>
 
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 print:hidden">
-        <div className="mx-auto max-w-2xl">
+        <div className="shell">
           <button
             type="button"
             onClick={() => window.print()}

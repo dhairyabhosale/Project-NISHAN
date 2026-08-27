@@ -80,20 +80,20 @@ export default function EntryPage() {
   const { locale } = useLocale();
 
   return (
-    <main className="mx-auto max-w-2xl px-4 pb-16 pt-8">
+    <main className="shell pb-16 pt-8">
       <h1 className="max-w-[19ch] text-answer font-semibold leading-tight text-ink">
         {resolve("entry.headline", {}, locale)}
       </h1>
-      <p className="mt-4 max-w-[58ch] text-body text-ink">{resolve("entry.standfirst", {}, locale)}</p>
+      <p className="mt-4 prose-measure text-body text-ink">{resolve("entry.standfirst", {}, locale)}</p>
 
       <h2 className="mt-10 text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
 
-      <ul className="mt-4 space-y-3">
+      <ul className="mt-4 grid gap-3 md:grid-cols-2">
         {CHOICES.map((c) => (
           <li key={c.key}>
             <Link
               href={c.href}
-              className="flex min-h-[76px] items-center gap-4 rounded-card border border-rule bg-paper p-4 text-ink hover:bg-white/70"
+              className="card-lift flex h-full min-h-[88px] items-center gap-4 rounded-card border border-rule bg-paper p-5 text-ink hover:bg-white"
             >
               <span className="shrink-0 text-teal-deep">{c.icon}</span>
               <span className="flex-1">

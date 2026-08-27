@@ -32,27 +32,31 @@ export function CaseView({
   const credited = diagnosis.primaryBlocker === "B6c";
 
   return (
-    <main className="mx-auto max-w-2xl px-4 pb-40 pt-8">
+    <main className="shell pb-40 pt-8">
       <CaseHeader id={reference} amount={amount} locale={locale} />
 
       <div className="mt-6">
         <Verdict diagnosis={diagnosis} locale={locale} />
       </div>
 
-      <MoneyRail
-        gates={gates}
-        blockedAtIndex={gates.indexOf("BLOCKED")}
-        amount={amount}
-        locale={locale}
-        credited={credited}
-      />
+      <div className="grid gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+        <MoneyRail
+          gates={gates}
+          blockedAtIndex={gates.indexOf("BLOCKED")}
+          amount={amount}
+          locale={locale}
+          credited={credited}
+        />
 
-      <StatusCodeChip portalStatus={diagnosis.portalStatus} locale={locale} />
-      <EvidenceTable diagnosis={diagnosis} locale={locale} />
+        <div className="lg:pt-10">
+          <StatusCodeChip portalStatus={diagnosis.portalStatus} locale={locale} />
+          <EvidenceTable diagnosis={diagnosis} locale={locale} />
+        </div>
+      </div>
 
       {/* §11.5 — primary action pinned bottom, 56px, thumb reach. */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4">
-        <div className="mx-auto max-w-2xl">
+        <div className="shell">
           <Link
             href={"/case/" + encodeURIComponent(reference) + "/fix"}
             className="flex min-h-14 w-full items-center justify-center gap-2 rounded-card bg-teal-deep text-body font-semibold text-paper"
