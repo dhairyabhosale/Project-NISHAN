@@ -32,6 +32,10 @@ export interface SchemeRecord {
   /** Instalment history. The cycle under diagnosis is the last entry. */
   instalments: Instalment[];
   status_string: PortalStatusString;
+  /** Date of birth as the scheme holds it. Compared against mUIDAI.dob to
+   *  derive the B3 sub-cause DOB_MISMATCH (§7.3). Transposed digits are the
+   *  common real case, and they block e-KYC without ever being explained. */
+  dob_on_record?: string;
   registration_state: "REGISTERED" | "PENDING" | "REJECTED";
   /** Populated only when registration_state is REJECTED. */
   rejection_reason?: string;

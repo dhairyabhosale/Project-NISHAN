@@ -344,3 +344,112 @@ layer, so the handler applies a same-origin check instead. This is weaker than
 routes still 200 · live endpoint checks: healthy read 200, timeout 504 after
 1.25s, forced 503, header transport 502, unknown system 404, missing ref 400,
 cross-origin 403.
+
+---
+
+## Session 5 — 27 August 2026 — Language decision, disclosure rewrite, E2 (personas)
+
+**Author: Claude (Claude Code).**
+
+### The language decision, and why it is the right one
+
+The selector ships with **every language pmkisan.gov.in offers**. The
+translations do not. **English is the only fully resolved locale for Stage 1**;
+every other option is selectable, carries a visible *"Coming in the next round"*
+label, and keeps the interface in English when chosen.
+
+**Rationale, recorded because it is the interesting part.** A farmer who sees her
+language listed and then gets a half-English screen is worse served than one who
+sees it listed as coming. The first is a broken promise discovered after she has
+committed to the product; the second is information she can act on immediately.
+So the selector is honest about its own state — the same principle that governs
+`/whats-real`, applied to a component instead of a page.
+
+The corollary is a hard rule: **never render a half-translated screen.** The
+existing unused `hi` and `ta` catalogue values stay unwired rather than being
+partially resolved.
+
+Spec updated accordingly: §10.2 rewritten, §6.3's language criterion replaced,
+and `/whats-real` gains a Languages row. Implementation is queued for the
+NSH-302 slot with a 45-minute budget and a plain select fallback if it runs
+over — the engine is the critical path.
+
+### §12.2 rewritten, beyond what was asked
+
+The `/whats-real` table claimed SLA clocks, an offline queue, text-to-speech and
+a "disabled" AI code path as real or present. After the §15 cuts none of those
+exist, and the AI code path never did. Overstating on the one page whose entire
+purpose is honesty defeats the page, so the table now lists what actually ships,
+including three rows that are unflattering on purpose:
+
+- **Languages — partly shipped.** English resolved, the rest declared pending.
+- **API input validation — hand-rolled.** §12.6 specifies Zod; adding a
+  dependency the day before submission was judged the larger risk.
+- **Mock endpoint isolation — weaker than specified.** §12.6 wants MGSL
+  endpoints non-routable. Inside a single deployable that cannot be enforced at
+  the network layer, so a same-origin check stands in.
+
+§6.3's "turning off the network loses nothing" was also reduced to what NSH-307's
+cut actually leaves.
+
+### E2 — the eight personas
+
+All eight from §8.4 are seeded, covering B1, B2, B3, B4, B5, B6a, B6b and B6c.
+
+**Deliberate inconsistency, in two distinct kinds.** This is the part that
+matters, and conflating the two would make the engine dangerous:
+
+- **Benign variance** — "Ramesh P." vs "Ramesh Pandian", "Fathima" vs "Fatima".
+  Same person. B5 must normalise these and **not** flag them. A rule that flags a
+  spelling variance sends someone to the revenue office for nothing, which costs
+  a day's wage and a bus fare.
+- **Real mismatch** — Sarala's land is still in her late father's name
+  ("Murugesan Kandasamy"); Selvi's in "Ramanathan Perumal". Different people.
+  B5 **must** flag these.
+
+Also seeded: a transposed date of birth (Selvi, Aadhaar `1991-03-08` against the
+scheme's `1991-08-03` — the ordinary data-entry error), an inactive NPCI mapper
+(Ramesh) and a not-found one (Selvi).
+
+**Two personas carry the load for E3:**
+
+- **Selvi R. (P8)** has **four** blockers live at once — registration rejected
+  (B1), e-KYC not started with no linked mobile and a transposed DOB (B3), mapper
+  not found (B4), land in another name and unseeded (B5). She must return **B1
+  alone**. The portal shows her `eKYC Required`, a lower-precedence symptom;
+  acting on it would waste a trip, because she is not registered and no
+  instalment can be paid regardless. That gap is the product.
+- **Anbu K. (P4)** is the **carve-out regression test**. He is a government
+  employee *and* Multi-Tasking Staff / Class IV / Group D, who are excluded from
+  the exclusion. He must return B6a. If the B2 rule ever drops the carve-out he
+  flips to B2 and the suite fails loudly — a wrongly excluded farmer is the most
+  expensive error this engine can make.
+
+### Credential-shape guarantee — confirmed
+
+A judge may hit `/api/mock/*` directly, so nothing it returns may resemble a real
+credential. Verified two ways:
+
+- **Static** — a test walks every string in every record of every persona and of
+  every assembled snapshot, asserting that each 12-digit run is 9999-prefixed,
+  each `+91` number uses the unallocated 5-series, each IFSC-shaped token is
+  `MOCK`-prefixed and each PAN-shaped token is `MOCKP`-prefixed.
+- **Live** — all 8 personas × 7 systems fetched over HTTP (56 responses,
+  15.4 KB) and scanned: 16 twelve-digit runs, all 9999; 6 mobiles, all 5-series;
+  8 IFSC and 8 PAN tokens, all MOCK. **Zero real-looking credentials.**
+
+The scanner caught one false positive worth recording: `+91` followed by a
+10-digit mobile is 12 consecutive digits and matched the Aadhaar rule. The data
+was correct; the check was wrong. Dialling codes are now masked before the
+Aadhaar scan and validated by their own assertion.
+
+### Fixed
+
+`npx tsc --noEmit` began failing after E2 (TS2802: `matchAll` iteration needs
+es2015+, and the app targets es5). Tests are type-checked by
+`tsconfig.test.json`, which targets es2022, so `tests` and `.test-build` are now
+excluded from the app typecheck. **The app's es5 target is unchanged** — app code
+and test code simply have different contracts, which is correct.
+
+**Verified:** `npm test` 39/39 · `npx tsc --noEmit` exits 0 · all five app routes
+200 · live credential scan clean.

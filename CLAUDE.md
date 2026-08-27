@@ -322,10 +322,13 @@ Reviewers test the citizen experience.
 
 - A reviewer with no context completes the full journey in **under 90 seconds**
   without instructions.
-- Turning off the network mid-journey loses **nothing**.
+- Fix Path progress survives a reload and a lost connection, and a resubmission
+  cannot double-file. (Reduced from full offline recovery when NSH-307 was cut —
+  see §15.)
 - The reviewer can see, on a dedicated page, exactly which parts are real and
   which are mocked.
-- Language switch to Tamil or Hindi changes **every** string on the primary path.
+- The language selector lists **every language the official portal offers**, and
+  states plainly which are not yet resolved.
 - The whole journey works at **375px wide** on a throttled connection.
 
 ### 6.4 Anti-goals
@@ -843,9 +846,27 @@ work, not a done thing.
 
 ### 10.2 Languages
 
-`en` · `ta` (Tamil) · `hi` (Hindi) — all three, across the entire primary path.
-Tamil is not an afterthought: the canonical persona is a Tamil speaker and the
-entry screen leads in Tamil.
+**Revised 27 Aug 2026.** The language **selector** covers the full set
+pmkisan.gov.in offers. The **translations** do not. **English is the only fully
+resolved locale for Stage 1**; every other language is listed and declared
+pending.
+
+**Why the selector still ships complete.** A farmer who sees her language listed
+and then gets a half-English screen is worse served than one who sees it listed
+as coming. The selector is honest about its own state — the same principle that
+governs `/whats-real`.
+
+Rules:
+
+- English is the default and resolves fully.
+- Every other option is **selectable**, carries a visible, non-apologetic
+  *"Coming in the next round"* label, and keeps the UI in English when chosen.
+- **Never render a half-translated screen.** A partially resolved locale is a
+  worse outcome than an unresolved one.
+- The existing unused `hi` and `ta` catalogue values stay **unwired**. Do not
+  partially resolve them.
+- Populate the selector from a `LANGUAGES` constant carrying, for each entry, the
+  ISO code, the English name, and the endonym in its own script.
 
 ### 10.3 Slot filling
 
@@ -1286,19 +1307,31 @@ than any photo would.
 
 | Component | Status | Notes |
 |---|---|---|
-| Diagnosis engine | **Real** | Deterministic rules, fully implemented |
-| Case state machine, event log, SLA clocks | **Real** | Real database, real transitions |
-| Offline queue and idempotency | **Real** | Works; try airplane mode |
-| Language and text-to-speech | **Real** | Browser TTS; three languages |
-| **AI / language model** | **Not used** | No model runs in this build. Every sentence is a pre-authored, versioned string. The code path exists and is disabled. |
-| Aadhaar / UIDAI | **Simulated** | No real Aadhaar system contacted |
+**Rewritten 27 Aug 2026** to match what is actually shipping after the §15 cuts.
+The previous version claimed SLA clocks, an offline queue, text-to-speech and a
+disabled AI code path, none of which exist. Overstating on this page defeats its
+only purpose.
+
+| Component | Status | Notes |
+|---|---|---|
+| Diagnosis engine | **Real** | Deterministic rules, fixed B1→B6 precedence, evidence-carrying. No model involved. |
+| Mock government systems + fault injection | **Real** | Seven independently modelled, independently failing systems |
+| Case create / read / event log | **Real** | Real storage, real append-only events |
+| **AI / language model** | **Not used** | **No language model runs in this build, and none is present in the code.** There is no model SDK, no API key is read, and no network call leaves the app. Every sentence a user sees is a pre-authored string in a committed catalogue. |
+| **Languages** | **Partly shipped** | The selector lists every language the official portal offers. **English is the only resolved locale**; the rest are declared pending in the selector itself. Bhashini integration is planned. |
+| **API input validation** | **Hand-rolled** | §12.6 specifies Zod at the boundary. Adding a dependency the day before submission was judged the larger risk, so inputs are validated by hand. Same coverage, less machinery. |
+| **Mock endpoint isolation** | **Weaker than specified** | §12.6 asks that MGSL endpoints not be publicly routable. Inside a single deployable that cannot be enforced at the network layer, so the mock routes apply a same-origin check instead. They return synthetic data only. |
+| Aadhaar / UIDAI | **Simulated** | No real Aadhaar system is contacted |
 | PFMS, NPCI, Income Tax, land records, bank | **Simulated** | Synthetic modules with injectable faults |
-| OTP | **Simulated** | No SMS is sent |
-| Grievance filing | **Simulated** | Nothing is submitted to any government system |
-| Beneficiary data | **Synthetic** | Eight fictional personas |
-| Voice input (Bhashini) | **Planned** | Button visible, disabled. Stage 2. |
+| OTP | **Simulated** | No SMS is sent to any phone |
+| Beneficiary data | **Synthetic** | Eight fictional people. Every identifier is structurally invalid as a real credential (§12.3). |
+| Fix Path progress | **Real, device-only** | Kept in browser storage. Survives reload; never leaves the phone. |
+| Offline queue / service worker | **Not built** | Cut. What survives is progress that persists and a duplicate-submission guard. |
+| Grievance filing, SLA clocks, escalation | **Not built** | Cut for Stage 1. The escalation ladder is described in the product, not executed. |
+| Case timeline screen | **Not built** | Events are recorded but not rendered |
+| Text-to-speech | **Not built** | Cut for Stage 1 |
+| Voice input (Bhashini) | **Planned** | Button visible and disabled. Requests no microphone permission. Stage 2. |
 | In-browser face auth (WebRTC) | **Planned** | Described, not shipped. Stage 2. |
-| Time travel / fault switch | **Demo controls** | Clearly labelled; not part of a real deployment |
 
 ### 12.3 Synthetic identifier formats
 
@@ -1557,8 +1590,8 @@ Submit by **18:00 on 28 August**, not 20:00.
 | ID | Task | Est |
 |---|---|---|
 | NSH-301 | App shell + §12.7 persistent disclosure banner + footer `/whats-real` link on every screen | 30m |
-| NSH-302 | **S1 Entry** | 45m |
-| NSH-303 | **S2 Identify + S3 simulated OTP** | 1h |
+| NSH-302 | **S1 Entry** — §11.7 S1: headline question, four large tap choices ("My instalment did not come" / "I don't know if I'm registered" / "My e-KYC is showing as pending" / "I'm checking for someone else"), disabled mic button, language selector, `/whats-real` footer link. **No Case ID field** — demanding a reference the farmer does not have is P2, the failure we exist to fix. Includes the `LanguageSelector`; if it runs over 45m, ship a plain `<select>` with the same content. The engine is the critical path. | 45m |
+| NSH-303 | **S2 Identify + S3 simulated OTP** — Aadhaar, mobile **or** registration number each work alone; "Don't have this?" never dead-ends (P2). Case-reference lookup survives as **reference mode** per §12.4 — a secondary path so a helper can open a case someone sent them, never the front door. | 1h |
 | NSH-304 | **Wire the existing Money Rail to real verdicts** — the component exists (§13.1); it needs data, not a rebuild | 1.5h |
 | NSH-305 | **S6 Fix Path + S7 Visit Slip** | 1.5h |
 | — | **Light offline** — `localStorage` Fix Path progress, connection strip, duplicate-action guard | 45m |
