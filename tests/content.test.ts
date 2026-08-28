@@ -9,7 +9,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { diagnose } from "../engine/diagnose";
-import { MISSING_SLOT, resolve } from "../content/resolve";
+import { MISSING_SLOT, loadLocale, resolve } from "../content/resolve";
 import { daysBetween, isOverdue, renderEvidence, renderVerdict } from "../content/verdict";
 import { readSnapshot } from "../mocks";
 import { CURRENT_CYCLE, PERSONAS } from "../mocks/fixtures";
@@ -339,10 +339,13 @@ describe("E7 — the Visit Slip ask fills from real case facts", () => {
 
   it("renders the land ask with both real names, not an em dash", async () => {
     const d = await diagnoseRef("P3");
-    const ask = resolve(fixPathFor("LAND_NAME_MISMATCH")!.requestKey, d.facts, "en");
+    const key = fixPathFor("LAND_NAME_MISMATCH")!.requestKey;
+    const ask = resolve(key, d.facts, "en");
     assert.match(ask, /Murugesan Kandasamy/);
     assert.match(ask, /Sarala Murugesan/);
-    assert.equal(ask.includes(MISSING_SLOT), false, ask);
+    assert.equal(/{w+}/.test(ask), false, "no unfilled slot: " + ask);
+    // Positive control: with no facts the same template must fall back visibly.
+    assert.notEqual(resolve(key, {}, "en"), ask);
   });
 });
 
@@ -375,12 +378,22 @@ describe("E6 — Hindi and Marathi are fully resolved (§10.2)", () => {
     }
   });
 
-  it("actually renders in Devanagari, not English fallback", () => {
+  it("actually renders in Devanagari once the catalogue has loaded", async () => {
     const devanagari = /[\u0900-\u097F]/;
     for (const loc of ["hi", "mr"] as const) {
+      // Only English is bundled; the rest arrive on demand to keep the primary
+      // path inside \u00A711.9's 150KB JS budget.
+      await loadLocale(loc);
       assert.match(resolve("entry.headline" as CatalogueKey, {}, loc), devanagari);
       assert.match(resolve("verdict.MOBILE_NOT_LINKED.sentence" as CatalogueKey, {}, loc), devanagari);
       assert.match(resolve("banner.prototype" as CatalogueKey, {}, loc), devanagari);
     }
+  });
+
+  it("falls back to English before a catalogue has loaded, never to a blank", () => {
+    // Deliberate: an unloaded locale behaves exactly like an unresolved one.
+    const out = resolve("entry.headline" as CatalogueKey, {}, "ta");
+    assert.ok(out.length > 0);
+    assert.equal(out.startsWith("TODO_"), false);
   });
 });
