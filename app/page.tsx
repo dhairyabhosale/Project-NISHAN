@@ -93,10 +93,7 @@ export default function EntryPage() {
       <section className="on-teal relative isolate overflow-hidden bg-teal-deep py-14 text-paper md:py-20">
         <FieldBackdrop className="text-paper" />
         <div className="shell relative">
-          <p className="text-label font-semibold uppercase tracking-[0.14em] opacity-90">
-            {resolve("hero.eyebrow", {}, locale)}
-          </p>
-          <h1 className="mt-4 max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
+          <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
             {resolve("entry.headline", {}, locale)}
           </h1>
           <p className="mt-5 prose-measure text-body opacity-95">{resolve("entry.standfirst", {}, locale)}</p>

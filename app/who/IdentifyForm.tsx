@@ -112,20 +112,19 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
           autoComplete="off"
           className="data mt-2 min-h-14 w-full rounded-card border-2 border-rule bg-paper px-4 text-ink"
         />
-        <p className="mt-2 text-label text-ink-soft">{resolve(active.hint, {}, locale)}</p>
-
         {error && (
           <p className="mt-4 rounded-card border-2 border-pending bg-paper p-3 text-body text-ink" role="alert">
             {error}
           </p>
         )}
 
-        <details className="mt-6 rounded-card border border-rule bg-paper p-4">
-          <summary className="cursor-pointer text-body font-semibold text-teal-deep">
+        <details className="mt-3">
+          <summary className="cursor-pointer text-label font-semibold text-teal-deep">
             {resolve("who.dont_have", {}, locale)}
           </summary>
-          <p className="mt-3 text-body text-ink">{resolve("who.dont_have_body", {}, locale)}</p>
+          <p className="mt-2 text-label text-ink">{resolve("who.dont_have_body", {}, locale)}</p>
         </details>
+        <p className="mt-2 text-label text-ink-soft">{resolve(active.hint, {}, locale)}</p>
 
         {/* A reviewer should not have to type a synthetic Aadhaar number to
             see the product work. Each card is a real case that diagnoses live. */}
@@ -180,7 +179,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
             <button
               type="submit"
               disabled={busy || !value.trim()}
-              className="min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+              className="min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-teal-deep disabled:text-paper"
             >
               {resolve("who.submit", {}, locale)}
             </button>
@@ -190,4 +189,3 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
     </main>
   );
 }
-

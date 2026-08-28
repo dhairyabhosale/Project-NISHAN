@@ -44,6 +44,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   const { locale } = useLocale();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const backToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
@@ -170,6 +171,17 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
       <footer className="mt-16 border-t border-rule bg-paper">
         <div className="shell py-10">
+          <div className="mb-6 flex justify-end">
+            <button
+              type="button"
+              onClick={backToTop}
+              aria-label={resolve("footer.back_to_top", {}, locale)}
+              className="grid min-h-12 min-w-12 shrink-0 place-items-center rounded-card border border-teal-deep bg-teal-deep px-3 text-body font-semibold text-paper hover:bg-teal-deep/90"
+            >
+              <span aria-hidden="true">↑</span>
+              <span className="sr-only">{resolve("footer.back_to_top", {}, locale)}</span>
+            </button>
+          </div>
           <div className="grid gap-8 md:grid-cols-3">
             <div>
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("nav.services", {}, locale)}</h2>
