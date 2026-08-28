@@ -70,7 +70,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
   }
 
   return (
-    <main className="page-in shell pb-40 pt-8">
+    <main className="page-in shell pb-16 pt-8">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("who.title", {}, locale)}</h1>
       <p className="mt-3 prose-measure text-body text-ink">{resolve("who.standfirst", {}, locale)}</p>
 
@@ -148,18 +148,13 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
           </button>
         </section>
 
-        {/* §11.5 - primary action pinned to the bottom for thumb reach. */}
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4">
-          <div className="shell">
-            <button
-              type="submit"
-              disabled={busy || !value.trim()}
-              className="min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-teal-deep disabled:text-paper"
-            >
-              {resolve("who.submit", {}, locale)}
-            </button>
-          </div>
-        </div>
+        <button
+          type="submit"
+          disabled={busy || !value.trim()}
+          className="mt-6 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-teal-deep disabled:text-paper"
+        >
+          {resolve("who.submit", {}, locale)}
+        </button>
 
         {/* A reviewer should not have to type a synthetic Aadhaar number to
             see the product work. Each card is a real case that diagnoses live. */}
