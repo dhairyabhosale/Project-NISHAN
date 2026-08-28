@@ -842,3 +842,77 @@ is a key some case actually provides.
 compiles · **First Load JS 128–131 KB against the 150 KB budget** · every route
 200 and `/demo/tokens` 404 · zero `TODO_` strings in any rendered page · one
 `h1` per screen.
+
+---
+
+## Session 10 — 28 August 2026 — Layout, template structure, services directory
+
+**Author: Claude (Claude Code).**
+
+### Three conflicts flagged before implementing
+
+The instruction asked to restore the original portal's features (map, search,
+service tiles), to recreate the reference template's structure, and to add
+scroll choreography. All three contradicted decisions made earlier the same day
+and one contradicted R2. They were raised rather than silently resolved
+(§16.1), and the user chose: keep NISHAN's scope but add a services directory,
+and adopt the template's structure.
+
+### Layout — the real defect
+
+The build was on `max-w-2xl` (672px) on every screen, which stranded a narrow
+column in the middle of a desktop viewport. The `ui-ux-pro-max`
+`container-width` guidance asks for max-w-6xl/7xl on desktop, so `.shell` is
+now 72rem with gutters that scale at 768px and 1280px.
+
+Width alone would have made reading worse: the same guidance caps line length
+at 60–75 characters. So the cap moved off the container and onto the text, via
+`.prose-measure` (68ch). **The container gets wide; the sentences do not.**
+
+Two-column grids at `lg` where the width earns its place — S4 (rail beside the
+record detail), S6 (steps beside authority), S2 (form beside reference mode),
+and card grids on `/demo` and `/whats-real`. The Visit Slip is deliberately
+excluded and capped at `max-w-3xl`: it is a document meant to be printed and
+carried, and a 1152px-wide document is not one.
+
+### Template structure, and what was refused
+
+Taken: full-bleed teal hero band, clearly bounded sections alternating ground
+colour, a three-step "how this works" sequence, a scheme-facts row, uniform
+card padding, one confident accent, top navigation.
+
+**Refused, with reasons:**
+
+- **Testimonials and council members.** They would be invented people presented
+  as real. §12.3 forbids fabricated records, and a hackathon submission that
+  ships fake citizen quotes deserves to lose on the honesty criterion.
+- **Stock photography.** §11.9 budgets zero images on the primary path, and
+  photographs are the first thing to fail on 2G.
+- **A hero carousel.** It hides content behind a timer on the one screen that
+  has three seconds to be understood.
+- **The red accent.** `--stop` is the blocked gate and nothing else.
+
+The scheme-facts row uses published figures (₹6,000 a year, 9.44 crore farmers,
+20 June 2026) reproduced with a note saying we reproduce rather than calculate
+them — §18 forbids presenting a figure as an official statistic without a
+primary source.
+
+### `/services` — coverage without the tile grid
+
+Seventeen services in plain language, split into the three NISHAN answers and
+the fourteen it does not. The ones it does not answer link to the official site
+as ordinary anchors with `rel="noopener noreferrer"`.
+
+**This does not violate §16.6.** That rule forbids the app fetching a
+government host; a link the user chooses to follow is not the app contacting
+anything. Links point at the site root rather than guessed deep paths, because
+verifying a deep link would have meant requesting one.
+
+The page is reachable from the header and the homepage, and is **not** the entry
+screen. Sixteen undifferentiated tiles as a front door is P4 and P9 — the
+failure the product exists to fix.
+
+**Verified:** `npm test` 149/149 · `tsc --noEmit` exits 0 · production build
+compiles · First Load JS 119–132 KB against the 150 KB budget · all ten routes
+200 including the not-found state · one `h1` per screen · zero `TODO_` strings
+in any rendered page.

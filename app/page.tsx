@@ -76,45 +76,106 @@ const CHOICES: Choice[] = [
   }
 ];
 
+const STEPS = [1, 2, 3];
+const FACTS = [1, 2, 3, 4];
+
 export default function EntryPage() {
   const { locale } = useLocale();
+  const k = (x: string) => x as CatalogueKey;
 
   return (
-    <main className="shell pb-16 pt-8">
-      <h1 className="max-w-[19ch] text-answer font-semibold leading-tight text-ink">
-        {resolve("entry.headline", {}, locale)}
-      </h1>
-      <p className="mt-4 prose-measure text-body text-ink">{resolve("entry.standfirst", {}, locale)}</p>
-
-      <h2 className="mt-10 text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
-
-      <ul className="mt-4 grid gap-3 md:grid-cols-2">
-        {CHOICES.map((c) => (
-          <li key={c.key}>
-            <Link
-              href={c.href}
-              className="card-lift flex h-full min-h-[88px] items-center gap-4 rounded-card border border-rule bg-paper p-5 text-ink hover:bg-white"
-            >
-              <span className="shrink-0 text-teal-deep">{c.icon}</span>
-              <span className="flex-1">
-                <span className="block text-body font-semibold leading-snug">{resolve(c.label, {}, locale)}</span>
-                <span className="mt-1 block text-label text-ink-soft">{resolve(c.hint, {}, locale)}</span>
-              </span>
-              <svg width="20" height="20" viewBox="0 0 20 20" {...stroke} aria-hidden="true" className="shrink-0 text-ink-soft">
-                <path d="m7 4 6 6-6 6" />
-              </svg>
+    <main>
+      {/* Hero band — anchors the page. No carousel: it would hide content
+          behind a timer on the one screen that has three seconds to be
+          understood. No photograph: §11.9 budgets zero images on the primary
+          path, and photographs fail first on 2G. */}
+      <section className="on-teal bg-teal-deep py-14 text-paper md:py-20">
+        <div className="shell">
+          <p className="text-label font-semibold uppercase tracking-[0.14em] opacity-90">
+            {resolve("hero.eyebrow", {}, locale)}
+          </p>
+          <h1 className="mt-4 max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
+            {resolve("entry.headline", {}, locale)}
+          </h1>
+          <p className="mt-5 prose-measure text-body opacity-95">{resolve("entry.standfirst", {}, locale)}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Link href="/who" className="inline-flex min-h-14 items-center rounded-card bg-paper px-6 text-body font-semibold text-teal-deep">
+              {resolve("hero.cta", {}, locale)}
             </Link>
-          </li>
-        ))}
-      </ul>
+            <Link href="/demo" className="inline-flex min-h-14 items-center rounded-card border-2 border-paper/70 px-6 text-body font-semibold text-paper">
+              {resolve("hero.secondary", {}, locale)}
+            </Link>
+          </div>
+        </div>
+      </section>
 
-      <div className="mt-10 rounded-card border border-rule bg-paper p-4">
-        <Link href="/demo" className="text-body font-semibold text-teal-deep underline underline-offset-4">
-          {resolve("entry.demo", {}, locale)}
-        </Link>
-      </div>
+      <section className="shell py-14">
+        <h2 className="text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
+        <ul className="mt-6 grid gap-4 md:grid-cols-2">
+          {CHOICES.map((c) => (
+            <li key={c.key}>
+              <Link
+                href={c.href}
+                className="card-lift flex h-full min-h-[96px] items-center gap-4 rounded-card border border-rule bg-paper p-5 text-ink hover:bg-white"
+              >
+                <span className="shrink-0 text-teal-deep">{c.icon}</span>
+                <span className="flex-1">
+                  <span className="block text-body font-semibold leading-snug">{resolve(c.label, {}, locale)}</span>
+                  <span className="mt-1 block text-label text-ink-soft">{resolve(c.hint, {}, locale)}</span>
+                </span>
+                <svg width="20" height="20" viewBox="0 0 20 20" {...stroke} aria-hidden="true" className="shrink-0 text-ink-soft">
+                  <path d="m7 4 6 6-6 6" />
+                </svg>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <MicButton locale={locale} />
+      </section>
 
-      <MicButton locale={locale} />
+      {/* A real sequence, so numbering it carries information. */}
+      <section className="border-y border-rule bg-paper py-14">
+        <div className="shell">
+          <h2 className="text-head font-semibold text-ink">{resolve("how.heading", {}, locale)}</h2>
+          <p className="mt-2 prose-measure text-body text-ink">{resolve("how.standfirst", {}, locale)}</p>
+          <ol className="mt-8 grid gap-4 md:grid-cols-3">
+            {STEPS.map((n) => (
+              <li key={n} className="rounded-card border border-rule bg-cyan-pale p-5">
+                <span className="data grid size-10 place-items-center rounded-card bg-teal-deep text-paper">{n}</span>
+                <h3 className="mt-4 text-body font-semibold text-ink">{resolve(k("how." + n + ".title"), {}, locale)}</h3>
+                <p className="mt-2 text-label text-ink">{resolve(k("how." + n + ".body"), {}, locale)}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* Published figures reproduced, never computed by us — §18. */}
+      <section className="shell py-14">
+        <h2 className="text-head font-semibold text-ink">{resolve("facts.heading", {}, locale)}</h2>
+        <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("facts.standfirst", {}, locale)}</p>
+        <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {FACTS.map((n) => (
+            <div key={n} className="rounded-card border border-rule bg-paper p-5">
+              <dt className="data text-head font-bold text-teal-deep">{resolve(k("facts." + n + ".value"), {}, locale)}</dt>
+              <dd className="mt-2 text-label text-ink">{resolve(k("facts." + n + ".label"), {}, locale)}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      {/* Coverage, without the tile grid becoming the front door. */}
+      <section className="border-t border-rule bg-paper py-14">
+        <div className="shell flex flex-wrap items-center justify-between gap-6">
+          <div>
+            <h2 className="text-head font-semibold text-ink">{resolve("services.title", {}, locale)}</h2>
+            <p className="mt-2 prose-measure text-body text-ink">{resolve("services.standfirst", {}, locale)}</p>
+          </div>
+          <Link href="/services" className="inline-flex min-h-14 shrink-0 items-center rounded-card border-2 border-teal-deep px-6 text-body font-semibold text-teal-deep">
+            {resolve("nav.services", {}, locale)}
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }
