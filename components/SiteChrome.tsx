@@ -29,16 +29,16 @@ const MENU: { label: CatalogueKey; items: { label: CatalogueKey; href: string }[
     items: [
       { label: "svc.0.name", href: "/who" },
       { label: "svc.1.name", href: "/who" },
-      { label: "svc.7.name", href: "/services" }
+      { label: "svc.7.name", href: "/services#svc-7" }
     ]
   },
   {
     label: "nav.registration",
     items: [
-      { label: "svc.3.name", href: "/services" },
-      { label: "svc.4.name", href: "/services" },
-      { label: "svc.5.name", href: "/services" },
-      { label: "svc.6.name", href: "/services" }
+      { label: "svc.3.name", href: "/services#svc-3" },
+      { label: "svc.4.name", href: "/services#svc-4" },
+      { label: "svc.5.name", href: "/services#svc-5" },
+      { label: "svc.6.name", href: "/services#svc-6" }
     ]
   },
   {
@@ -46,7 +46,7 @@ const MENU: { label: CatalogueKey; items: { label: CatalogueKey; href: string }[
     items: [
       { label: "svc.2.name", href: "/who" },
       { label: "faq.title", href: "/faq" },
-      { label: "svc.13.name", href: "/services" },
+      { label: "svc.13.name", href: "/services#svc-13" },
       { label: "svc.14.name", href: "/faq" }
     ]
   }
@@ -67,7 +67,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
           <div className="flex items-center gap-2">
             <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden items-center gap-1 lg:flex">
-              <Link href="/who" className="inline-flex min-h-12 items-center rounded-card px-3 text-label font-semibold hover:bg-white/10">
+              <Link href="/who" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
                 {resolve("nav.find", {}, locale)}
               </Link>
 
@@ -82,7 +82,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                     type="button"
                     aria-expanded={openMenu === group.label}
                     onClick={() => setOpenMenu(openMenu === group.label ? null : group.label)}
-                    className="inline-flex min-h-12 items-center gap-1.5 rounded-card px-3 text-label font-semibold hover:bg-white/10"
+                    className="inline-flex min-h-12 items-center gap-1.5 whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10"
                   >
                     {resolve(group.label, {}, locale)}
                     <svg
@@ -112,10 +112,10 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 </div>
               ))}
 
-              <Link href="/services" className="inline-flex min-h-12 items-center rounded-card px-3 text-label font-semibold hover:bg-white/10">
+              <Link href="/services" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
                 {resolve("nav.services", {}, locale)}
               </Link>
-              <Link href="/whats-real" className="inline-flex min-h-12 items-center rounded-card px-3 text-label font-semibold hover:bg-white/10">
+              <Link href="/whats-real" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
                 {resolve("nav.real", {}, locale)}
               </Link>
             </nav>
@@ -176,16 +176,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
       <footer className="mt-16 border-t border-rule bg-paper">
         <div className="shell py-10">
-          <div className="grid gap-8 md:grid-cols-3">
-            <div>
-              <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("nav.find", {}, locale)}</h2>
-              <Link href="/who" className="mt-2 flex min-h-12 items-center text-body text-teal-deep underline underline-offset-4">
-                {resolve("svc.0.name", {}, locale)}
-              </Link>
-              <Link href="/demo" className="flex min-h-12 items-center text-body text-teal-deep underline underline-offset-4">
-                {resolve("hero.secondary", {}, locale)}
-              </Link>
-            </div>
+          <div className="grid gap-8 md:grid-cols-2">
             <div>
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("nav.services", {}, locale)}</h2>
               <Link href="/services" className="mt-2 flex min-h-12 items-center text-body text-teal-deep underline underline-offset-4">

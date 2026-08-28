@@ -25,10 +25,16 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       mobile update, beneficiary list, grievance routing). Accordion with an
       animated reveal, one open at a time. All copy from the catalogue in en/hi/mr.
       Linked from the header Help menu.
-- [ ] 4. HEADER wrapping
-- [ ] 5. LANGUAGES order
-- [ ] 6. REGISTRATION MENU dead links
-- [ ] 7. FIND MY PAYMENT footer block
+- [x] 4. HEADER - whitespace-nowrap on every nav link and dropdown trigger, so
+      "Check a payment" and "What is real" hold one line at every width >=360px.
+- [x] 5. LANGUAGES - order is now en, hi, mr, then the eleven pending ones, so
+      all three working languages sit at the top.
+- [x] 6. REGISTRATION MENU - every item now deep-links to its own card on
+      /services via #svc-N anchors with scroll-mt, instead of four entries
+      landing on the same generic page. Payments and Help items too. No dead
+      links remain in the header.
+- [x] 7. FIND MY PAYMENT - static block removed from the site footer; footer
+      regridded to two columns. The journey is reached from the header and /who.
 - [ ] 8. DEMO CASE PICKER on /who
 - [ ] 9. FAULT SWITCH
 - [ ] 10. PROTOTYPE BADGE top-right

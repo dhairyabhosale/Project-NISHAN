@@ -49,7 +49,7 @@ export default function ServicesPage() {
         <h2 className="text-head font-semibold text-ink">{resolve("services.answered_heading", {}, locale)}</h2>
         <ul className="mt-5 grid gap-3 md:grid-cols-3">
           {ANSWERED.map((i) => (
-            <li key={i}>
+            <li key={i} id={"svc-" + i} className="scroll-mt-24">
               <Link href="/who" className="card-lift flex h-full flex-col rounded-card border-2 border-green bg-green-soft p-5">
                 <span className="text-label font-semibold uppercase tracking-wide text-ink">
                   {resolve("services.we_answer", {}, locale)}
@@ -68,7 +68,7 @@ export default function ServicesPage() {
           <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("services.leaving", {}, locale)}</p>
           <ul className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {OTHERS.map((i) => (
-              <li key={i}>
+              <li key={i} id={"svc-" + i} className="scroll-mt-24">
                 <a
                   href={OFFICIAL}
                   target="_blank"

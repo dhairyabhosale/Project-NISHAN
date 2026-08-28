@@ -24,12 +24,12 @@ export interface Language {
 export const LANGUAGES: readonly Language[] = [
   { code: "en", english: "English", endonym: "English", resolved: true },
   { code: "hi", english: "Hindi", endonym: "हिन्दी", resolved: true },
+  { code: "mr", english: "Marathi", endonym: "मराठी", resolved: true },
   { code: "as", english: "Assamese", endonym: "অসমীয়া", resolved: false },
   { code: "bn", english: "Bengali", endonym: "বাংলা", resolved: false },
   { code: "gu", english: "Gujarati", endonym: "ગુજરાતી", resolved: false },
   { code: "kn", english: "Kannada", endonym: "ಕನ್ನಡ", resolved: false },
   { code: "ml", english: "Malayalam", endonym: "മലയാളം", resolved: false },
-  { code: "mr", english: "Marathi", endonym: "मराठी", resolved: true },
   { code: "ne", english: "Nepali", endonym: "नेपाली", resolved: false },
   { code: "or", english: "Odia", endonym: "ଓଡ଼ିଆ", resolved: false },
   { code: "pa", english: "Punjabi", endonym: "ਪੰਜਾਬੀ", resolved: false },
