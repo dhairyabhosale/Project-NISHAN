@@ -1,9 +1,9 @@
 "use client";
 
-/* Bhashini voice assistant — launcher and panel. CLAUDE.md §9.4.
+/* Bhashini voice assistant - launcher and panel. CLAUDE.md §9.4.
  *
  * WHAT THIS IS NOT: it is not a chatbot, and it never becomes one. §16.3 bans a
- * conversational assistant and §4 explains why — Kisan e-Mitra already answers
+ * conversational assistant and §4 explains why - Kisan e-Mitra already answers
  * questions in eleven languages, and matching the incumbent at its own game
  * loses. This is a voice INPUT affordance in a familiar launcher shape.
  *

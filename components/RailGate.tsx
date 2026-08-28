@@ -5,7 +5,7 @@ export type GateState = "PASSED" | "BLOCKED" | "UNREACHED";
 
 /* §11.3 Money Rail mapping, and §11.8: colour never carries meaning alone.
  *
- * Each state differs in THREE ways at once — shape, weight and label — so the
+ * Each state differs in THREE ways at once - shape, weight and label - so the
  * rail reads correctly to someone who cannot distinguish red from green, and on
  * a cheap screen in daylight:
  *

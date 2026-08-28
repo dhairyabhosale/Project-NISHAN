@@ -1,13 +1,13 @@
-/* E7 — Fix Paths. CLAUDE.md §10.4.
+/* E7 - Fix Paths. CLAUDE.md §10.4.
  *
  * A Fix Path knows three things the portal never tells anyone:
  *
  *   1. WHO can actually fix this. The central helpline cannot fix land seeding.
- *      Sending someone to the wrong counter costs a day's wage and a bus fare —
+ *      Sending someone to the wrong counter costs a day's wage and a bus fare -
  *      that is the real price of a vague answer.
  *   2. WHICH ROUTE will work FOR THIS PERSON. Routes carry `available` and
  *      `unavailableBecause`. An impossible route is shown RULED OUT WITH THE
- *      REASON, never hidden — "the code will not reach you because no phone
+ *      REASON, never hidden - "the code will not reach you because no phone
  *      number is linked to your Aadhaar" is the single most useful sentence in
  *      the product, and the portal's default advice is exactly the route that
  *      cannot work.
@@ -15,7 +15,7 @@
  *      checklist or a visit.
  *
  * Three are authored in full (§15 cut the rest). Every other ReasonCode falls
- * back to a generic authority card built from the authority label alone —
+ * back to a generic authority card built from the authority label alone -
  * accurate and thin, rather than absent or invented.
  *
  * Authorities are ROLES, never named individuals (§10.4). */
@@ -104,7 +104,7 @@ const FIX_PATHS: Partial<Record<ReasonCode, FixPath>> = {
     ]
   },
 
-  /* Ramesh. "The money has nowhere to land" — only his bank can fix it. */
+  /* Ramesh. "The money has nowhere to land" - only his bank can fix it. */
   MAPPER_INACTIVE: {
     reason: "MAPPER_INACTIVE",
     authority: "BANK_BRANCH",

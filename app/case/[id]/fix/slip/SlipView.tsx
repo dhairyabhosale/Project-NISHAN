@@ -1,6 +1,6 @@
 "use client";
 
-/* S7 — Visit Slip. CLAUDE.md §11.7.
+/* S7 - Visit Slip. CLAUDE.md §11.7.
  *
  * Designed as a physical artifact, not a web page that happens to print. The
  * case reference is large mono at the top because it is the first thing an
@@ -9,7 +9,7 @@
  * and there is blank space labelled "Officer's note", because a slip that gets
  * written on gets kept.
  *
- * The ask is the ONE place system vocabulary is allowed in our own prose — it
+ * The ask is the ONE place system vocabulary is allowed in our own prose - it
  * is addressed to an officer, not to a farmer, and §16.5 governs farmer-facing
  * copy. The verdict sentence beside it stays in plain language so she can read
  * what she is carrying. */
@@ -47,13 +47,13 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
 
         <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 border-t border-ink pt-4">
           <dt className="text-label text-ink-soft">{resolve("slip.case_for", {}, locale)}</dt>
-          <dd className="text-body font-semibold text-ink">{f.name ?? "—"}</dd>
+          <dd className="text-body font-semibold text-ink">{f.name ?? "-"}</dd>
           <dt className="text-label text-ink-soft">{resolve("slip.village", {}, locale)}</dt>
-          <dd className="text-body text-ink">{f.village ?? "—"}{f.state ? ", " + f.state : ""}</dd>
+          <dd className="text-body text-ink">{f.village ?? "-"}{f.state ? ", " + f.state : ""}</dd>
           <dt className="text-label text-ink-soft">{resolve("carry.reg_no", {}, locale)}</dt>
-          <dd className="data text-ink">{f.reg_no ?? "—"}</dd>
+          <dd className="data text-ink">{f.reg_no ?? "-"}</dd>
           <dt className="text-label text-ink-soft">{resolve("slip.instalment", {}, locale)}</dt>
-          <dd className="data text-ink">{f.cycle ?? "—"} · ₹{f.amount ?? "—"}</dd>
+          <dd className="data text-ink">{f.cycle ?? "-"} · ₹{f.amount ?? "-"}</dd>
           {diagnosis.portalStatus && (
             <>
               <dt className="text-label text-ink-soft">{resolve("slip.portal_status", {}, locale)}</dt>

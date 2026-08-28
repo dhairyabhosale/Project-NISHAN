@@ -1,4 +1,4 @@
-/* E2 — the eight persona fixtures (§8.4).
+/* E2 - the eight persona fixtures (§8.4).
  *
  * The credential-shape suite at the bottom is the one that matters most: a
  * judge may hit /api/mock/* directly, and nothing it returns may resemble a
@@ -12,7 +12,7 @@ import { SYSTEM_CODES } from "../lib/types/systems";
 import { PERSONAS, findPersonaByIdentifier } from "../mocks/fixtures";
 import { readSnapshot } from "../mocks";
 
-describe("E2 — persona coverage (§8.4)", () => {
+describe("E2 - persona coverage (§8.4)", () => {
   it("seeds all eight personas with stable refs", () => {
     assert.equal(PERSONAS.length, 8);
     assert.deepEqual(PERSONAS.map((p) => p.ref), ["P1", "P2", "P3", "P4", "P5", "P6", "P7", "P8"]);
@@ -58,7 +58,7 @@ describe("E2 — persona coverage (§8.4)", () => {
   });
 });
 
-describe("E2 — deliberate cross-system inconsistency (§8.4)", () => {
+describe("E2 - deliberate cross-system inconsistency (§8.4)", () => {
   const byRef = (r: string) => PERSONAS.find((p) => p.ref === r)!;
 
   it("seeds benign name variance that B5 must NOT flag", () => {
@@ -79,7 +79,7 @@ describe("E2 — deliberate cross-system inconsistency (§8.4)", () => {
   });
 
   it("seeds real mismatches that B5 MUST flag", () => {
-    // Land never mutated after a death — a different person entirely.
+    // Land never mutated after a death - a different person entirely.
     assert.equal(byRef("P3").mLAND!.owner_name, "Murugesan Kandasamy");
     assert.equal(byRef("P8").mLAND!.owner_name, "Ramanathan Perumal");
     for (const ref of ["P3", "P8"]) {
@@ -102,7 +102,7 @@ describe("E2 — deliberate cross-system inconsistency (§8.4)", () => {
   });
 });
 
-describe("E2 — Selvi R. is the precedence case", () => {
+describe("E2 - Selvi R. is the precedence case", () => {
   const selvi = PERSONAS.find((p) => p.ref === "P8")!;
 
   it("has four blockers live at once", () => {
@@ -113,7 +113,7 @@ describe("E2 — Selvi R. is the precedence case", () => {
     assert.equal(selvi.mLAND!.seeded, false, "B5");
   });
 
-  it("must resolve to B1 alone — E3 is wrong if it returns anything else", () => {
+  it("must resolve to B1 alone - E3 is wrong if it returns anything else", () => {
     assert.deepEqual(selvi.expects, { blocker: "B1", reason: "REGISTRATION_REJECTED" });
   });
 
@@ -124,7 +124,7 @@ describe("E2 — Selvi R. is the precedence case", () => {
   });
 });
 
-describe("E2 — Anbu K. guards the MTS / Class IV / Group D carve-out", () => {
+describe("E2 - Anbu K. guards the MTS / Class IV / Group D carve-out", () => {
   const anbu = PERSONAS.find((p) => p.ref === "P4")!;
 
   it("is a government employee who is exempt from the exclusion", () => {
@@ -132,7 +132,7 @@ describe("E2 — Anbu K. guards the MTS / Class IV / Group D carve-out", () => {
     assert.equal(anbu.mPFMS!.is_mts_class_iv_group_d, true);
   });
 
-  it("must NOT be excluded — he returns B6a, not B2", () => {
+  it("must NOT be excluded - he returns B6a, not B2", () => {
     // If the B2 rule ever drops the carve-out, this flips to B2 and fails loudly.
     // A wrongly excluded farmer is the most expensive error this engine can make.
     assert.equal(anbu.expects.blocker, "B6a");
@@ -141,7 +141,7 @@ describe("E2 — Anbu K. guards the MTS / Class IV / Group D carve-out", () => {
 
 /* ── Credential-shape guarantee ──────────────────────────────────────────────
    Walks every string in every record of every persona. Nothing that leaves the
-   MGSL — including straight out of /api/mock/* — may look like a real
+   MGSL - including straight out of /api/mock/* - may look like a real
    credential. §12.3. --------------------------------------------------------*/
 
 /** Mask +91 dialling codes so a country code plus a 10-digit mobile is not
@@ -157,7 +157,7 @@ function everyString(value: unknown, out: string[] = []): string[] {
   return out;
 }
 
-describe("E2 — nothing resembles a real credential (§12.3)", () => {
+describe("E2 - nothing resembles a real credential (§12.3)", () => {
   const strings = PERSONAS.flatMap((p) => SYSTEM_CODES.flatMap((c) => everyString(p[c])));
 
   it("collected a meaningful number of strings to check", () => {

@@ -5,7 +5,7 @@ import type { Diagnosis } from "../lib/types/diagnosis";
 
 /**
  * The one-sentence answer. §11.7 S4: it is the largest text on the page and it
- * sits ABOVE the rail — the rail is evidence for a claim already made, not a
+ * sits ABOVE the rail - the rail is evidence for a claim already made, not a
  * puzzle the farmer has to solve.
  *
  * Exactly one `--stamp` element per screen (§11.3), and it belongs to the

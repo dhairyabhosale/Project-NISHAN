@@ -1,6 +1,6 @@
 "use client";
 
-/* All PM-KISAN services — a coverage page, not a front door.
+/* All PM-KISAN services - a coverage page, not a front door.
  *
  * The official Farmers Corner is sixteen undifferentiated tiles with names like
  * "Know Your Status" beside "Status of Self Registered Farmer". That is P4 and
@@ -9,7 +9,7 @@
  * language, with the three things we answer separated from the rest.
  *
  * The links are ordinary anchors to the official site. Nothing here fetches a
- * government host (§16.6) — a link the user chooses to follow is not the app
+ * government host (§16.6) - a link the user chooses to follow is not the app
  * contacting anything, and it is more honest than pretending we cover services
  * we do not. They point at the site root rather than guessed deep paths, since
  * verifying a deep link would mean requesting one. */

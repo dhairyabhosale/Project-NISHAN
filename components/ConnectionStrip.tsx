@@ -7,7 +7,7 @@ import { resolve } from "../content/resolve";
 /**
  * §11.8 connection states: online shows NOTHING, because silence is the correct
  * signal. The strip appears only when the connection is genuinely gone, and it
- * says what is true — the work is on the phone, not lost.
+ * says what is true - the work is on the phone, not lost.
  *
  * §15 cut the service worker and the outbox, so this makes no promise about
  * replaying anything. It reports the state and names where the work is.

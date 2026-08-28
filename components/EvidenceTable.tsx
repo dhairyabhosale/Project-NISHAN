@@ -6,7 +6,7 @@ import type { Diagnosis } from "../lib/types/diagnosis";
 /**
  * §11.7 S5: what each record says, and what it should say.
  *
- * Reader-optional by design — S4 must stand on its own without it. It exists so
+ * Reader-optional by design - S4 must stand on its own without it. It exists so
  * the verdict is checkable rather than asserted, and because §8.5 says this is
  * what drives the Visit Slip and the grievance draft for free: an officer can
  * read the field and the value and act without coming back to ask (§3.7).

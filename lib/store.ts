@@ -1,4 +1,4 @@
-/* E8 — case persistence. CLAUDE.md §8.6, §8.8.
+/* E8 - case persistence. CLAUDE.md §8.6, §8.8.
  *
  * IN-MEMORY ONLY. No SQLite, no file writes. Vercel's filesystem is read-only
  * and a write would take the live URL down, which R7 does not survive.
@@ -9,7 +9,7 @@
  *
  * The reference is a pure function of (beneficiaryRef, cycle). The engine is
  * deterministic (§8.5) and the fixtures are static, so a case can always be
- * RECONSTRUCTED from its reference alone — no shared state is needed between
+ * RECONSTRUCTED from its reference alone - no shared state is needed between
  * the request that created it and the request that reads it. On a serverless
  * host where the two may land on different instances, a store that allocated
  * random references would hand out links that 404 a second later.

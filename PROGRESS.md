@@ -70,6 +70,9 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       third-party script, JS budget) and deliberately NO national outline - a
       hand-drawn India is imprecise at its borders and an imprecise national
       boundary is not a small thing to publish. Offices labelled as demo.
-- [ ] 15. EM DASHES
+- [x] 15. EM DASHES - 546 replaced across 56 files (code, catalogues, docs,
+      comments, CLAUDE.md). Two tests keep them out: none in any catalogue value
+      in any of the four locales, and none in any source file under app,
+      components, content, engine, lib, mocks or tests.
 - [ ] 16. ABOUT THE SCHEME
 - [ ] 17. TESTIMONIALS

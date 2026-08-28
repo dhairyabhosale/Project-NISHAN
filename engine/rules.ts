@@ -1,4 +1,4 @@
-/* The six gate rules — CLAUDE.md §7.1, §7.2, §7.3.
+/* The six gate rules - CLAUDE.md §7.1, §7.2, §7.3.
  *
  * Precedence is B1 → B2 → B3 → B4 → B5 → B6, ordered by what must be true
  * first: you cannot be paid if you are not registered, or excluded, or
@@ -8,12 +8,12 @@
  * officer.
  *
  * Each rule declares the systems it needs. If one of those did not answer, the
- * caller returns INDETERMINATE rather than descending — §16.8, never guess past
+ * caller returns INDETERMINATE rather than descending - §16.8, never guess past
  * a gap. A wrong cause sends someone to the wrong office and costs a day's wage.
  *
  * NOT ONE USER-FACING WORD LIVES IN THIS FILE. Evidence carries codes and
  * values; the catalogue holds every sentence (§10, §16.4). Values marked `data`
- * are read straight from a mock system — a date, an amount, a name — and are
+ * are read straight from a mock system - a date, an amount, a name - and are
  * shown as-is, because translating a record would falsify it. */
 
 import type { SystemCode, SystemSnapshot, RecordBySystem } from "../lib/types/systems";

@@ -1,4 +1,4 @@
-/* Name comparison for B5 — CLAUDE.md §7.2, §8.4.
+/* Name comparison for B5 - CLAUDE.md §7.2, §8.4.
  *
  * This is the most consequential rule in the engine, because both failure modes
  * are expensive and they pull in opposite directions:
@@ -13,19 +13,19 @@
  * The distinction the rule has to draw is not "how similar are these strings"
  * but "are these the same person". Two devices carry that:
  *
- *   1. Transliteration folding. Indic names romanise inconsistently — Fatima /
+ *   1. Transliteration folding. Indic names romanise inconsistently - Fatima /
  *      Fathima, Lakshmi / Laxmi. Same name, different clerk.
  *   2. Initial expansion. "Ramesh P." and "Ramesh Pandian" differ because one
  *      form was abbreviated, not because the person differs.
  *
  * And one guard: the leading given name must be compatible. Sharing a surname
- * is not sharing an identity — land held by a father and claimed by a daughter
+ * is not sharing an identity - land held by a father and claimed by a daughter
  * shares "Murugesan" and is still a different person. That guard is what makes
  * Sarala and Selvi flag while Ramesh and Fatima do not. */
 
 /** Conservative romanisation folding. Every rule here collapses spellings that
  *  Indian clerks demonstrably use interchangeably. Nothing here merges two
- *  names that are actually different — that would be the expensive error. */
+ *  names that are actually different - that would be the expensive error. */
 function fold(token: string): string {
   let t = token.toLowerCase().replace(/[^a-z]/g, "");
   t = t.replace(/th/g, "t");   // Fathima  -> Fatima
@@ -79,7 +79,7 @@ export function compareNames(a: string, b: string): NameComparison {
   }
 
   // Guard: the leading given name must be compatible. A shared surname is not a
-  // shared identity — this is what separates an abbreviation from a different
+  // shared identity - this is what separates an abbreviation from a different
   // person, and it is the whole reason Sarala and Selvi flag.
   if (!tokensCompatible(ta[0], tb[0])) {
     return {

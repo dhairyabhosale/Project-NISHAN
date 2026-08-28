@@ -1,4 +1,4 @@
-/* E1 — Mock Government Systems Layer.
+/* E1 - Mock Government Systems Layer.
  *
  * Uses the Node built-in test runner and Node's native TypeScript stripping, so
  * this adds no dependency. §16.11 bars adding libraries, and a lockfile change
@@ -14,7 +14,7 @@ import { PERSONAS, findPersonaByIdentifier } from "../mocks/fixtures";
 
 const LAKSHMI = "P1";
 
-describe("MGSL — seven systems", () => {
+describe("MGSL - seven systems", () => {
   it("exposes exactly the seven systems in §8.4", () => {
     assert.deepEqual([...SYSTEM_CODES], ["mSCHEME", "mUIDAI", "mPFMS", "mNPCI", "mLAND", "mBANK", "mITD"]);
   });
@@ -44,7 +44,7 @@ describe("MGSL — seven systems", () => {
   });
 });
 
-describe("MGSL — identifier lookup (§11.7 S2)", () => {
+describe("MGSL - identifier lookup (§11.7 S2)", () => {
   it("resolves by Aadhaar, by registration number, and by internal ref", () => {
     assert.ok(findPersonaByIdentifier("9999 4412 8830"), "by Aadhaar");
     assert.ok(findPersonaByIdentifier("999944128830"), "by Aadhaar, unspaced");
@@ -65,7 +65,7 @@ describe("MGSL — identifier lookup (§11.7 S2)", () => {
   });
 });
 
-describe("MGSL — fault injection (§8.4)", () => {
+describe("MGSL - fault injection (§8.4)", () => {
   it("a timeout is unreachable, NOT an empty record", async () => {
     const r = await readSystem("mNPCI", LAKSHMI, { timeout: true });
     assert.equal(r.ok, false);
@@ -78,7 +78,7 @@ describe("MGSL — fault injection (§8.4)", () => {
     assert.equal(r.ok === false && r.status, 503);
   });
 
-  it("failureRate is reproducible for a given case — §8.5 determinism", async () => {
+  it("failureRate is reproducible for a given case - §8.5 determinism", async () => {
     const a = await mNPCI(LAKSHMI, { failureRate: 0.5 });
     const b = await mNPCI(LAKSHMI, { failureRate: 0.5 });
     assert.equal(a.ok, b.ok, "same case, same fault, same outcome");
@@ -104,7 +104,7 @@ describe("MGSL — fault injection (§8.4)", () => {
   });
 });
 
-describe("MGSL — fault spec parsing", () => {
+describe("MGSL - fault spec parsing", () => {
   it("applies a bare shorthand to all seven systems", () => {
     const m = parseFaultSpec("slow");
     assert.equal(Object.keys(m).length, 7);
@@ -137,7 +137,7 @@ describe("MGSL — fault spec parsing", () => {
   });
 });
 
-describe("MGSL — snapshots are copies, not the fixture store", () => {
+describe("MGSL - snapshots are copies, not the fixture store", () => {
   it("mutating a snapshot cannot corrupt later reads", async () => {
     const first = await readSystem("mPFMS", LAKSHMI);
     assert.ok(first.ok && first.record);

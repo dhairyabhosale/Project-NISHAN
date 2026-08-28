@@ -1,4 +1,4 @@
-/* E6 — verdict content.
+/* E6 - verdict content.
  *
  * §10: every user-facing string comes from a keyed content table. These tests
  * are what make that claim checkable rather than asserted. */
@@ -39,7 +39,7 @@ const TIER_1 = [
   "ACCOUNT_DORMANT", "CREDITED", "INCOME_TAX_PAYER", "REGISTRATION_REJECTED", "SYSTEM_UNREACHABLE"
 ];
 
-describe("E6 — every ReasonCode has a verdict", () => {
+describe("E6 - every ReasonCode has a verdict", () => {
   for (const r of REASON_CODES) {
     it(r + " has a sentence and a why", () => {
       const s = EN["verdict." + r + ".sentence"];
@@ -71,7 +71,7 @@ describe("E6 — every ReasonCode has a verdict", () => {
   });
 });
 
-describe("E6 — every evidence code resolves", () => {
+describe("E6 - every evidence code resolves", () => {
   const codesUsedBy = (prefix: string) =>
     Object.keys(EN).filter((k) => k.startsWith(prefix)).length;
 
@@ -103,7 +103,7 @@ describe("E6 — every evidence code resolves", () => {
   });
 });
 
-describe("E6 — no unfilled slot ever reaches a sentence (§10.3)", () => {
+describe("E6 - no unfilled slot ever reaches a sentence (§10.3)", () => {
   it("leaves no {slot} in any rendered verdict, for any persona", async () => {
     for (const p of PERSONAS) {
       const v = renderVerdict(await diagnoseRef(p.ref));
@@ -136,7 +136,7 @@ describe("E6 — no unfilled slot ever reaches a sentence (§10.3)", () => {
   });
 });
 
-describe("E6 — the overdue variant (§10.5)", () => {
+describe("E6 - the overdue variant (§10.5)", () => {
   it("Anbu's June date is not shown as a promise in August", async () => {
     const d = await diagnoseRef("P4");
     assert.equal(d.primaryBlocker, "B6a");
@@ -144,7 +144,7 @@ describe("E6 — the overdue variant (§10.5)", () => {
 
     const v = renderVerdict(d);
     assert.equal(v.overdue, true);
-    // It must name how long, and say what to do — not repeat a stale promise.
+    // It must name how long, and say what to do - not repeat a stale promise.
     assert.match(v.sentence, /\d+ days ago/);
     assert.equal(/is on its way/.test(v.sentence), false, "no stale promise");
     assert.match(v.why, /Block Agriculture Officer/);
@@ -173,7 +173,7 @@ describe("E6 — the overdue variant (§10.5)", () => {
   });
 });
 
-describe("E6 — §10.5 copy rules, enforced", () => {
+describe("E6 - §10.5 copy rules, enforced", () => {
   const verdictValues = Object.entries(EN).filter(([k]) => k.startsWith("verdict.") || k.startsWith("evidence.note."));
 
   it("uses no system vocabulary in our prose", () => {
@@ -182,7 +182,7 @@ describe("E6 — §10.5 copy rules, enforced", () => {
   });
 
   it("never says soon, shortly, or please wait", () => {
-    // §10.5: numbers are always concrete — a date, an amount, a day count.
+    // §10.5: numbers are always concrete - a date, an amount, a day count.
     const VAGUE = /\b(soon|shortly|in a while|please wait|as soon as possible|kindly)\b/i;
     for (const [k, v] of verdictValues) assert.equal(VAGUE.test(v), false, k + ": " + v);
   });
@@ -220,7 +220,7 @@ describe("E6 — §10.5 copy rules, enforced", () => {
   });
 });
 
-describe("E6 — no placeholder ever reaches a screen (§10.2)", () => {
+describe("E6 - no placeholder ever reaches a screen (§10.2)", () => {
   const HI = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.hi.json"), "utf8")) as Record<string, string>;
   const TA = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.ta.json"), "utf8")) as Record<string, string>;
 
@@ -238,7 +238,7 @@ describe("E6 — no placeholder ever reaches a screen (§10.2)", () => {
     }
   });
 
-  it("falls back silently — no apology injected into the sentence", () => {
+  it("falls back silently - no apology injected into the sentence", () => {
     // The selector already says the language is unresolved. Saying it again
     // inside every sentence would be twenty apologies per screen.
     const key = Object.keys(EN).find((k) => HI[k]?.startsWith("TODO_"))!;
@@ -253,7 +253,7 @@ describe("E6 — no placeholder ever reaches a screen (§10.2)", () => {
   });
 });
 
-describe("E7 — Fix Paths (§10.4)", () => {
+describe("E7 - Fix Paths (§10.4)", () => {
   it("authors the three the demo needs", () => {
     for (const r of ["MOBILE_NOT_LINKED", "MAPPER_INACTIVE", "LAND_NAME_MISMATCH"] as const) {
       assert.ok(fixPathFor(r), r + " has no Fix Path");
@@ -318,10 +318,10 @@ describe("E7 — Fix Paths (§10.4)", () => {
   });
 });
 
-describe("E7 — the Visit Slip ask fills from real case facts", () => {
+describe("E7 - the Visit Slip ask fills from real case facts", () => {
   it("uses only slots Diagnosis.facts actually carries", async () => {
-    // The slip is the artifact someone carries to an office. A hole in it —
-    // "correct the owner name from — to ..." — wastes the trip it was printed
+    // The slip is the artifact someone carries to an office. A hole in it -
+    // "correct the owner name from - to ..." - wastes the trip it was printed
     // for, and no type checks a template string.
     const factKeys = new Set<string>();
     for (const p of PERSONAS) {
@@ -349,7 +349,7 @@ describe("E7 — the Visit Slip ask fills from real case facts", () => {
   });
 });
 
-describe("E6 — Hindi and Marathi are fully resolved (§10.2)", () => {
+describe("E6 - Hindi and Marathi are fully resolved (§10.2)", () => {
   const MR = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.mr.json"), "utf8")) as Record<string, string>;
   const HINDI = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.hi.json"), "utf8")) as Record<string, string>;
 
@@ -368,7 +368,7 @@ describe("E6 — Hindi and Marathi are fully resolved (§10.2)", () => {
 
   it("preserves every slot, so a translated sentence cannot lose its value", () => {
     // A translator dropping {amount} would render an em dash where a rupee
-    // figure belongs — a silent hole rather than a visible failure.
+    // figure belongs - a silent hole rather than a visible failure.
     for (const [name, cat] of [["hi", HINDI], ["mr", MR]] as const) {
       for (const [k, v] of Object.entries(EN)) {
         const want = (v.match(/\{(\w+)\}/g) ?? []).sort();
@@ -395,5 +395,41 @@ describe("E6 — Hindi and Marathi are fully resolved (§10.2)", () => {
     const out = resolve("entry.headline" as CatalogueKey, {}, "ta");
     assert.ok(out.length > 0);
     assert.equal(out.startsWith("TODO_"), false);
+  });
+});
+
+describe("Typography - no em dash anywhere in the project", () => {
+  const EM = "\u2014";
+
+  it("appears in no catalogue value, in any locale", () => {
+    for (const loc of ["en", "hi", "ta", "mr"]) {
+      const cat = JSON.parse(
+        fs.readFileSync(path.join(ROOT, "content", "catalogue." + loc + ".json"), "utf8")
+      ) as Record<string, string>;
+      for (const [k, v] of Object.entries(cat)) {
+        assert.equal(v.includes(EM), false, loc + " " + k + " contains an em dash: " + v);
+      }
+    }
+  });
+
+  it("appears in no source file either", () => {
+    // The rule is project-wide, so a comment or a JSX literal counts too.
+    const roots = ["app", "components", "content", "engine", "lib", "mocks", "tests"];
+    const exts = new Set([".ts", ".tsx", ".css", ".json", ".svg"]);
+    const offenders: string[] = [];
+
+    const walk = (dir: string) => {
+      for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, entry.name);
+        if (entry.isDirectory()) { walk(full); continue; }
+        if (!exts.has(path.extname(entry.name))) continue;
+        if (fs.readFileSync(full, "utf8").includes(EM)) offenders.push(full);
+      }
+    };
+    for (const r of roots) {
+      const dir = path.join(ROOT, r);
+      if (fs.existsSync(dir)) walk(dir);
+    }
+    assert.deepEqual(offenders, [], "em dash found in: " + offenders.join(", "));
   });
 });

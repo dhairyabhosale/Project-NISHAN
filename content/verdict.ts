@@ -1,4 +1,4 @@
-/* Verdict and evidence rendering — CLAUDE.md §10.
+/* Verdict and evidence rendering - CLAUDE.md §10.
  *
  * The engine decides WHAT is true; this decides HOW it is said. Every word
  * comes from the catalogue, keyed on ReasonCode, so the claim that no model
@@ -41,7 +41,7 @@ export function daysBetween(fromIso: string, toIso: string): number {
  *
  * §10.5 requires every wait to state what happens if it does not end. A payment
  * released on 20 June with an expected-by of 27 June, shown to someone in
- * August, is not "on its way" — telling her so is worse than telling her
+ * August, is not "on its way" - telling her so is worse than telling her
  * nothing, because it invites her to keep waiting on a payment that is stuck.
  */
 export function isOverdue(diagnosis: Diagnosis): boolean {

@@ -1,6 +1,6 @@
 "use client";
 
-/* S10 — What's real. CLAUDE.md §12.2.
+/* S10 - What's real. CLAUDE.md §12.2.
  *
  * Reads as a spec sheet, not an apology. Several rows are unflattering on
  * purpose: a reviewer who finds one honest row trusts the rest, and overstating

@@ -1,4 +1,4 @@
-/* S7 — Visit Slip. CLAUDE.md §11.7. */
+/* S7 - Visit Slip. CLAUDE.md §11.7. */
 
 import { getCase } from "../../../../../lib/store";
 import { CaseNotFound } from "../../CaseNotFound";

@@ -1,7 +1,7 @@
 /* Value formatting shared by the rules and the orchestrator.
  *
  * Kept in its own module so engine/rules.ts and engine/diagnose.ts do not
- * import each other — diagnose already imports RULES, so a formatter living
+ * import each other - diagnose already imports RULES, so a formatter living
  * there would close a require cycle and, under CommonJS, hand one side an
  * undefined binding depending on which module loaded first. */
 

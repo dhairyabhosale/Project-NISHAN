@@ -5,7 +5,7 @@ import type { Locale } from "../lib/content";
  * Where the ₹2,000 is standing.
  *
  * §11.5: the only 999px radius in the product. Near-square corners read as
- * document, so the single round element is the money — that is the whole
+ * document, so the single round element is the money - that is the whole
  * reason the rule exists, and it is why nothing else may borrow it.
  *
  * §11.5 motion: this is the ONE orchestrated moment in the build. It settles

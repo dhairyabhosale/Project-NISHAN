@@ -1,4 +1,4 @@
-/* The language set pmkisan.gov.in offers — CLAUDE.md §10.2.
+/* The language set pmkisan.gov.in offers - CLAUDE.md §10.2.
  *
  * The SELECTOR covers the full set. The TRANSLATIONS do not: English is the
  * only resolved locale for Stage 1 and every other option says so in the
@@ -15,7 +15,7 @@ export interface Language {
   code: string;
   /** Name in English, so a helper scanning the list can find it. */
   english: string;
-  /** Endonym, in its own script — how a speaker recognises her own language. */
+  /** Endonym, in its own script - how a speaker recognises her own language. */
   endonym: string;
   /** True only where every string resolves. */
   resolved: boolean;

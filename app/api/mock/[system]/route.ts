@@ -1,10 +1,10 @@
-/* Mock Government Systems Layer — HTTP surface.
+/* Mock Government Systems Layer - HTTP surface.
  *
  * §8.3 puts the MGSL in its own route namespace with its own fault middleware.
  * The diagnosis engine calls the readers in-process rather than over HTTP (a
  * network hop inside one deployable would only add latency against §11.9's
  * 400ms budget). This surface exists so the seven systems are demonstrably
- * seven independent systems — the shot §17 calls for at 1:00–1:15 — and so a
+ * seven independent systems - the shot §17 calls for at 1:00–1:15 - and so a
  * fault can be triggered by URL in the video now that NSH-405 is cut.
  *
  * §16.6: no live government system is contacted here. Every response is
@@ -25,7 +25,7 @@ function isSystemCode(v: string): v is SystemCode {
   return (SYSTEM_CODES as readonly string[]).includes(v);
 }
 
-/** §12.6 — reject cross-origin callers. Same-origin requests from the app send
+/** §12.6 - reject cross-origin callers. Same-origin requests from the app send
  *  no Origin header, or send our own. */
 function sameOrigin(request: Request, url: URL): boolean {
   const origin = request.headers.get("origin");

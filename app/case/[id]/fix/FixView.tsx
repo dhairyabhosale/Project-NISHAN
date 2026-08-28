@@ -1,9 +1,9 @@
 "use client";
 
-/* S6 — Fix Path. CLAUDE.md §11.7.
+/* S6 - Fix Path. CLAUDE.md §11.7.
  *
  * The recommended route is expanded; the others sit under "Other ways to do
- * this" — and a route that cannot work for this person is shown RULED OUT WITH
+ * this" - and a route that cannot work for this person is shown RULED OUT WITH
  * THE REASON, never hidden. That is §10.4, and it is the most useful thing on
  * the screen: the official portal offers Lakshmi an OTP by default, which is
  * exactly the one route that cannot reach her.
@@ -39,7 +39,7 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
       const raw = window.localStorage.getItem(storageKey);
       if (raw) setDone(JSON.parse(raw) as string[]);
     } catch {
-      /* private mode or storage disabled — the screen still works, progress
+      /* private mode or storage disabled - the screen still works, progress
          just does not persist. Never let storage take the page down. */
     }
     setLoaded(true);

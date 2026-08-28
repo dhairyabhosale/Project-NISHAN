@@ -1,4 +1,4 @@
-/* E4 — one taxonomy, and the real portal vocabulary.
+/* E4 - one taxonomy, and the real portal vocabulary.
  *
  * `lib/types/blocker.ts`, `engine/precedence.ts` and `content/statusCodes.json`
  * are deleted. `lib/types/diagnosis.ts` is the sole authority. These tests stop
@@ -28,7 +28,7 @@ const PORTAL_STRINGS = [
   "Payment Success"
 ];
 
-describe("E4 — the deleted taxonomy stays deleted", () => {
+describe("E4 - the deleted taxonomy stays deleted", () => {
   for (const f of ["lib/types/blocker.ts", "engine/precedence.ts", "content/statusCodes.json"]) {
     it("has no " + f, () => {
       assert.equal(fs.existsSync(path.join(ROOT, f)), false, f + " is back");
@@ -55,7 +55,7 @@ describe("E4 — the deleted taxonomy stays deleted", () => {
   });
 });
 
-describe("E4 — the real portal vocabulary (§3.2)", () => {
+describe("E4 - the real portal vocabulary (§3.2)", () => {
   it("every persona carries one of the seven real strings", () => {
     for (const p of PERSONAS) {
       assert.ok(PORTAL_STRINGS.includes(p.mSCHEME!.status_string), p.label + ": " + p.mSCHEME!.status_string);
@@ -90,7 +90,7 @@ describe("E4 — the real portal vocabulary (§3.2)", () => {
   });
 });
 
-describe("E4 — the Money Rail runs on §11.2", () => {
+describe("E4 - the Money Rail runs on §11.2", () => {
   it("has exactly seven gates", () => {
     assert.equal(RAIL_GATES.length, 7);
     assert.deepEqual([...RAIL_GATES], [
@@ -132,7 +132,7 @@ describe("E4 — the Money Rail runs on §11.2", () => {
   });
 });
 
-describe("E4 — catalogue integrity", () => {
+describe("E4 - catalogue integrity", () => {
   it("keeps identical key sets across all three locales", () => {
     const [en, hi, ta] = ["en", "hi", "ta"].map((l) => Object.keys(catalogue(l)).sort());
     assert.deepEqual(hi, en);

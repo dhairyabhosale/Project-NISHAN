@@ -1,4 +1,4 @@
-/* E3 — the diagnosis engine.
+/* E3 - the diagnosis engine.
  *
  * §8.1 calls this the product; §15 says it may never be cut. The properties
  * asserted here are the ones a wrong answer would cost someone a day's wage
@@ -21,7 +21,7 @@ async function diagnoseRef(ref: string, faults = {}) {
   return diagnose(await readSnapshot(ref, faults), OPTS);
 }
 
-describe("E3 — every persona returns its expected verdict", () => {
+describe("E3 - every persona returns its expected verdict", () => {
   for (const p of PERSONAS) {
     it(p.label + " → " + p.expects.blocker + " / " + p.expects.reason, async () => {
       const d = await diagnoseRef(p.ref);
@@ -32,7 +32,7 @@ describe("E3 — every persona returns its expected verdict", () => {
   }
 });
 
-describe("E3 — precedence stops at the first blocking rule (§7.1)", () => {
+describe("E3 - precedence stops at the first blocking rule (§7.1)", () => {
   it("Selvi returns B1 alone, though four lower gates are also shut", async () => {
     const d = await diagnoseRef("P8");
     assert.equal(d.primaryBlocker, "B1");
@@ -60,7 +60,7 @@ describe("E3 — precedence stops at the first blocking rule (§7.1)", () => {
   });
 });
 
-describe("E3 — the MTS / Class IV / Group D carve-out (§7.2 B2)", () => {
+describe("E3 - the MTS / Class IV / Group D carve-out (§7.2 B2)", () => {
   it("Anbu is a government employee and is NOT excluded", async () => {
     const d = await diagnoseRef("P4");
     assert.equal(d.primaryBlocker, "B6a", "must not be B2");
@@ -77,7 +77,7 @@ describe("E3 — the MTS / Class IV / Group D carve-out (§7.2 B2)", () => {
   });
 });
 
-describe("E3 — B5 tells a spelling apart from a different person (§8.4)", () => {
+describe("E3 - B5 tells a spelling apart from a different person (§8.4)", () => {
   it("does not flag benign variance", () => {
     for (const [a, b] of [
       ["Lakshmi Devi", "Lakshmi D."],
@@ -114,7 +114,7 @@ describe("E3 — B5 tells a spelling apart from a different person (§8.4)", () 
   });
 });
 
-describe("E3 — INDETERMINATE never guesses past a gap (§16.8)", () => {
+describe("E3 - INDETERMINATE never guesses past a gap (§16.8)", () => {
   it("returns B0 when the first gate cannot be judged", async () => {
     const d = await diagnoseRef("P1", { mSCHEME: { timeout: true } });
     assert.equal(d.primaryBlocker, "B0");
@@ -150,7 +150,7 @@ describe("E3 — INDETERMINATE never guesses past a gap (§16.8)", () => {
   });
 });
 
-describe("E3 — contract and determinism (§8.5)", () => {
+describe("E3 - contract and determinism (§8.5)", () => {
   it("is deterministic across repeated runs", async () => {
     for (const p of PERSONAS) {
       const a = await diagnoseRef(p.ref);
@@ -200,7 +200,7 @@ describe("E3 — contract and determinism (§8.5)", () => {
   });
 });
 
-describe("E3 — no system vocabulary reaches a farmer (§16.5)", () => {
+describe("E3 - no system vocabulary reaches a farmer (§16.5)", () => {
   // Evidence renders on S5, so the ban applies to it.
   const BANNED = /\b(npci|fto|mapper|seeding|seeded|dbt|pfms|rft)\b/i;
 

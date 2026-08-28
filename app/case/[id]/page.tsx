@@ -1,11 +1,11 @@
-/* S4 — Diagnosis. CLAUDE.md §11.7. This screen is 60% of the demo.
+/* S4 - Diagnosis. CLAUDE.md §11.7. This screen is 60% of the demo.
  *
  * A server component: the verdict is computed on the server from the real
  * engine, so the phone downloads an answer rather than the machinery to
  * compute one. §11.9 budgets 150KB of JS on the primary path.
  *
  * `?fault=` reaches the MGSL from here (§8.4). NSH-405, the fault switch UI, is
- * cut — the capability is triggered by URL in the video instead. */
+ * cut - the capability is triggered by URL in the video instead. */
 
 import { getCase, openCustomCase } from "../../../lib/store";
 import { decodeSpec, personaForSpec } from "../../../lib/demoCase";

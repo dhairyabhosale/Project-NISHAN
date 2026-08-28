@@ -1,4 +1,4 @@
-/* The diagnosis engine — CLAUDE.md §8.5.
+/* The diagnosis engine - CLAUDE.md §8.5.
  *
  * §8.1: "The UI is the thin part. The Mock Government Systems Layer and the
  * Diagnosis Engine are the product." §15: the engine may never be cut.
@@ -7,7 +7,7 @@
  *
  *   DETERMINISTIC   Same inputs, same output, always. No randomness, no clock
  *                   read outside the injected `now`, and no language model
- *                   anywhere in this path — not a heuristic, not a tiebreak,
+ *                   anywhere in this path - not a heuristic, not a tiebreak,
  *                   not a confidence boost (§16.2).
  *   ONE VERDICT     Fixed precedence B1→B5, then payment state. The first
  *                   blocking rule wins and evaluation STOPS. The farmer sees
@@ -28,7 +28,7 @@ import { formatRupees } from "./format";
 import type { RuleHit } from "./rules";
 
 /** Slot values for the content layer (§10.3). Everything here is read from a
- *  mock system of record — nothing is inferred, predicted or authored. */
+ *  mock system of record - nothing is inferred, predicted or authored. */
 function buildFacts(snapshot: SystemSnapshot, opts: DiagnoseOptions, hit: RuleHit | null): Record<string, string> {
   const scheme = snapshot.mSCHEME.ok ? snapshot.mSCHEME.record : null;
   const uidai = snapshot.mUIDAI.ok ? snapshot.mUIDAI.record : null;
@@ -77,7 +77,7 @@ function buildFacts(snapshot: SystemSnapshot, opts: DiagnoseOptions, hit: RuleHi
 /**
  * Lower-precedence blockers that are ALSO live.
  *
- * Recorded for the grievance and for an officer reading the case — never shown
+ * Recorded for the grievance and for an officer reading the case - never shown
  * as the verdict, and never allowed to influence it. Gathered only from systems
  * that actually answered.
  *
@@ -152,7 +152,7 @@ export function diagnose(snapshot: SystemSnapshot, opts: DiagnoseOptions): Diagn
     const rule = RULES[i];
 
     // §16.8. A system that did not answer is not the same as a system that
-    // answered "nothing here" — the SystemResult split from E1 is what makes
+    // answered "nothing here" - the SystemResult split from E1 is what makes
     // this check possible, and it is the only thing standing between an honest
     // "we do not know" and a confident wrong answer.
     const missing = rule.requires.filter((c) => !snapshot[c].ok);

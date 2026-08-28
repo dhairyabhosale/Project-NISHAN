@@ -1,4 +1,4 @@
-/* The diagnosis contract — CLAUDE.md §8.5.
+/* The diagnosis contract - CLAUDE.md §8.5.
  *
  * This is the canonical blocker taxonomy (§7.2, §7.3). `lib/types/blocker.ts`
  * holds an older, incompatible one that the case screen still reads through
@@ -15,7 +15,7 @@ export type BlockerCode = "B0" | "B1" | "B2" | "B3" | "B4" | "B5" | "B6a" | "B6b
 export const PRECEDENCE: readonly BlockerCode[] = ["B1", "B2", "B3", "B4", "B5"];
 
 /**
- * §7.3. The sub-cause, not the blocker, decides which fix route works — content
+ * §7.3. The sub-cause, not the blocker, decides which fix route works - content
  * is keyed on this. "Your e-KYC is pending" is useless; "the phone number on
  * your Aadhaar is one you no longer use, so the code can never reach you" is the
  * product.
@@ -51,7 +51,7 @@ export type Confidence = "certain" | "indeterminate";
  * Evidence carries CODES AND VALUES ONLY. Every word a user reads is resolved
  * from the catalogue. S5 renders evidence, so if its prose lived in the engine
  * then "zero hardcoded user-facing strings" (§16.4) would be false the moment
- * that screen opened — and that claim is what the entire honesty story rests
+ * that screen opened - and that claim is what the entire honesty story rests
  * on. Data (a date, an amount, a name read from a mock system) passes through
  * as a value; everything else is a key. */
 
@@ -96,8 +96,8 @@ export type EvidenceNoteCode =
 /**
  * A value shown in the evidence table.
  *
- * `code` is a catalogue key — words we author. `data` is a value read straight
- * from a mock system of record — a date, an amount, a name — and is shown as-is
+ * `code` is a catalogue key - words we author. `data` is a value read straight
+ * from a mock system of record - a date, an amount, a name - and is shown as-is
  * because translating it would falsify the record.
  */
 export type EvidenceValue =
@@ -147,7 +147,7 @@ export interface DiagnoseOptions {
 /** Bumped whenever a rule changes. Stamped on every case (§8.5, §8.8). */
 export const RULESET_VERSION = "1.0.0";
 
-/* ── The Money Rail — §11.2 ──────────────────────────────────────────────── */
+/* ── The Money Rail - §11.2 ──────────────────────────────────────────────── */
 
 /** Seven gates, in pipeline order. */
 export type RailGateCode =
@@ -168,7 +168,7 @@ export const RAIL_GATES: readonly RailGateCode[] = [
  * physically stops. The rail shows the pipeline; the engine shows what to fix.
  *
  * Returns the index of the shut gate. The marker sits immediately before it.
- * B6c returns RAIL_GATES.length — every gate cleared, marker at the bottom.
+ * B6c returns RAIL_GATES.length - every gate cleared, marker at the bottom.
  */
 export function stoppedAt(blocker: BlockerCode): number {
   switch (blocker) {

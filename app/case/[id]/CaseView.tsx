@@ -54,7 +54,7 @@ export function CaseView({
         </div>
       </div>
 
-      {/* §11.5 — primary action pinned bottom, 56px, thumb reach. */}
+      {/* §11.5 - primary action pinned bottom, 56px, thumb reach. */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4">
         <div className="shell">
           <Link

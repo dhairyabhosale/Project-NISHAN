@@ -1,4 +1,4 @@
-/* Mock Government Systems Layer — the seven readers.
+/* Mock Government Systems Layer - the seven readers.
  *
  * CLAUDE.md §8.1: "The UI is the thin part. The Mock Government Systems Layer
  * and the Diagnosis Engine are the product." Seven independently modelled,
@@ -53,7 +53,7 @@ export async function readSystem<S extends SystemCode>(
     return { system, ok: false, error: "HTTP_ERROR", status: fault.forceStatus, observedAt: now() };
   }
 
-  // 3. Random-looking failure that is in fact reproducible for a given case —
+  // 3. Random-looking failure that is in fact reproducible for a given case -
   //    §8.5 requires same inputs → same output, always.
   if (fault.failureRate && fault.failureRate > 0) {
     if (seededUnitInterval(system + "|" + reference) < fault.failureRate) {
@@ -70,7 +70,7 @@ export async function readSystem<S extends SystemCode>(
   const observedAt = fault.staleBy ? shiftBack(now(), fault.staleBy) : now();
 
   // Hand out a COPY, never the fixture itself. A caller that mutates a snapshot
-  // — a rule experimenting, a route handler, a test — would otherwise corrupt
+  // - a rule experimenting, a route handler, a test - would otherwise corrupt
   // the shared persona store for the life of the process, and every later read
   // would silently return different data. That breaks the determinism §8.5
   // requires, and it breaks it invisibly.

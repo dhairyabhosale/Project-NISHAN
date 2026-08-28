@@ -6,7 +6,7 @@ import type { Locale } from "../lib/content";
  *
  * §11.7 S4 keeps this deliberately: the farmer can match what she already saw
  * on pmkisan.gov.in and trust we mean the same case. It is the ONE place system
- * vocabulary is allowed on a farmer-facing screen — "FTO Generated, Payment
+ * vocabulary is allowed on a farmer-facing screen - "FTO Generated, Payment
  * Under Process" is the government's own wording, quoted, not our prose. §16.5
  * governs what we write, not what we quote.
  *

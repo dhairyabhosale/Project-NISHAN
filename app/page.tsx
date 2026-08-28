@@ -1,9 +1,9 @@
 "use client";
 
-/* S1 — Entry. CLAUDE.md §11.7.
+/* S1 - Entry. CLAUDE.md §11.7.
  *
  * Job: make a person who cannot read English understand, in three seconds, that
- * this answers one question — and start.
+ * this answers one question - and start.
  *
  * There is NO case-ID field here, and that absence is the product. Demanding a
  * reference the farmer does not hold is P2, the portal's core failure and the
@@ -85,7 +85,7 @@ export default function EntryPage() {
 
   return (
     <main>
-      {/* Hero band — anchors the page. No carousel: it would hide content
+      {/* Hero band - anchors the page. No carousel: it would hide content
           behind a timer on the one screen that has three seconds to be
           understood. No photograph: §11.9 budgets zero images on the primary
           path, and photographs fail first on 2G. */}
@@ -150,7 +150,7 @@ export default function EntryPage() {
         </div>
       </section>
 
-      {/* Published figures reproduced, never computed by us — §18. */}
+      {/* Published figures reproduced, never computed by us - §18. */}
       <section className="relative isolate overflow-hidden py-14">
         <FieldBackdrop className="text-teal-deep" />
         <div className="shell relative">

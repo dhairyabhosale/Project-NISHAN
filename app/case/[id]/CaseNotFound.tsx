@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLocale } from "../../../components/LocaleProvider";
 import { resolve } from "../../../content/resolve";
 
-/** An empty state gets the same care as the happy path — a judge will find it. */
+/** An empty state gets the same care as the happy path - a judge will find it. */
 export function CaseNotFound() {
   const { locale } = useLocale();
   return (

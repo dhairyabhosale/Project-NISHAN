@@ -10,7 +10,7 @@ import { useLocale } from "./LocaleProvider";
 import { resolve } from "../content/resolve";
 import type { CatalogueKey } from "../lib/content";
 
-/* Site chrome — header, footer, and the two global affordances.
+/* Site chrome - header, footer, and the two global affordances.
  *
  * The header carries the official portal's whole service surface, but REGROUPED
  * by what a person wants to do rather than by each service's official name.
@@ -20,7 +20,7 @@ import type { CatalogueKey } from "../lib/content";
  *
  * The §12.7 disclosure band now sits at the end of the footer, by instruction.
  * A chip stays in the header so a reviewer cannot use the whole site without
- * seeing that this is a prototype — the footer is a scroll away, and that
+ * seeing that this is a prototype - the footer is a scroll away, and that
  * control is the one the honesty criterion turns on. */
 
 const MENU: { label: CatalogueKey; items: { label: CatalogueKey; href: string }[] }[] = [

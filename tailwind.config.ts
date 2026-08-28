@@ -2,20 +2,20 @@ import type { Config } from "tailwindcss";
 
 // Colours are CLAUDE.md §11.3. Each name maps to a CSS custom property defined
 // in app/globals.css so the token table has exactly one source of truth.
-// Usage rules (which pairs are legible) are binding — see §11.3.
+// Usage rules (which pairs are legible) are binding - see §11.3.
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        // theme — what the product looks like
+        // theme - what the product looks like
         "teal-deep": "var(--teal-deep)",
         green: "var(--green)",
         "green-soft": "var(--green-soft)",
         "cyan-pale": "var(--cyan-pale)",
         paper: "var(--white)",
 
-        // functional — one job each, never decorative
+        // functional - one job each, never decorative
         ink: "var(--ink)",
         "ink-soft": "var(--ink-soft)",
         stop: "var(--stop)",
@@ -35,7 +35,7 @@ const config: Config = {
         mono: ["var(--font-plex-mono)", "ui-monospace", "monospace"]
       },
       borderRadius: {
-        // §11.5 — near-square reads as document; 999px is the money marker only
+        // §11.5 - near-square reads as document; 999px is the money marker only
         card: "2px",
         marker: "999px"
       }

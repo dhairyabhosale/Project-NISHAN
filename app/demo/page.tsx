@@ -1,4 +1,4 @@
-/* S11 — Demo controls. CLAUDE.md §11.7.
+/* S11 - Demo controls. CLAUDE.md §11.7.
  *
  * Visibly a demo surface, not part of the citizen product. Eight personas, each
  * naming the blocker it demonstrates, so a reviewer can reach any branch of the

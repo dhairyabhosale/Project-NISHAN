@@ -3,7 +3,7 @@ import { RailGate, type GateState } from "./RailGate";
 import type { CatalogueKey, Locale } from "../lib/content";
 import { resolve } from "../content/resolve";
 
-/* The Money Rail — CLAUDE.md §11.2. The one memorable thing; everything else on
+/* The Money Rail - CLAUDE.md §11.2. The one memorable thing; everything else on
  * screen is quiet.
  *
  * Seven gates in pipeline order, labels from the content layer. The line runs
@@ -12,7 +12,7 @@ import { resolve } from "../content/resolve";
  *
  * Why a rail and not a grid of six flags: flags are the current portal's
  * information architecture restated prettily. The rail encodes what flags
- * cannot — that these are SEQUENTIAL gates, that everything above the stop
+ * cannot - that these are SEQUENTIAL gates, that everything above the stop
  * already worked, and that exactly one thing is in the way. */
 
 const GATE_KEYS: CatalogueKey[] = [
@@ -40,7 +40,7 @@ export function MoneyRail({
   credited?: boolean;
 }) {
   // B6c: every gate cleared, so the marker sits at the bottom in the cleared
-  // state rather than against a shut gate. §11.2 — this is what makes "your
+  // state rather than against a shut gate. §11.2 - this is what makes "your
   // money arrived and nobody told you" land.
   const markerAt = credited ? gates.length - 1 : blockedAtIndex;
 

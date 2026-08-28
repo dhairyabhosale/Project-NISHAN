@@ -1,4 +1,4 @@
-/* Mock Government Systems Layer — record shapes.
+/* Mock Government Systems Layer - record shapes.
  *
  * Fields follow CLAUDE.md §8.4. Every identifier uses a synthetic format from
  * §12.3 that is structurally invalid as a real credential, so nothing here can
@@ -47,7 +47,7 @@ export interface SchemeRecord {
 }
 
 export interface Instalment {
-  /** e.g. "2026-23" — the 23rd instalment, released 20 Jun 2026 (§3.1). */
+  /** e.g. "2026-23" - the 23rd instalment, released 20 Jun 2026 (§3.1). */
   cycle: string;
   amount: number;
   released_on: string;
@@ -55,12 +55,12 @@ export interface Instalment {
 }
 
 export interface UidaiRecord {
-  /** §12.3 format: 9999 XXXX XXXX — fails the real Verhoeff checksum by construction. */
+  /** §12.3 format: 9999 XXXX XXXX - fails the real Verhoeff checksum by construction. */
   aadhaar_ref: string;
   name: string;
   dob: string;
   gender: "F" | "M" | "O";
-  /** §12.3 format: +91 5XXXXXXXXX — the 5-series is not an allocated Indian series.
+  /** §12.3 format: +91 5XXXXXXXXX - the 5-series is not an allocated Indian series.
    *  null means no mobile is linked, which is why OTP e-KYC can never arrive (§7.3). */
   linked_mobile: string | null;
   ekyc_state: "COMPLETE" | "PENDING" | "NOT_STARTED";
@@ -73,7 +73,7 @@ export interface PfmsRecord {
   govt_employee_flag: boolean;
   /** Monthly pension in rupees. §12.8/§3 exclusion threshold is 10,000. */
   pension_amount?: number;
-  /** True for Multi-Tasking Staff / Class IV / Group D — EXCLUDED FROM THE
+  /** True for Multi-Tasking Staff / Class IV / Group D - EXCLUDED FROM THE
    *  EXCLUSION. This carve-out is what makes a wrong B2 flag contestable. */
   is_mts_class_iv_group_d?: boolean;
 }
@@ -86,7 +86,7 @@ export interface NpciRecord {
 
 export interface LandRecord {
   khata_id: string;
-  /** Deliberately spelled differently from UidaiRecord.name for some personas —
+  /** Deliberately spelled differently from UidaiRecord.name for some personas -
    *  that mismatch is the B5 signal, and it is what really happens (§8.4). */
   owner_name: string;
   /** Acres. */
@@ -97,9 +97,9 @@ export interface LandRecord {
 }
 
 export interface BankRecord {
-  /** §12.3 format: MOCKACC-#### — non-numeric, cannot be pasted anywhere real. */
+  /** §12.3 format: MOCKACC-#### - non-numeric, cannot be pasted anywhere real. */
   account_ref: string;
-  /** §12.3 format: MOCK0000001 — not a real bank code. */
+  /** §12.3 format: MOCK0000001 - not a real bank code. */
   ifsc: string;
   account_state: "ACTIVE" | "DORMANT" | "CLOSED";
   credits: Credit[];
@@ -114,7 +114,7 @@ export interface Credit {
 }
 
 export interface ItdRecord {
-  /** §12.3 format: MOCKP0000M — structurally invalid. */
+  /** §12.3 format: MOCKP0000M - structurally invalid. */
   pan_ref: string;
   is_taxpayer: boolean;
   assessment_year: string;

@@ -1,22 +1,22 @@
-# NISHAN — Credits and authorship
+# NISHAN - Credits and authorship
 
 Hackathon requirement **R1** asks that Codex be a meaningful part of *how* this
 was built. This file records, file by file, what Codex authored and what was
 written afterwards. [BUILDLOG.md](BUILDLOG.md) carries the session narrative.
 
-## How this attribution was established — read before citing it
+## How this attribution was established - read before citing it
 
 This project is **not currently under version control**, so there is no commit
 history to attribute from. The attribution below rests on three converging
 pieces of evidence, and is stated as inference, not as proof:
 
 1. **Filesystem timestamps.** Every file in the original scaffold has a
-   modification time between **17:14 and 17:22 on 26 August 2026** — a single
+   modification time between **17:14 and 17:22 on 26 August 2026** - a single
    eight-minute window, in dependency order: config → types → engine/mocks/db →
    components → routes. That is the signature of one generation run, not of
    hand-authoring.
 2. **Uniform style.** All seventeen generated `.ts`/`.tsx` files share an
-   unusual and perfectly consistent convention — components emitted as a single
+   unusual and perfectly consistent convention - components emitted as a single
    long line, `TODO(scope):` markers in exactly the same form in each stub.
 3. **The project's own record.** CLAUDE.md §2.2 states "Codex authored the
    scaffold and core layer," and the generated `README.md` describes itself as an
@@ -30,7 +30,7 @@ verifiable author and timestamp.
 
 ---
 
-## Authored by OpenAI Codex — 26 August 2026, 17:14–17:22
+## Authored by OpenAI Codex - 26 August 2026, 17:14–17:22
 
 ### Project configuration
 | File | Notes |
@@ -54,13 +54,13 @@ verifiable author and timestamp.
 ### Content layer
 | File | Notes |
 |---|---|
-| `content/catalogue.en.json` | 79 keys as generated — **modified since**, see below |
-| `content/catalogue.hi.json` | 79 keys as generated — **modified since**, see below |
-| `content/resolve.ts` | Slot-filler — **modified since**, see below |
+| `content/catalogue.en.json` | 79 keys as generated - **modified since**, see below |
+| `content/catalogue.hi.json` | 79 keys as generated - **modified since**, see below |
+| `content/resolve.ts` | Slot-filler - **modified since**, see below |
 | `content/statusCodes.json` | 8 codes; taxonomy conflicts with §7.2 |
-| `lib/content.ts` | `CatalogueKey` derived from the catalogue — **modified since** |
+| `lib/content.ts` | `CatalogueKey` derived from the catalogue - **modified since** |
 
-### Engine, mocks, database — all stubs
+### Engine, mocks, database - all stubs
 | File | Notes |
 |---|---|
 | `engine/diagnose.ts` | `diagnoseCase()` throws; no rules implemented |
@@ -73,27 +73,27 @@ verifiable author and timestamp.
 |---|---|
 | `app/layout.tsx` | |
 | `app/globals.css` | Includes the reduced-motion-safe marker animation |
-| `app/page.tsx` | Entry screen — **modified since**, see below |
+| `app/page.tsx` | Entry screen - **modified since**, see below |
 | `app/assisted/page.tsx` | Consent is `useState` only, not persisted |
 | `app/case/[id]/page.tsx` | Renders the sample case only; never calls the engine |
 | `app/whats-real/page.tsx` | Prose sections, not the §12.2 table |
 
-### Components — all thirteen
+### Components - all thirteen
 `ActionChecklist.tsx` · `BlockerCard.tsx` · `CaseHeader.tsx` ·
 `ConsentBanner.tsx` · `LanguageToggle.tsx`\* · `LocaleProvider.tsx` ·
 `MicButton.tsx` · `MoneyMarker.tsx` · `MoneyRail.tsx` · `NishanLogo.tsx` ·
 `RailGate.tsx` · `SiteChrome.tsx` · `StatusCodeChip.tsx`
 
-\* modified since — see below.
+\* modified since - see below.
 
 ### Sample data
 | File | Notes |
 |---|---|
-| `data/sample-case.json` | The single sample case — **modified since**, see below |
+| `data/sample-case.json` | The single sample case - **modified since**, see below |
 
 ---
 
-## Authored by Claude (Claude Code) — 26 August 2026, session 2
+## Authored by Claude (Claude Code) - 26 August 2026, session 2
 
 ### Created
 | File | What it is |
@@ -128,7 +128,7 @@ left them. See CLAUDE.md §13 for the audited status of each.
 | Tailwind CSS, PostCSS, Autoprefixer | MIT |
 | TypeScript | Apache-2.0 |
 
-No fonts are currently bundled — `app/globals.css` falls back to system faces.
+No fonts are currently bundled - `app/globals.css` falls back to system faces.
 CLAUDE.md §11.4 specifies the Anek superfamily and IBM Plex Mono (both SIL OFL);
 if they are added, retain their licence files per §12.6.
 

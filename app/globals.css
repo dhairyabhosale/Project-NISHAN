@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ── Design tokens — CLAUDE.md §11.3 ─────────────────────────────────────────
+/* ── Design tokens - CLAUDE.md §11.3 ─────────────────────────────────────────
    Theme colours define what the product looks like. Functional additions each
    have exactly one job and appear only when that job is on screen.
    Contrast rules in §11.3 are binding, not advisory. ------------------------ */
@@ -14,7 +14,7 @@
   --cyan-pale: #e0f7fa;
   --white: #ffffff;
 
-  /* functional — one job each */
+  /* functional - one job each */
   --ink: #10241f;
   --ink-soft: #486b64;
   --stop: #c62828;
@@ -23,14 +23,14 @@
   --focus: #00796b;
   --focus-on-teal: #ffffff;
 
-  /* type scale — §11.4 */
+  /* type scale - §11.4 */
   --t-answer: 30px;
   --t-head: 22px;
   --t-body: 18px;
   --t-label: 15px;
   --t-data: 17px;
 
-  /* space — §11.5, 4px base */
+  /* space - §11.5, 4px base */
   --s-1: 4px;
   --s-2: 8px;
   --s-3: 12px;
@@ -54,7 +54,7 @@ body {
 
 button, input { font: inherit; }
 
-/* Data — reference numbers, amounts, dates, raw portal status strings.
+/* Data - reference numbers, amounts, dates, raw portal status strings.
    Monospace signals "this is a record, not prose". §11.4 */
 .data {
   font-family: var(--font-plex-mono), ui-monospace, monospace;
@@ -62,7 +62,7 @@ button, input { font: inherit; }
   line-height: 1.4;
 }
 
-/* Focus ring — §11.3 rule 6. Never decorative.
+/* Focus ring - §11.3 rule 6. Never decorative.
    --focus is the same hex as --teal-deep, so a teal ring on a teal surface is
    invisible. Any --teal-deep surface carries .on-teal, which flips the ring to
    white. Set as a variable so nesting resolves to the nearest surface. */
@@ -73,7 +73,7 @@ button, input { font: inherit; }
 
 .on-teal { --ring: var(--focus-on-teal); }
 
-/* ── The one orchestrated motion — §11.5 ─────────────────────────────────────
+/* ── The one orchestrated motion - §11.5 ─────────────────────────────────────
    The rail marker settling into position on the diagnosis screen. Everything
    else is instant. Reduced motion renders the final state. -------------------*/
 @keyframes settle-marker {
@@ -97,7 +97,7 @@ button, input { font: inherit; }
   .border-l-[6px] { animation: none; }
 }
 
-/* ── Print — the Visit Slip is a physical artifact (§11.7 S7) ─────────────── */
+/* ── Print - the Visit Slip is a physical artifact (§11.7 S7) ─────────────── */
 @media print {
   :root { --cyan-pale: #ffffff; }
   body { background: #fff; font-size: 12pt; }
@@ -107,7 +107,7 @@ button, input { font: inherit; }
   @page { margin: 14mm; }
 }
 
-/* Connection strip — §11.8. Only present when genuinely offline. */
+/* Connection strip - §11.8. Only present when genuinely offline. */
 .offline-strip { background: var(--pending); color: var(--ink); }
 
 /* A white ring is correct on a teal surface and invisible on a panel that sits
@@ -119,7 +119,7 @@ button, input { font: inherit; }
    max-w-6xl/7xl. The build was on max-w-2xl (672px), which left a narrow column
    stranded in the middle of a 1920px screen. 72rem with breakpoint-scaled
    gutters uses the viewport without letting prose run past the 60–75 character
-   line length `line-length-control` asks for — that cap moves to the text
+   line length `line-length-control` asks for - that cap moves to the text
    blocks, not the container. -------------------------------------------------*/
 .shell {
   width: 100%;
@@ -133,7 +133,7 @@ button, input { font: inherit; }
 /* Prose stays readable regardless of how wide the shell gets. */
 .prose-measure { max-width: 68ch; }
 
-/* Card lift — the one shadow the design brief allows, and only on hover. */
+/* Card lift - the one shadow the design brief allows, and only on hover. */
 .card-lift { transition: transform 160ms ease-out, box-shadow 160ms ease-out, background-color 160ms ease-out; }
 @media (hover: hover) {
   .card-lift:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgb(0 121 107 / 0.10); }

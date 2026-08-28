@@ -3,7 +3,7 @@
   // Next-style extensionless imports in this repo do not use. Compiling to
   // CommonJS restores extensionless resolution and lets the Node built-in test
   // runner run the suite with no added dependency (§16.11, and no lockfile
-  // change on the final day — §12.6).
+  // change on the final day - §12.6).
   //
   // app/ is excluded: the engine, mocks and content layer are what is tested,
   // and pulling in JSX would drag the whole Next toolchain into the test build.

@@ -1,6 +1,6 @@
 /* S2 identifier lookup.
  *
- * §11.7 S2: Aadhaar, mobile OR registration number — any ONE is enough, and a
+ * §11.7 S2: Aadhaar, mobile OR registration number - any ONE is enough, and a
  * case reference also resolves (§12.4 reference mode).
  *
  * Hand-validated rather than Zod: §12.6 asks for Zod at the boundary, and

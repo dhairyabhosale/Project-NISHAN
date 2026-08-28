@@ -1,4 +1,4 @@
-/* S6 — Fix Path. CLAUDE.md §11.7. */
+/* S6 - Fix Path. CLAUDE.md §11.7. */
 
 import { getCase } from "../../../../lib/store";
 import { CaseNotFound } from "../CaseNotFound";

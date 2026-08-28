@@ -1,4 +1,4 @@
-/* Fault injection for the Mock Government Systems Layer — CLAUDE.md §8.4.
+/* Fault injection for the Mock Government Systems Layer - CLAUDE.md §8.4.
  *
  * This is how a reviewer sees INDETERMINATE handling on demand, which §8.4 calls
  * the most persuasive twenty seconds of the video. NSH-405 (the fault switch UI)
@@ -12,7 +12,7 @@ import { SYSTEM_CODES } from "../lib/types/systems";
 export type FaultProfile = {
   /** Simulate 2G or a loaded portal. */
   latencyMs?: number;
-  /** 0..1. Seeded per (system, reference) so a given case is reproducible — see
+  /** 0..1. Seeded per (system, reference) so a given case is reproducible - see
    *  seededUnitInterval below. §8.5 requires same inputs → same output, always. */
   failureRate?: number;
   /** Deterministic failure for the demo. */
@@ -82,7 +82,7 @@ export function parseFaultSpec(spec: string | null | undefined): FaultMap {
   for (const entry of trimmed.split(",").map((e) => e.trim()).filter(Boolean)) {
     const idx = entry.indexOf(":");
     if (idx === -1) {
-      // No system named — apply to all seven.
+      // No system named - apply to all seven.
       const profile = parseClause(entry);
       for (const c of SYSTEM_CODES) out[c] = { ...out[c], ...profile };
       continue;

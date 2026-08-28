@@ -1,6 +1,6 @@
 "use client";
 
-/* S2 — Identify. CLAUDE.md §11.7.
+/* S2 - Identify. CLAUDE.md §11.7.
  *
  * Three tabs of equal weight. Any ONE identifier is enough, because P2 is that
  * the portal makes a registration number the primary key and most farmers do
@@ -9,7 +9,7 @@
  *
  * The case-reference box at the bottom is §12.4 reference mode: a helper can
  * send a reference and the beneficiary can open it. It is deliberately last and
- * deliberately small — a secondary path, never the front door. */
+ * deliberately small - a secondary path, never the front door. */
 
 import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -179,7 +179,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
 
         </div>
 
-        {/* §11.5 — primary action pinned to the bottom for thumb reach. */}
+        {/* §11.5 - primary action pinned to the bottom for thumb reach. */}
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4">
           <div className="shell">
             <button

@@ -2,7 +2,7 @@
  *
  * Every person here is invented. Identifier formats follow §12.3 and are
  * structurally invalid as real credentials. §12.3 also forbids generating data
- * that mimics a real identifiable individual — no real village plus real name
+ * that mimics a real identifiable individual - no real village plus real name
  * combination, even from publicly downloadable beneficiary lists. Village names
  * here are ordinary Tamil place-names attached to invented people.
  *
@@ -12,9 +12,9 @@
  * notice, and to know which differences matter. Do not "clean this up".
  *
  * Two kinds of name difference are seeded, and they are not the same thing:
- *   - BENIGN VARIANCE  — "Ramesh P." vs "Ramesh Pandian". Same person, and the
+ *   - BENIGN VARIANCE  - "Ramesh P." vs "Ramesh Pandian". Same person, and the
  *                        B5 rule must normalise it and NOT flag it.
- *   - REAL MISMATCH    — land still in a late father's name. Different person,
+ *   - REAL MISMATCH    - land still in a late father's name. Different person,
  *                        and B5 must flag it.
  * A rule that cannot tell these apart sends someone to the wrong office. */
 
@@ -43,7 +43,7 @@ export interface PersonaFixture {
 export const CURRENT_CYCLE = "2026-23";
 export const CURRENT_RELEASE = "2026-06-20";
 
-/** Instalments 19-22 paid, the 23rd outstanding — the shape of every persona
+/** Instalments 19-22 paid, the 23rd outstanding - the shape of every persona
  *  except Govindan, who was in fact paid. */
 function paidThrough22(): SchemeRecord["instalments"] {
   return [
@@ -62,7 +62,7 @@ function creditsThrough22(last4: string): BankRecord["credits"] {
   ];
 }
 
-/* ── P1 · Lakshmi D. — B3, e-KYC pending and no Aadhaar-linked mobile ────────
+/* ── P1 · Lakshmi D. - B3, e-KYC pending and no Aadhaar-linked mobile ────────
    The canonical case. Self-serve in principle, but the OTP route is dead: no
    mobile is linked, so the code can never arrive. §7.3 calls recommending OTP
    e-KYC here the single most common piece of bad advice in this domain, and the
@@ -70,7 +70,7 @@ function creditsThrough22(last4: string): BankRecord["credits"] {
 const LAKSHMI: PersonaFixture = {
   ref: "P1",
   label: "Lakshmi D.",
-  demonstrates: "B3 e-KYC incomplete, Aadhaar mobile not linked — the OTP route is dead",
+  demonstrates: "B3 e-KYC incomplete, Aadhaar mobile not linked - the OTP route is dead",
   expects: { blocker: "B3", reason: "MOBILE_NOT_LINKED" },
   mSCHEME: {
     reg_no: "NSHDEMO-1001", name: "Lakshmi Devi", village: "Ariyur", state: "Tamil Nadu",
@@ -89,14 +89,14 @@ const LAKSHMI: PersonaFixture = {
   mITD: { pan_ref: "MOCKP0001M", is_taxpayer: false, assessment_year: "2025-26" }
 };
 
-/* ── P2 · Ramesh P. — B4, Aadhaar-to-account mapper inactive ─────────────────
-   "The money has nowhere to land" — §8.4 calls this the best explanation line
+/* ── P2 · Ramesh P. - B4, Aadhaar-to-account mapper inactive ─────────────────
+   "The money has nowhere to land" - §8.4 calls this the best explanation line
    in the product. Everything upstream succeeded; the money is approved and
    cannot be delivered. ----------------------------------------------------- */
 const RAMESH: PersonaFixture = {
   ref: "P2",
   label: "Ramesh P.",
-  demonstrates: "B4 mapper inactive — approved money with nowhere to land",
+  demonstrates: "B4 mapper inactive - approved money with nowhere to land",
   expects: { blocker: "B4", reason: "MAPPER_INACTIVE" },
   mSCHEME: {
     reg_no: "NSHDEMO-1002", name: "Ramesh Pandian", village: "Kootampuli", state: "Tamil Nadu",
@@ -115,14 +115,14 @@ const RAMESH: PersonaFixture = {
   mITD: { pan_ref: "MOCKP0002M", is_taxpayer: false, assessment_year: "2025-26" }
 };
 
-/* ── P3 · Sarala M. — B5, land record in her late father's name ──────────────
+/* ── P3 · Sarala M. - B5, land record in her late father's name ──────────────
    A REAL mismatch, not a spelling variance: the land was never mutated after
    her father died. Needs a revenue officer, so this is the persona that earns a
    grievance and an SLA clock. ---------------------------------------------- */
 const SARALA: PersonaFixture = {
   ref: "P3",
   label: "Sarala M.",
-  demonstrates: "B5 land record name mismatch — needs an officer, not a self-serve fix",
+  demonstrates: "B5 land record name mismatch - needs an officer, not a self-serve fix",
   expects: { blocker: "B5", reason: "LAND_NAME_MISMATCH" },
   mSCHEME: {
     reg_no: "NSHDEMO-1003", name: "Sarala Murugesan", village: "Vellakoil", state: "Tamil Nadu",
@@ -141,13 +141,13 @@ const SARALA: PersonaFixture = {
   mITD: { pan_ref: "MOCKP0003M", is_taxpayer: false, assessment_year: "2025-26" }
 };
 
-/* ── P4 · Anbu K. — B6a, in flight ───────────────────────────────────────────
+/* ── P4 · Anbu K. - B6a, in flight ───────────────────────────────────────────
    Teaches that "not broken, just waiting" is an answer.
 
    ALSO THE CARVE-OUT REGRESSION TEST. Anbu is a government employee AND
    Multi-Tasking Staff / Class IV / Group D, who are EXCLUDED FROM THE
    EXCLUSION. If the B2 rule ever drops that carve-out, Anbu flips from B6a to
-   B2 and the suite fails loudly — which is the point. A wrongly excluded farmer
+   B2 and the suite fails loudly - which is the point. A wrongly excluded farmer
    is the most expensive error this engine can make. ------------------------ */
 const ANBU: PersonaFixture = {
   ref: "P4",
@@ -173,14 +173,14 @@ const ANBU: PersonaFixture = {
   mITD: { pan_ref: "MOCKP0004M", is_taxpayer: false, assessment_year: "2025-26" }
 };
 
-/* ── P5 · Fatima B. — B6b, bank returned the payment ─────────────────────────
+/* ── P5 · Fatima B. - B6b, bank returned the payment ─────────────────────────
    Account went dormant through disuse, so the credit bounced. Everything else
    is correct, which is why the portal's "Rejected by Bank" tells her nothing.
    Carries a spelling variance across mLAND too. ---------------------------- */
 const FATIMA: PersonaFixture = {
   ref: "P5",
   label: "Fatima B.",
-  demonstrates: "B6b payment returned by the bank — dormant account",
+  demonstrates: "B6b payment returned by the bank - dormant account",
   expects: { blocker: "B6b", reason: "ACCOUNT_DORMANT" },
   mSCHEME: {
     reg_no: "NSHDEMO-1005", name: "Fatima Begum", village: "Ambur", state: "Tamil Nadu",
@@ -193,19 +193,19 @@ const FATIMA: PersonaFixture = {
   },
   mPFMS: { fto_id: "FTO-2026-23-0091", fto_state: "REJECTED", beneficiary_validation: "PASS", govt_employee_flag: false },
   mNPCI: { aadhaar_ref: "9999 8114 6032", mapped_bank: "MOCK GRAMEEN BANK", mapper_state: "ACTIVE" },
-  // Benign transliteration variance — "Fathima" vs "Fatima". Must NOT be B5.
+  // Benign transliteration variance - "Fathima" vs "Fatima". Must NOT be B5.
   mLAND: { khata_id: "KH-67018", owner_name: "Fathima Begum", extent: 1.1, acquired_on: "2007-11-22", seeded: true },
   mBANK: { account_ref: "MOCKACC-8814", ifsc: "MOCK0000002", account_state: "DORMANT", credits: creditsThrough22("8814") },
   mITD: { pan_ref: "MOCKP0005M", is_taxpayer: false, assessment_year: "2025-26" }
 };
 
-/* ── P6 · Govindan S. — B6c, already credited ────────────────────────────────
+/* ── P6 · Govindan S. - B6c, already credited ────────────────────────────────
    The counter-intuitive win: the money was there all along. He has a passbook
    he cannot read and no SMS, so nobody told him. The terminal success state. */
 const GOVINDAN: PersonaFixture = {
   ref: "P6",
   label: "Govindan S.",
-  demonstrates: "B6c already credited — the money arrived and nobody told him",
+  demonstrates: "B6c already credited - the money arrived and nobody told him",
   expects: { blocker: "B6c", reason: "CREDITED" },
   mSCHEME: {
     reg_no: "NSHDEMO-1006", name: "Govindan Subramani", village: "Sirkazhi", state: "Tamil Nadu",
@@ -230,14 +230,14 @@ const GOVINDAN: PersonaFixture = {
   mITD: { pan_ref: "MOCKP0006M", is_taxpayer: false, assessment_year: "2025-26" }
 };
 
-/* ── P7 · Murugan V. — B2, flagged as an income-tax payer ────────────────────
+/* ── P7 · Murugan V. - B2, flagged as an income-tax payer ────────────────────
    Contestable. The tax flag is frequently a stale or mistaken PAN match, and
-   §7.2 says an exclusion "can be challenged" — so this persona drives the
+   §7.2 says an exclusion "can be challenged" - so this persona drives the
    evidence path rather than a dead end. ------------------------------------ */
 const MURUGAN: PersonaFixture = {
   ref: "P7",
   label: "Murugan V.",
-  demonstrates: "B2 exclusion on a tax flag — contestable, drives the evidence path",
+  demonstrates: "B2 exclusion on a tax flag - contestable, drives the evidence path",
   expects: { blocker: "B2", reason: "INCOME_TAX_PAYER" },
   mSCHEME: {
     reg_no: "NSHDEMO-1007", name: "Murugan Velayudham", village: "Palladam", state: "Tamil Nadu",
@@ -255,19 +255,19 @@ const MURUGAN: PersonaFixture = {
   mITD: { pan_ref: "MOCKP0007M", is_taxpayer: true, assessment_year: "2025-26" }
 };
 
-/* ── P8 · Selvi R. — B1 + B3 + B4 + B5, and only B1 may be returned ──────────
+/* ── P8 · Selvi R. - B1 + B3 + B4 + B5, and only B1 may be returned ──────────
    THE PRECEDENCE TEST. Four blockers are live at once:
      B1  registration rejected                        ← the only correct verdict
      B3  e-KYC not started, no linked mobile, and a transposed date of birth
      B4  mapper not found
      B5  land in her father's name
-   The portal shows her "eKYC Required" — a lower-precedence symptom — which is
+   The portal shows her "eKYC Required" - a lower-precedence symptom - which is
    exactly the failure NISHAN exists to correct. Fixing her e-KYC would waste a
    trip: she is not registered, so no instalment can be paid regardless. ---- */
 const SELVI: PersonaFixture = {
   ref: "P8",
   label: "Selvi R.",
-  demonstrates: "B1+B3+B4+B5 composite — precedence: only B1 is shown",
+  demonstrates: "B1+B3+B4+B5 composite - precedence: only B1 is shown",
   expects: { blocker: "B1", reason: "REGISTRATION_REJECTED" },
   mSCHEME: {
     reg_no: "NSHDEMO-1008", name: "Selvi Ramanathan", village: "Aruppukottai", state: "Tamil Nadu",
@@ -275,7 +275,7 @@ const SELVI: PersonaFixture = {
     rejection_reason: "Land ownership not verified by the revenue office",
     // The portal shows the e-KYC symptom, not the registration cause.
     status_string: "eKYC Required",
-    // Transposed against Aadhaar's 1991-03-08 — the common real data-entry error.
+    // Transposed against Aadhaar's 1991-03-08 - the common real data-entry error.
     dob_on_record: "1991-08-03",
     instalments: [
       { cycle: CURRENT_CYCLE, amount: 2000, released_on: CURRENT_RELEASE, credited_on: null }

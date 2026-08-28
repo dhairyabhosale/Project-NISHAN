@@ -33,7 +33,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("demo.title", {}, locale)}</h1>
       <p className="mt-3 prose-measure text-body text-ink">{resolve("demo.standfirst", {}, locale)}</p>
 
-      {/* §12.3 — persona names are fictional and labelled as such. */}
+      {/* §12.3 - persona names are fictional and labelled as such. */}
       <p className="mt-6 rounded-card border border-pending bg-paper p-4 text-label font-semibold text-ink">
         {resolve("demo.disclaimer", {}, locale)}
       </p>

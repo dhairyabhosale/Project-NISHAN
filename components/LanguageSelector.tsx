@@ -6,7 +6,7 @@ import { LANGUAGES, localeFor } from "../lib/languages";
 import { useLocale } from "./LocaleProvider";
 
 /**
- * §10.2 — the selector covers every language the official portal offers; the
+ * §10.2 - the selector covers every language the official portal offers; the
  * translations do not. Choosing an unresolved language keeps the interface in
  * English and says so once, in place.
  *

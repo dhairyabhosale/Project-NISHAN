@@ -1,6 +1,6 @@
 "use client";
 
-/* S3 — Verify. CLAUDE.md §11.7.
+/* S3 - Verify. CLAUDE.md §11.7.
  *
  * The disclosure sits directly under the field, not in a footer: §12.7 puts it
  * at the high-risk moment, and an OTP box is the moment a person is most likely
@@ -9,7 +9,7 @@
  * "Did not get the code?" is the signature dead end (P3, P7). The portal offers
  * an OTP by default to people whose Aadhaar-linked number is dead, and then
  * offers nothing else. Here the dead end is named, and there is a way through
- * it — because the engine already knows whether a code can arrive at all. */
+ * it - because the engine already knows whether a code can arrive at all. */
 
 import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -54,7 +54,7 @@ function VerifyForm() {
         className="data mt-2 min-h-14 w-full rounded-card border-2 border-rule bg-paper px-4 text-ink tracking-[0.4em]"
       />
 
-      {/* §12.7 — in place, at the high-risk moment. */}
+      {/* §12.7 - in place, at the high-risk moment. */}
       <p className="mt-3 rounded-card border border-pending bg-paper p-3 text-label font-semibold text-ink">
         {resolve("otp.disclosure", {}, locale)}
       </p>
