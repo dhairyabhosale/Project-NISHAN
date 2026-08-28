@@ -91,7 +91,6 @@ export default function EntryPage() {
           understood. No photograph: §11.9 budgets zero images on the primary
           path, and photographs fail first on 2G. */}
       <section className="on-teal relative isolate overflow-hidden bg-teal-deep py-14 text-paper md:py-20">
-        <FieldBackdrop className="text-paper" />
         <div className="shell relative">
           <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
             {resolve("entry.headline", {}, locale)}
