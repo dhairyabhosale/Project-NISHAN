@@ -126,31 +126,6 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
         </details>
         <p className="mt-2 text-label text-ink-soft">{resolve(active.hint, {}, locale)}</p>
 
-        {/* A reviewer should not have to type a synthetic Aadhaar number to
-            see the product work. Each card is a real case that diagnoses live. */}
-        <section className="mt-8">
-          <h2 className="text-head font-semibold text-ink">{resolve("who.demo_heading", {}, locale)}</h2>
-          <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("who.demo_body", {}, locale)}</p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {personas.map((p) => (
-              <li key={p.reference}>
-                <button
-                  type="button"
-                  onClick={() => router.push("/case/" + encodeURIComponent(p.reference))}
-                  className="card-lift flex h-full w-full flex-col items-start rounded-card border border-rule bg-paper p-4 text-left hover:bg-white"
-                >
-                  <span className="flex w-full items-baseline justify-between gap-3">
-                    <span className="text-body font-semibold text-ink">{p.label}</span>
-                    <span className="data text-label text-ink-soft">{p.reference}</span>
-                  </span>
-                  <span className="mt-2 text-label font-semibold uppercase tracking-wide text-teal-deep">{p.blocker}</span>
-                  <span className="mt-1 text-label text-ink-soft">{p.demonstrates}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </section>
-
         <section className="mt-8 rounded-card border border-rule bg-paper p-4">
           <h2 className="text-label font-semibold text-ink">{resolve("who.reference_heading", {}, locale)}</h2>
           <p className="mt-2 text-label text-ink-soft">{resolve("who.reference_body", {}, locale)}</p>
@@ -185,6 +160,31 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
             </button>
           </div>
         </div>
+
+        {/* A reviewer should not have to type a synthetic Aadhaar number to
+            see the product work. Each card is a real case that diagnoses live. */}
+        <section className="mt-8">
+          <h2 className="text-head font-semibold text-ink">{resolve("who.demo_heading", {}, locale)}</h2>
+          <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("who.demo_body", {}, locale)}</p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {personas.map((p) => (
+              <li key={p.reference}>
+                <button
+                  type="button"
+                  onClick={() => router.push("/case/" + encodeURIComponent(p.reference))}
+                  className="card-lift flex h-full w-full flex-col items-start rounded-card border border-rule bg-paper p-4 text-left hover:bg-white"
+                >
+                  <span className="flex w-full items-baseline justify-between gap-3">
+                    <span className="text-body font-semibold text-ink">{p.label}</span>
+                    <span className="data text-label text-ink-soft">{p.reference}</span>
+                  </span>
+                  <span className="mt-2 text-label font-semibold uppercase tracking-wide text-teal-deep">{p.blocker}</span>
+                  <span className="mt-1 text-label text-ink-soft">{p.demonstrates}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
       </form>
     </main>
   );
