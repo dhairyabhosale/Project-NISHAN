@@ -610,5 +610,5 @@
   "demo.auto_fill": "TODO_TA: Quick scenario loader",
   "demo.select_scenario": "TODO_TA: Choose a test scenario to inspect:",
   "demo.reset": "TODO_TA: Reset selection",
-  "nav.demo": "TODO_TA: Judge Demo"
+  "nav.demo": "TODO_TA: Demo"
 }

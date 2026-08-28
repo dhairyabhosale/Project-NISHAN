@@ -610,5 +610,5 @@
   "demo.auto_fill": "Quick scenario loader",
   "demo.select_scenario": "Choose a test scenario to inspect:",
   "demo.reset": "Reset selection",
-  "nav.demo": "Judge Demo"
+  "nav.demo": "Demo"
 }

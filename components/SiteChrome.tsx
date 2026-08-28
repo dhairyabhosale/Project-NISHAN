@@ -52,12 +52,12 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           {resolve("banner.chip", {}, locale)}
         </p>
         <div className="shell flex flex-wrap items-center justify-between gap-x-8 gap-y-3 pb-4 pt-14 lg:pt-12">
-          <Link href="/" className="order-1 basis-full shrink-0 rounded-card sm:basis-auto sm:min-w-[195px]">
+          <Link href="/" className="order-1 basis-full shrink-0 rounded-card sm:basis-auto sm:min-w-[195px] lg:mr-2">
             <NishanLogo locale={locale} />
           </Link>
 
-          <div className="order-3 flex basis-full items-center gap-3 lg:min-w-0 2xl:order-2 2xl:flex-1">
-            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 items-center gap-2 lg:flex lg:flex-wrap lg:justify-start 2xl:flex-1 2xl:flex-nowrap 2xl:justify-end">
+          <div className="order-3 flex basis-full min-w-0 items-center gap-3 lg:order-2 lg:w-0 lg:basis-0 lg:flex-1">
+            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-1 items-center gap-2 lg:flex lg:flex-wrap lg:justify-start">
               {MENU.map((group) => (
                 <div
                   key={group.label}
@@ -115,7 +115,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
           </div>
 
-          <div className="order-2 ml-auto flex basis-full items-center justify-end gap-2 sm:basis-auto 2xl:order-3">
+          <div className="order-2 ml-auto flex basis-full items-center justify-end gap-2 sm:basis-auto lg:order-3 lg:shrink-0">
             <LanguageSelector />
             <button
               type="button"
