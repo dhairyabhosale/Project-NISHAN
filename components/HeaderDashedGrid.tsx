@@ -26,6 +26,7 @@ export function HeaderDashedGrid() {
     const minFactor = 0.08;
     const ease = 0.16;
     const topFade = 90;
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const mask = document.createElement("canvas");
     const maskContext = mask.getContext("2d", { willReadFrequently: true });
     if (!maskContext) return;
@@ -95,7 +96,7 @@ export function HeaderDashedGrid() {
         canvasContext.stroke();
       }
 
-      frame = window.requestAnimationFrame(render);
+      if (!reducedMotion) frame = window.requestAnimationFrame(render);
     }
 
     function setPointer(event: MouseEvent | Touch) {
