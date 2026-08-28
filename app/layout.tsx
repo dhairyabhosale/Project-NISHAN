@@ -4,6 +4,7 @@ import en from "../content/catalogue.en.json";
 import "./globals.css";
 import { LocaleProvider } from "../components/LocaleProvider";
 import { SiteChrome } from "../components/SiteChrome";
+import { NishanLoader } from "../components/NishanLoader";
 
 // §11.4. next/font self-hosts at build time, so no third-party request is made
 // at runtime - §11.9 budgets zero third-party scripts on the primary path.
@@ -18,6 +19,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en" className={`${anek.variable} ${plexMono.variable}`}>
       <body>
+        <NishanLoader dismissWhenReady />
         <LocaleProvider>
           <SiteChrome>{children}</SiteChrome>
         </LocaleProvider>
