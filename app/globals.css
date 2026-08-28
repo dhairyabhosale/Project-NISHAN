@@ -228,3 +228,26 @@ a:active, button:active { transform: scale(0.985); }
 @media (prefers-reduced-motion: reduce) {
   .stat-cycle { animation: none !important; transform: none !important; }
 }
+
+/* Accessibility Mode Overrides */
+html.font-large body { font-size: 20px; }
+html.font-large .text-answer { font-size: 34px !important; }
+html.font-large .text-head { font-size: 25px !important; }
+html.font-large .text-body { font-size: 20px !important; }
+html.font-large .text-label { font-size: 17px !important; }
+
+html.high-contrast {
+  --teal-deep: #004d40;
+  --cyan-pale: #ffffff;
+  --rule: #000000;
+  --ink: #000000;
+  --ink-soft: #222222;
+  --white: #ffffff;
+  --green: #1b5e20;
+  --green-soft: #dcedc8;
+  --pending: #bf360c;
+  --stop: #b71c1c;
+}
+html.high-contrast .border-rule { border-color: #000000 !important; }
+html.high-contrast .rounded-card { border-width: 2px !important; }
+

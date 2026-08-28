@@ -17,6 +17,7 @@ import { useEffect, useState } from "react";
 import { useLocale } from "../../../../components/LocaleProvider";
 import { resolve } from "../../../../content/resolve";
 import { renderVerdict } from "../../../../content/verdict";
+import { ReadAloudButton } from "../../../../components/ReadAloudButton";
 import { AUTHORITY_KEY, authorityFor, fixPathFor, needsOfficer } from "../../../../content/fixPaths";
 import type { Diagnosis } from "../../../../lib/types/diagnosis";
 import type { CatalogueKey } from "../../../../lib/content";
@@ -59,6 +60,10 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
   const total = steps.length;
   const doneCount = steps.filter((s) => done.includes(s)).length;
 
+  const fixSpokenText = primary
+    ? resolve(primary.labelKey, {}, locale) + ". " + steps.map((s) => resolve(s as CatalogueKey, {}, locale)).join(". ")
+    : "";
+
   return (
     <main className="page-in shell pb-40 pt-8">
       <Link href={"/case/" + encodeURIComponent(reference)}
@@ -85,7 +90,10 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
       <div className="lg:order-1">
       {primary ? (
         <section className="mt-8">
-          <h2 className="text-head font-semibold text-ink">{resolve(primary.labelKey, {}, locale)}</h2>
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <h2 className="text-head font-semibold text-ink flex-1 min-w-[200px]">{resolve(primary.labelKey, {}, locale)}</h2>
+            {fixSpokenText && <ReadAloudButton text={fixSpokenText} className="shrink-0" />}
+          </div>
           <p className="mt-1 text-label text-ink-soft">
             {resolve("fix.effect_days", { days: primary.effectDays }, locale)}
           </p>

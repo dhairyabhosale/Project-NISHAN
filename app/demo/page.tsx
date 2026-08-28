@@ -14,13 +14,26 @@ import { PersonaPicker } from "./PersonaPicker";
 export const dynamic = "force-dynamic";
 
 export default function DemoPage() {
+  const categoryFor = (ref: string): "healthy" | "ekyc" | "bank" | "land" | "eligibility" => {
+    if (ref === "P6") return "healthy";
+    if (ref === "P1" || ref === "P5") return "ekyc";
+    if (ref === "P2" || ref === "P4") return "bank";
+    if (ref === "P3") return "land";
+    return "eligibility";
+  };
+
   const personas = PERSONAS.map((p) => ({
     ref: p.ref,
     label: p.label,
     demonstrates: p.demonstrates,
     blocker: p.expects.blocker,
     reason: p.expects.reason,
-    reference: referenceFor(p.ref, CURRENT_CYCLE)
+    reference: referenceFor(p.ref, CURRENT_CYCLE),
+    aadhaar: p.mUIDAI?.aadhaar_ref ?? "",
+    regNo: p.mSCHEME?.reg_no ?? "",
+    mobile: p.mUIDAI?.linked_mobile ?? "Unlinked",
+    portalStatus: p.mSCHEME?.status_string ?? "",
+    category: categoryFor(p.ref)
   }));
   return <PersonaPicker personas={personas} />;
 }

@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { AccessibilityControls } from "./AccessibilityControls";
 import { BhashiniWidget } from "./BhashiniWidget";
 import { ConnectionStrip } from "./ConnectionStrip";
 import { LanguageSelector } from "./LanguageSelector";
@@ -10,18 +11,7 @@ import { useLocale } from "./LocaleProvider";
 import { resolve } from "../content/resolve";
 import type { CatalogueKey } from "../lib/content";
 
-/* Site chrome - header, footer, and the two global affordances.
- *
- * The header carries the official portal's whole service surface, but REGROUPED
- * by what a person wants to do rather than by each service's official name.
- * That regrouping is the point: P4 is that the portal's links have
- * near-identical names ("Know Your Status" beside "Status of Self Registered
- * Farmer") with nothing to say which one you need.
- *
- * The §12.7 disclosure band now sits at the end of the footer, by instruction.
- * A chip stays in the header so a reviewer cannot use the whole site without
- * seeing that this is a prototype - the footer is a scroll away, and that
- * control is the one the honesty criterion turns on. */
+/* Site chrome - header, footer, and global affordances. */
 
 const MENU: { label: CatalogueKey; items: { label: CatalogueKey; href: string }[] }[] = [
   {
@@ -44,11 +34,9 @@ const MENU: { label: CatalogueKey; items: { label: CatalogueKey; href: string }[
   {
     label: "nav.help",
     items: [
-      { label: "svc.2.name", href: "/who" },
-      { label: "faq.title", href: "/faq" },
+      { label: "svc.2.name", href: "/services#svc-2" },
       { label: "contact.title", href: "/contact" },
-      { label: "svc.13.name", href: "/services#svc-13" },
-      { label: "svc.14.name", href: "/faq" }
+      { label: "faq.title", href: "/faq" }
     ]
   }
 ];
@@ -60,12 +48,9 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
-      {/* 12.7 - persistent, non-dismissible, on every screen. Styled as a
-          version badge and pinned to the viewport so it survives scrolling.
-          The full sentence still closes every page in the footer. */}
       <span
-        className="fixed right-3 top-3 z-[60] rounded-card border border-ink/15 bg-pending px-2.5 py-1 text-[12px] font-bold uppercase tracking-wide text-ink shadow-sm print:hidden"
-        title={resolve("banner.prototype", {}, locale)}
+        aria-hidden="true"
+        className="fixed right-3 top-3 z-[60] rounded-card border-2 border-pending bg-paper px-2.5 py-1 text-label font-bold text-pending shadow-sm"
       >
         {resolve("banner.chip", {}, locale)}
       </span>
@@ -119,6 +104,12 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 </div>
               ))}
 
+              <Link href="/how-it-works" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
+                {resolve("nav.how_it_works", {}, locale)}
+              </Link>
+              <Link href="/demo" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
+                {resolve("nav.demo", {}, locale)}
+              </Link>
               <Link href="/services" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
                 {resolve("nav.services", {}, locale)}
               </Link>
@@ -127,6 +118,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               </Link>
             </nav>
 
+            <AccessibilityControls />
             <LanguageSelector />
 
             <button
@@ -160,6 +152,12 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 ))}
               </div>
             ))}
+            <Link href="/how-it-works" onClick={() => setMobileOpen(false)} className="flex min-h-12 items-center border-b border-white/15 text-body font-semibold">
+              {resolve("nav.how_it_works", {}, locale)}
+            </Link>
+            <Link href="/demo" onClick={() => setMobileOpen(false)} className="flex min-h-12 items-center border-b border-white/15 text-body font-semibold">
+              {resolve("nav.demo", {}, locale)}
+            </Link>
             <Link href="/services" onClick={() => setMobileOpen(false)} className="flex min-h-12 items-center border-b border-white/15 text-body font-semibold">
               {resolve("nav.services", {}, locale)}
             </Link>
@@ -176,15 +174,51 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
       <footer className="mt-16 border-t border-rule bg-paper">
         <div className="shell py-10">
-          <div className="grid gap-8 md:grid-cols-2">
+          <div className="grid gap-8 md:grid-cols-3">
             <div>
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("nav.services", {}, locale)}</h2>
-              <Link href="/services" className="mt-2 flex min-h-12 items-center text-body text-teal-deep underline underline-offset-4">
-                {resolve("services.title", {}, locale)}
-              </Link>
-              <Link href="/whats-real" className="flex min-h-12 items-center text-body text-teal-deep underline underline-offset-4">
-                {resolve("footer.whats_real", {}, locale)}
-              </Link>
+              <ul className="mt-2 space-y-1">
+                <li>
+                  <Link href="/who" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                    {resolve("nav.find", {}, locale)}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/how-it-works" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                    {resolve("nav.how_it_works", {}, locale)}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/demo" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                    {resolve("nav.demo", {}, locale)}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/services" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                    {resolve("services.title", {}, locale)}
+                  </Link>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("footer.whats_real", {}, locale)}</h2>
+              <ul className="mt-2 space-y-1">
+                <li>
+                  <Link href="/whats-real" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                    {resolve("footer.whats_real", {}, locale)}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/faq" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                    {resolve("faq.title", {}, locale)}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                    {resolve("contact.title", {}, locale)}
+                  </Link>
+                </li>
+              </ul>
             </div>
             <div>
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("footer.about_heading", {}, locale)}</h2>

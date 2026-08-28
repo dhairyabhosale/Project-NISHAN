@@ -19,12 +19,9 @@
  * papered over. */
 
 import { diagnose } from "../engine/diagnose";
-import { readSnapshot } from "../mocks";
+import { readSnapshot, readSystem } from "../mocks";
 import type { FaultMap } from "../mocks/fault";
-import { PERSONAS, CURRENT_CYCLE, findPersonaByIdentifier } from "../mocks/fixtures";
-import type { PersonaFixture } from "../mocks/fixtures";
-import { diagnose as runDiagnose } from "../engine/diagnose";
-import { readSystem } from "../mocks";
+import { PERSONAS, CURRENT_CYCLE, findPersonaByIdentifier, type PersonaFixture } from "../mocks/fixtures";
 import { SYSTEM_CODES } from "./types/systems";
 import type { SystemResult, SystemSnapshot, SystemCode } from "./types/systems";
 import { stoppedAt, RAIL_GATES } from "./types/diagnosis";
@@ -190,7 +187,7 @@ export async function openCustomCase(
     [K in SystemCode]: SystemResult<K>;
   };
   const snapshot: SystemSnapshot = { beneficiaryRef: persona.ref, ...byCode };
-  const diagnosis = runDiagnose(snapshot, { cycle, now });
+  const diagnosis = diagnose(snapshot, { cycle, now });
 
   return {
     reference: referenceFor(persona.ref, cycle),
