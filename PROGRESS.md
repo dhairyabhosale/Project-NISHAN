@@ -64,7 +64,12 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       tagline, but the previous instruction removed that wording as an explicit
       objective change. Kept the current tagline and fixed the wrapping, which
       satisfies both readings; say the word to restore the old wording.
-- [ ] 14. CONTACT PAGE
+- [x] 14. CONTACT PAGE - /contact in the Help menu. Demo phone and email, a
+      contact form that discloses in place that it sends nothing, and an office
+      locator. Map is an inline schematic SVG: no Google Maps SDK (paid key,
+      third-party script, JS budget) and deliberately NO national outline - a
+      hand-drawn India is imprecise at its borders and an imprecise national
+      boundary is not a small thing to publish. Offices labelled as demo.
 - [ ] 15. EM DASHES
 - [ ] 16. ABOUT THE SCHEME
 - [ ] 17. TESTIMONIALS
