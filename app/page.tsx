@@ -14,6 +14,7 @@
  * No captcha (P1). No login. No scroll to reach the primary action. */
 
 import Link from "next/link";
+import { FieldBackdrop } from "../components/FieldBackdrop";
 import { useLocale } from "../components/LocaleProvider";
 import { resolve } from "../content/resolve";
 import type { CatalogueKey } from "../lib/content";
@@ -88,8 +89,9 @@ export default function EntryPage() {
           behind a timer on the one screen that has three seconds to be
           understood. No photograph: §11.9 budgets zero images on the primary
           path, and photographs fail first on 2G. */}
-      <section className="on-teal bg-teal-deep py-14 text-paper md:py-20">
-        <div className="shell">
+      <section className="on-teal relative isolate overflow-hidden bg-teal-deep py-14 text-paper md:py-20">
+        <FieldBackdrop className="text-paper" />
+        <div className="shell relative">
           <p className="text-label font-semibold uppercase tracking-[0.14em] opacity-90">
             {resolve("hero.eyebrow", {}, locale)}
           </p>
@@ -149,7 +151,9 @@ export default function EntryPage() {
       </section>
 
       {/* Published figures reproduced, never computed by us — §18. */}
-      <section className="shell py-14">
+      <section className="relative isolate overflow-hidden py-14">
+        <FieldBackdrop className="text-teal-deep" />
+        <div className="shell relative">
         <h2 className="text-head font-semibold text-ink">{resolve("facts.heading", {}, locale)}</h2>
         <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("facts.standfirst", {}, locale)}</p>
         <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -160,6 +164,7 @@ export default function EntryPage() {
             </div>
           ))}
         </dl>
+        </div>
       </section>
 
       {/* Coverage, without the tile grid becoming the front door. */}

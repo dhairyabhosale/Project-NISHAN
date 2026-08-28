@@ -12,7 +12,13 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       transition, panel expand, skeleton loading route, marquee track paused on
       hover/focus. Reduced-motion block resolves every animation to its final
       state. Rail marker remains the one hero moment.
-- [ ] 2. IMAGERY
+- [x] 2. IMAGERY - auto-changing agricultural backdrop on LANDING + ABOUT only,
+      never on case/fix/slip (11.9 budgets zero images there). Shipped as inline
+      SVG field scenes in the palette (~2KB) rather than photographs: I cannot
+      verify a stock photo contains no identifiable face, and 12.3 forbids
+      anything resembling a real person beside fictional personas. PHOTOS[] in
+      FieldBackdrop.tsx is a drop-in slot for licensed WebP - see TODO(decide).
+      Timer does not run at all under prefers-reduced-motion.
 - [ ] 3. FAQ PAGE
 - [ ] 4. HEADER wrapping
 - [ ] 5. LANGUAGES order
