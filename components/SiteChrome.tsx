@@ -56,8 +56,8 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             <NishanLogo locale={locale} />
           </Link>
 
-          <div className="order-3 flex basis-full min-w-0 items-center gap-3 lg:order-2 lg:w-0 lg:basis-0 lg:flex-1">
-            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-1 items-center gap-2 xl:flex xl:flex-nowrap xl:justify-start xl:gap-4">
+          <div className="order-3 flex basis-full min-w-0 items-center justify-end gap-3 lg:order-2 lg:w-0 lg:basis-0 lg:flex-1">
+            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-none items-center gap-2 xl:flex xl:flex-nowrap xl:justify-end xl:gap-5">
               {MENU.map((group) => (
                 <div
                   key={group.label}
