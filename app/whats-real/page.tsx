@@ -27,7 +27,7 @@ const TONE: Record<Status, string> = {
 const STATUSES: Status[] = [
   "real", "real", "real", "not_built", "partial", "partial", "partial",
   "simulated", "simulated", "simulated", "simulated", "real",
-  "not_built", "not_built", "not_built", "not_built", "planned", "planned"
+  "not_built", "not_built", "not_built", "not_built", "real", "planned", "planned"
 ];
 
 const LIMIT_COUNT = 7;
