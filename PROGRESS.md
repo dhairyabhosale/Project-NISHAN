@@ -19,7 +19,12 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       anything resembling a real person beside fictional personas. PHOTOS[] in
       FieldBackdrop.tsx is a drop-in slot for licensed WebP - see TODO(decide).
       Timer does not run at all under prefers-reduced-motion.
-- [ ] 3. FAQ PAGE
+- [x] 3. FAQ PAGE - /faq, ten questions on the real portal FAQ subject matter
+      (e-KYC, instalment not received, Aadhaar-to-bank link, land records,
+      eligibility, exclusion incl. the MTS carve-out, registration status,
+      mobile update, beneficiary list, grievance routing). Accordion with an
+      animated reveal, one open at a time. All copy from the catalogue in en/hi/mr.
+      Linked from the header Help menu.
 - [ ] 4. HEADER wrapping
 - [ ] 5. LANGUAGES order
 - [ ] 6. REGISTRATION MENU dead links

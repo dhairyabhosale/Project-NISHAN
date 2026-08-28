@@ -45,8 +45,9 @@ const MENU: { label: CatalogueKey; items: { label: CatalogueKey; href: string }[
     label: "nav.help",
     items: [
       { label: "svc.2.name", href: "/who" },
+      { label: "faq.title", href: "/faq" },
       { label: "svc.13.name", href: "/services" },
-      { label: "svc.14.name", href: "/services" }
+      { label: "svc.14.name", href: "/faq" }
     ]
   }
 ];
