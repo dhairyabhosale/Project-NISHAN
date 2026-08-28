@@ -216,12 +216,14 @@ a:active, button:active { transform: scale(0.985); }
   0%, 82%, 100% { transform: translateY(0);     border-color: var(--rule); }
   8%, 74%       { transform: translateY(-3px);  border-color: var(--teal-deep); }
 }
-.stat-cycle { animation: stat-lift 12s ease-in-out infinite; }
+.stat-cycle { animation: stat-lift 16s ease-in-out infinite; }
 .stat-cycle:nth-child(2) { animation-delay: 2s; }
 .stat-cycle:nth-child(3) { animation-delay: 4s; }
 .stat-cycle:nth-child(4) { animation-delay: 6s; }
 .stat-cycle:nth-child(5) { animation-delay: 8s; }
 .stat-cycle:nth-child(6) { animation-delay: 10s; }
+.stat-cycle:nth-child(7) { animation-delay: 12s; }
+.stat-cycle:nth-child(8) { animation-delay: 14s; }
 
 @media (prefers-reduced-motion: reduce) {
   .stat-cycle { animation: none !important; transform: none !important; }

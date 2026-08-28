@@ -78,10 +78,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
           <div className="flex items-center gap-2">
             <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden items-center gap-1 lg:flex">
-              <Link href="/who" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
-                {resolve("nav.find", {}, locale)}
-              </Link>
-
               {MENU.map((group) => (
                 <div
                   key={group.label}
@@ -149,9 +145,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
         {mobileOpen && (
           <nav aria-label={resolve("nav.menu", {}, locale)} className="shell border-t border-white/20 pb-4 lg:hidden">
-            <Link href="/who" onClick={() => setMobileOpen(false)} className="flex min-h-12 items-center border-b border-white/15 text-body font-semibold">
-              {resolve("nav.find", {}, locale)}
-            </Link>
             {MENU.map((group) => (
               <div key={group.label} className="border-b border-white/15 py-2">
                 <p className="py-1 text-label font-bold uppercase tracking-wide opacity-80">{resolve(group.label, {}, locale)}</p>

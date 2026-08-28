@@ -78,7 +78,7 @@ const CHOICES: Choice[] = [
 ];
 
 const STEPS = [1, 2, 3];
-const FACTS = [1, 2, 3, 4, 5, 6, 7];
+const FACTS = [1, 2, 3, 4, 5, 6, 7, 8];
 
 export default function EntryPage() {
   const { locale } = useLocale();
