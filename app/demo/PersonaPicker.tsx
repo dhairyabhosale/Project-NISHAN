@@ -17,7 +17,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   const { locale } = useLocale();
 
   return (
-    <main className="shell pb-16 pt-8">
+    <main className="page-in shell pb-16 pt-8">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("demo.title", {}, locale)}</h1>
       <p className="mt-3 prose-measure text-body text-ink">{resolve("demo.standfirst", {}, locale)}</p>
 

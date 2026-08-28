@@ -142,3 +142,70 @@ button, input { font: inherit; }
   .card-lift { transition: none; }
   .card-lift:hover { transform: none; }
 }
+
+/* ── Motion layer ─────────────────────────────────────────────────────────────
+   Every transition here is short, purposeful and reversible. The rail marker
+   settling stays the single hero moment; nothing below competes with it, which
+   is why nothing here exceeds 220ms or moves more than a few pixels.
+
+   No animation library: the JS budget is 150KB and CSS does all of this for
+   nothing. -------------------------------------------------------------------*/
+
+a, button, summary, [role="tab"], [role="option"] {
+  transition: background-color 160ms ease-out, color 160ms ease-out,
+              border-color 160ms ease-out, opacity 160ms ease-out,
+              transform 160ms ease-out;
+}
+
+/* Press feedback. Tiny, so a mis-tap still reads as a tap. */
+a:active, button:active { transform: scale(0.985); }
+
+/* Route transition. Replays on each navigation because the element is new. */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-in { animation: page-in 220ms ease-out both; }
+
+/* Panels that expand: language selector, Bhashini, FAQ accordion. */
+@keyframes panel-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.99); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+.panel-in { animation: panel-in 160ms ease-out both; }
+
+@keyframes accordion-in {
+  from { opacity: 0; max-height: 0; }
+  to   { opacity: 1; max-height: 32rem; }
+}
+.accordion-in { animation: accordion-in 220ms ease-out both; overflow: hidden; }
+
+/* Loading. A calm pulse, not a spinner that implies speed we cannot promise. */
+@keyframes skeleton {
+  0%, 100% { opacity: 0.55; }
+  50%      { opacity: 0.9; }
+}
+.skeleton { background: var(--rule); border-radius: 2px; animation: skeleton 1.4s ease-in-out infinite; }
+
+/* Carousel track. Paused on hover and focus so a reader is never outrun. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.marquee-track { animation: marquee 42s linear infinite; will-change: transform; }
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track { animation-play-state: paused; }
+
+/* §11.5 and the skill's reduced-motion rule: render the FINAL state, never a
+   half-finished one. Every animation above resolves to where it was going. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .marquee-track { animation: none !important; transform: none !important; }
+  .accordion-in { max-height: none !important; }
+  a:active, button:active { transform: none; }
+}

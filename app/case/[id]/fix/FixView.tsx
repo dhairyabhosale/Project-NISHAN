@@ -60,7 +60,7 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
   const doneCount = steps.filter((s) => done.includes(s)).length;
 
   return (
-    <main className="shell pb-40 pt-8">
+    <main className="page-in shell pb-40 pt-8">
       <Link href={"/case/" + encodeURIComponent(reference)}
             className="inline-flex min-h-12 items-center text-label font-bold text-ink underline underline-offset-4">
         {resolve("fix.back_to_case", {}, locale)}

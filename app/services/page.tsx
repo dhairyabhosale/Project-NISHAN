@@ -37,7 +37,7 @@ export default function ServicesPage() {
   const k = (s: string) => s as CatalogueKey;
 
   return (
-    <main className="pb-16">
+    <main className="page-in pb-16">
       <section className="on-teal bg-teal-deep py-12 text-paper md:py-16">
         <div className="shell">
           <h1 className="text-answer font-semibold leading-tight">{resolve("services.title", {}, locale)}</h1>

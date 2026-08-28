@@ -1,0 +1,30 @@
+# NISHAN - autonomous loop progress
+
+Tick one line per checklist item. Resume from the lowest unticked number.
+
+- [x] 0. DEPLOY - **not a fault.** Production already matched `main`. Verified
+      local HEAD == origin/main == deployed `89d3ee0`; old scaffold Case-ID
+      field returns 0 occurrences; new headline, Bhashini launcher and
+      Registration nav all present in the fetched HTML. `X-Vercel-Cache: HIT`
+      with `Age: 3558` was an edge hit serving correct content. The reported
+      symptom was a stale browser cache, not a failed deploy.
+- [x] 1. MOTION - CSS-only layer: hover+press on every interactive element, route
+      transition, panel expand, skeleton loading route, marquee track paused on
+      hover/focus. Reduced-motion block resolves every animation to its final
+      state. Rail marker remains the one hero moment.
+- [ ] 2. IMAGERY
+- [ ] 3. FAQ PAGE
+- [ ] 4. HEADER wrapping
+- [ ] 5. LANGUAGES order
+- [ ] 6. REGISTRATION MENU dead links
+- [ ] 7. FIND MY PAYMENT footer block
+- [ ] 8. DEMO CASE PICKER on /who
+- [ ] 9. FAULT SWITCH
+- [ ] 10. PROTOTYPE BADGE top-right
+- [ ] 11. USER-CREATED DEMO CASES
+- [ ] 12. LOGO + FAVICON
+- [ ] 13. TAGLINE single line
+- [ ] 14. CONTACT PAGE
+- [ ] 15. EM DASHES
+- [ ] 16. ABOUT THE SCHEME
+- [ ] 17. TESTIMONIALS

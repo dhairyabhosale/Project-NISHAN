@@ -94,7 +94,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                   </button>
 
                   {openMenu === group.label && (
-                    <ul className="on-paper absolute left-0 top-full z-40 w-64 overflow-hidden rounded-card border border-rule bg-paper py-1 shadow-lg">
+                    <ul className="panel-in on-paper absolute left-0 top-full z-40 w-64 overflow-hidden rounded-card border border-rule bg-paper py-1 shadow-lg">
                       {group.items.map((item) => (
                         <li key={item.label}>
                           <Link

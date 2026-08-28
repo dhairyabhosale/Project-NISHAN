@@ -34,7 +34,7 @@ export function BhashiniWidget() {
         <section
           role="dialog"
           aria-label={resolve("bhashini.title", {}, locale)}
-          className="on-paper mb-3 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-card border border-rule bg-paper shadow-lg"
+          className="panel-in on-paper mb-3 w-[min(20rem,calc(100vw-2rem))] overflow-hidden rounded-card border border-rule bg-paper shadow-lg"
         >
           <header className="on-teal flex items-center justify-between gap-3 bg-teal-deep px-4 py-3 text-paper">
             <span className="flex items-center gap-2">

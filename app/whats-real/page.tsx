@@ -37,7 +37,7 @@ export default function WhatsRealPage() {
   const k = (s: string) => s as CatalogueKey;
 
   return (
-    <main className="shell pb-16 pt-8">
+    <main className="page-in shell pb-16 pt-8">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("real.title", {}, locale)}</h1>
       <p className="mt-4 prose-measure text-body text-ink">{resolve("real.intro", {}, locale)}</p>
 

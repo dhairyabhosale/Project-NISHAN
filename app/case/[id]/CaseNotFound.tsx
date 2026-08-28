@@ -8,7 +8,7 @@ import { resolve } from "../../../content/resolve";
 export function CaseNotFound() {
   const { locale } = useLocale();
   return (
-    <main className="shell pb-16 pt-10">
+    <main className="page-in shell pb-16 pt-10">
       <h1 className="text-head font-semibold text-ink">{resolve("case.not_found", {}, locale)}</h1>
       <Link
         href="/who"
