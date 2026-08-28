@@ -74,5 +74,15 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       comments, CLAUDE.md). Two tests keep them out: none in any catalogue value
       in any of the four locales, and none in any source file under app,
       components, content, engine, lib, mocks or tests.
-- [ ] 16. ABOUT THE SCHEME
-- [ ] 17. TESTIMONIALS
+- [x] 16. ABOUT THE SCHEME - seven published figures: Rs 6,000/year, three
+      instalments, 9.44 crore beneficiaries, 20 June 2026, Rs 18,880 crore in the
+      23rd instalment, 100% central funding, operational since 1.12.2018. Seven
+      systems is the one non-portal figure and is a fact about this build.
+      Subtle 12s staggered lift cycles emphasis across the cards; disabled under
+      reduced-motion. A source note says we reproduce and do not calculate.
+- [x] 17. TESTIMONIALS - five illustrative voices in a continuously rotating
+      CSS marquee above About the scheme, paused on hover and focus, stopped
+      under reduced-motion. LABELLED ABOVE THE QUOTES as illustrative, not real.
+      No invented full names, no photographs, no identifying locations; every
+      attribution starts with the word Illustrative. Quotes describe the failure
+      modes the engine actually diagnoses.

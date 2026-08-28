@@ -15,6 +15,7 @@
 
 import Link from "next/link";
 import { FieldBackdrop } from "../components/FieldBackdrop";
+import { Voices } from "../components/Voices";
 import { useLocale } from "../components/LocaleProvider";
 import { resolve } from "../content/resolve";
 import type { CatalogueKey } from "../lib/content";
@@ -77,7 +78,7 @@ const CHOICES: Choice[] = [
 ];
 
 const STEPS = [1, 2, 3];
-const FACTS = [1, 2, 3, 4];
+const FACTS = [1, 2, 3, 4, 5, 6, 7];
 
 export default function EntryPage() {
   const { locale } = useLocale();
@@ -150,6 +151,8 @@ export default function EntryPage() {
         </div>
       </section>
 
+      <Voices />
+
       {/* Published figures reproduced, never computed by us - §18. */}
       <section className="relative isolate overflow-hidden py-14">
         <FieldBackdrop className="text-teal-deep" />
@@ -158,12 +161,13 @@ export default function EntryPage() {
         <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("facts.standfirst", {}, locale)}</p>
         <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {FACTS.map((n) => (
-            <div key={n} className="rounded-card border border-rule bg-paper p-5">
+            <div key={n} className="stat-cycle rounded-card border border-rule bg-paper p-5">
               <dt className="data text-head font-bold text-teal-deep">{resolve(k("facts." + n + ".value"), {}, locale)}</dt>
               <dd className="mt-2 text-label text-ink">{resolve(k("facts." + n + ".label"), {}, locale)}</dd>
             </div>
           ))}
         </dl>
+        <p className="mt-6 prose-measure text-label text-ink-soft">{resolve("facts.source", {}, locale)}</p>
         </div>
       </section>
 
