@@ -44,10 +44,20 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       stays certain because latency is not silence. What was missing was reach:
       the section told a reviewer to hand-edit a URL. It now offers three
       one-tap links.
-- [ ] 10. PROTOTYPE BADGE top-right
+- [x] 10. PROTOTYPE BADGE - fixed top-right, z-60, version-badge styling,
+      non-dismissible, present on every screen and surviving scroll. Header row
+      reserves 104px inline-end so nav never slides under it. Full 12.7 sentence
+      still closes every page in the footer; badge carries it as a title.
 - [ ] 11. USER-CREATED DEMO CASES
-- [ ] 12. LOGO + FAVICON
-- [ ] 13. TAGLINE single line
+- [x] 12. LOGO + FAVICON - new inline-SVG wordmark: framed custody rail, three
+      cleared gates stepping in, a barrier drawn shut, money standing at it.
+      Squarer and better balanced; disc large enough to read at favicon size.
+      app/icon.svg wired as the favicon in --teal-deep. No image files.
+- [x] 13. TAGLINE - logo lockup is whitespace-nowrap + truncate, so it holds one
+      line at every viewport. TODO(decide): the checklist quotes the Rs 2,000
+      tagline, but the previous instruction removed that wording as an explicit
+      objective change. Kept the current tagline and fixed the wrapping, which
+      satisfies both readings; say the word to restore the old wording.
 - [ ] 14. CONTACT PAGE
 - [ ] 15. EM DASHES
 - [ ] 16. ABOUT THE SCHEME

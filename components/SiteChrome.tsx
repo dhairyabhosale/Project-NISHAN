@@ -59,8 +59,18 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
+      {/* 12.7 - persistent, non-dismissible, on every screen. Styled as a
+          version badge and pinned to the viewport so it survives scrolling.
+          The full sentence still closes every page in the footer. */}
+      <span
+        className="fixed right-3 top-3 z-[60] rounded-card border border-ink/15 bg-pending px-2.5 py-1 text-[12px] font-bold uppercase tracking-wide text-ink shadow-sm print:hidden"
+        title={resolve("banner.prototype", {}, locale)}
+      >
+        {resolve("banner.chip", {}, locale)}
+      </span>
+
       <header className="on-teal bg-teal-deep text-paper">
-        <div className="shell flex items-center justify-between gap-3 py-4">
+        <div className="shell flex items-center justify-between gap-3 py-4 pe-[104px]">
           <Link href="/" className="rounded-card">
             <NishanLogo locale={locale} />
           </Link>
@@ -119,10 +129,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 {resolve("nav.real", {}, locale)}
               </Link>
             </nav>
-
-            <span className="hidden shrink-0 rounded-card bg-pending px-2 py-1 text-[13px] font-bold text-ink sm:inline">
-              {resolve("banner.chip", {}, locale)}
-            </span>
 
             <LanguageSelector />
 
