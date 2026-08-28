@@ -494,5 +494,10 @@
   "faq.8.q": "TODO_TA: How do I see whether my village list includes me?",
   "faq.8.a": "TODO_TA: The official website publishes a beneficiary list by state, district, block and village. It is useful for confirming that your household appears at all. It will not tell you why a payment stopped, because the list only shows who is registered, not what happened to a particular instalment.",
   "faq.9.q": "TODO_TA: I want to complain. Where does it actually go?",
-  "faq.9.a": "TODO_TA: It depends on the problem, and sending it to the wrong place is why complaints stall. The central helpline cannot fix a land record or a state-level hold, because it has no access to your state's records. Land and eligibility problems go to your village revenue officer or Block Agriculture Officer. Bank problems go to your branch. A complaint that names the instalment, the date it was released, the exact status shown, and your registration number resolves faster, because the officer does not have to come back and ask."
+  "faq.9.a": "TODO_TA: It depends on the problem, and sending it to the wrong place is why complaints stall. The central helpline cannot fix a land record or a state-level hold, because it has no access to your state's records. Land and eligibility problems go to your village revenue officer or Block Agriculture Officer. Bank problems go to your branch. A complaint that names the instalment, the date it was released, the exact status shown, and your registration number resolves faster, because the officer does not have to come back and ask.",
+  "who.demo_heading": "TODO_TA: Or open a demo case",
+  "who.demo_body": "TODO_TA: Eight made-up people, each stopped at a different gate. Pick one to see the whole journey without typing anything.",
+  "demo.fault.npci": "TODO_TA: Silence the bank-link system",
+  "demo.fault.uidai": "TODO_TA: Silence the identity system",
+  "demo.fault.scheme": "TODO_TA: Silence the scheme register"
 }

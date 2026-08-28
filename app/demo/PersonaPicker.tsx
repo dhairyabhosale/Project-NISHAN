@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "../../components/LocaleProvider";
 import { resolve } from "../../content/resolve";
+import type { CatalogueKey } from "../../lib/content";
 
 export interface PersonaCard {
   ref: string;
@@ -13,8 +14,19 @@ export interface PersonaCard {
   reference: string;
 }
 
+/** Each spec silences a different system, so the engine hits its gap at a
+ *  different gate and the INDETERMINATE verdict names a different cleared set. */
+const FAULTS: { spec: string; label: CatalogueKey }[] = [
+  { spec: "mNPCI:timeout", label: "demo.fault.npci" },
+  { spec: "mUIDAI:timeout", label: "demo.fault.uidai" },
+  { spec: "mSCHEME:timeout", label: "demo.fault.scheme" }
+];
+
 export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   const { locale } = useLocale();
+  // Ramesh clears the first three gates, so silencing a later system shows the
+  // engine listing what it DID confirm before it stopped.
+  const first = personas[1]?.reference ?? personas[0]?.reference ?? "";
 
   return (
     <main className="page-in shell pb-16 pt-8">
@@ -46,9 +58,25 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
         ))}
       </ul>
 
-      <section className="mt-10 rounded-card border border-rule bg-paper p-4">
+      {/* One tap each. A reviewer should never have to hand-edit a URL to see
+          the engine refuse to guess - that refusal is the strongest twenty
+          seconds in the demo. */}
+      <section className="mt-10 rounded-card border-2 border-pending bg-paper p-5">
         <h2 className="text-head font-semibold text-ink">{resolve("demo.fault_heading", {}, locale)}</h2>
         <p className="mt-2 prose-measure text-body text-ink">{resolve("demo.fault_body", {}, locale)}</p>
+        <ul className="mt-4 grid gap-3 sm:grid-cols-3">
+          {FAULTS.map((f) => (
+            <li key={f.spec}>
+              <Link
+                href={"/case/" + encodeURIComponent(first) + "?fault=" + encodeURIComponent(f.spec)}
+                className="card-lift flex h-full flex-col rounded-card border border-rule bg-cyan-pale p-4"
+              >
+                <span className="text-body font-semibold text-ink">{resolve(f.label, {}, locale)}</span>
+                <span className="data mt-2 text-label text-ink-soft">?fault={f.spec}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
     </main>
   );

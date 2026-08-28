@@ -35,8 +35,15 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       links remain in the header.
 - [x] 7. FIND MY PAYMENT - static block removed from the site footer; footer
       regridded to two columns. The journey is reached from the header and /who.
-- [ ] 8. DEMO CASE PICKER on /who
-- [ ] 9. FAULT SWITCH
+- [x] 8. DEMO CASE PICKER - eight selectable persona cards on /who, each naming
+      the person, the blocker it demonstrates and its live case reference. /who
+      became a server component so the fixtures stay off the client bundle.
+- [x] 9. FAULT SWITCH - **already worked.** Verified mNPCI:timeout,
+      mUIDAI:timeout, mSCHEME:timeout and mLAND:down all return the
+      INDETERMINATE verdict with the correct cleared-gate list; `slow` correctly
+      stays certain because latency is not silence. What was missing was reach:
+      the section told a reviewer to hand-edit a URL. It now offers three
+      one-tap links.
 - [ ] 10. PROTOTYPE BADGE top-right
 - [ ] 11. USER-CREATED DEMO CASES
 - [ ] 12. LOGO + FAVICON

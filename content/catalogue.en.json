@@ -494,5 +494,10 @@
   "faq.8.q": "How do I see whether my village list includes me?",
   "faq.8.a": "The official website publishes a beneficiary list by state, district, block and village. It is useful for confirming that your household appears at all. It will not tell you why a payment stopped, because the list only shows who is registered, not what happened to a particular instalment.",
   "faq.9.q": "I want to complain. Where does it actually go?",
-  "faq.9.a": "It depends on the problem, and sending it to the wrong place is why complaints stall. The central helpline cannot fix a land record or a state-level hold, because it has no access to your state's records. Land and eligibility problems go to your village revenue officer or Block Agriculture Officer. Bank problems go to your branch. A complaint that names the instalment, the date it was released, the exact status shown, and your registration number resolves faster, because the officer does not have to come back and ask."
+  "faq.9.a": "It depends on the problem, and sending it to the wrong place is why complaints stall. The central helpline cannot fix a land record or a state-level hold, because it has no access to your state's records. Land and eligibility problems go to your village revenue officer or Block Agriculture Officer. Bank problems go to your branch. A complaint that names the instalment, the date it was released, the exact status shown, and your registration number resolves faster, because the officer does not have to come back and ask.",
+  "who.demo_heading": "Or open a demo case",
+  "who.demo_body": "Eight made-up people, each stopped at a different gate. Pick one to see the whole journey without typing anything.",
+  "demo.fault.npci": "Silence the bank-link system",
+  "demo.fault.uidai": "Silence the identity system",
+  "demo.fault.scheme": "Silence the scheme register"
 }
