@@ -1,9 +1,10 @@
 import en from "./catalogue.en.json";
 import hi from "./catalogue.hi.json";
 import ta from "./catalogue.ta.json";
+import mr from "./catalogue.mr.json";
 import type { CatalogueKey, Locale, ResolvedString, Slots } from "../lib/content";
 
-const catalogues = { en, hi, ta } as const;
+const catalogues = { en, hi, ta, mr } as const;
 
 /** §10.3: an unknown slot renders as an em dash, never as an empty gap and
  *  never as a crash. A sentence with a hole in it is worse than one that says

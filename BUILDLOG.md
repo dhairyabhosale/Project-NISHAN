@@ -916,3 +916,78 @@ failure the product exists to fix.
 compiles · First Load JS 119–132 KB against the 150 KB budget · all ten routes
 200 including the not-found state · one `h1` per screen · zero `TODO_` strings
 in any rendered page.
+
+---
+
+## Session 11 — 28 August 2026 — Objective change, Bhashini widget, Hindi and Marathi
+
+**Author: Claude (Claude Code).**
+
+### The objective changed
+
+The product is no longer framed as "find where your ₹2,000 stopped". It is a
+modern, easier way to reach **every** service PM-KISAN already offers. The
+payment diagnosis remains the flagship, not the whole product.
+
+Both ₹2,000 taglines are gone from every screen and every catalogue. The logo
+sub-label is now "PM-KISAN services, made simple"; the entry headline is
+"Every PM-KISAN service, in one clear place."
+
+**This contradicts R2** (one clearly defined problem) and §6.4's anti-goals. It
+was flagged twice and reaffirmed twice as an absolute rule, so it is recorded
+here as a deliberate owner decision rather than resolved silently.
+
+### Bhashini — a launcher, not a chatbot
+
+A fixed bottom-right launcher showing a microphone and "Bhashini", expanding to
+a small panel that says **Coming soon**.
+
+§16.3 bans a chat widget and §4 explains why: Kisan e-Mitra already answers
+questions in eleven languages, and matching the incumbent at its own game
+loses. What shipped is a voice INPUT affordance in a familiar launcher shape —
+no conversation, no model, no state. It requests no microphone permission,
+imports no speech library, and its only handler opens and closes its own panel.
+That still satisfies §9.4's "prominent, visually disabled, names Bhashini", and
+it fixes the earlier collision where the inline mic sat behind a pinned action
+bar on five screens. Those bars now reserve bottom padding for it.
+
+### The disclosure band moved, and a chip stayed
+
+§12.7 requires the banner on every screen, non-dismissible. By instruction it
+moved to the end of the footer.
+
+**A "Prototype" chip was kept in the header.** A reviewer can otherwise use the
+entire site without ever seeing that this is not the official service, and that
+control is the one the honesty criterion turns on. The full sentence still
+appears, in full, as the last thing on every page.
+
+### Header — the portal's whole surface, regrouped
+
+Three dropdown groups (Payments, Registration, Help) plus direct links, with a
+mobile menu. The grouping is by what a person wants to do, not by each
+service's official name — P4 is that the portal's links have near-identical
+names with nothing to say which one you need.
+
+### Hindi and Marathi — genuinely complete
+
+**471 keys × 2 languages, hand-written, zero placeholders.** Every screen, every
+verdict, every evidence row, every Fix Path step, the Visit Slip, and the
+whole `/whats-real` disclosure page.
+
+Marathi was added as a fourth catalogue locale. `lib/languages.ts` now marks
+`hi` and `mr` resolved; Tamil stays listed and declared pending, because it is
+still 467 placeholders and §10.2 forbids rendering a half-translated screen.
+
+Four tests lock it: no placeholder in `hi` or `mr`, key sets identical to
+English, **every slot preserved** in every translated string, and the rendered
+output actually contains Devanagari rather than silently falling back. The slot
+test matters most — a translator dropping `{amount}` would render an em dash
+where a rupee figure belongs, which is a silent hole rather than a visible
+failure.
+
+`/whats-real` was updated in the same pass so its language row states three
+resolved locales rather than one.
+
+**Verified:** `npm test` 153/153 · `tsc --noEmit` exits 0 · production build
+compiles · First Load JS unchanged at 87.3 kB shared · all eight routes 200 ·
+no tagline anywhere · header chip and footer band both present.

@@ -113,7 +113,7 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
         </p>
       </article>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 print:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4 print:hidden">
         <div className="shell">
           <button
             type="button"

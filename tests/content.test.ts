@@ -345,3 +345,42 @@ describe("E7 — the Visit Slip ask fills from real case facts", () => {
     assert.equal(ask.includes(MISSING_SLOT), false, ask);
   });
 });
+
+describe("E6 — Hindi and Marathi are fully resolved (§10.2)", () => {
+  const MR = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.mr.json"), "utf8")) as Record<string, string>;
+  const HINDI = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.hi.json"), "utf8")) as Record<string, string>;
+
+  it("carries no placeholder in hi or mr", () => {
+    for (const [name, cat] of [["hi", HINDI], ["mr", MR]] as const) {
+      const left = Object.entries(cat).filter(([, v]) => v.startsWith("TODO_")).map(([k]) => k);
+      assert.deepEqual(left, [], name + " still has placeholders");
+    }
+  });
+
+  it("keeps the key set identical to English", () => {
+    const en = Object.keys(EN).sort();
+    assert.deepEqual(Object.keys(HINDI).sort(), en);
+    assert.deepEqual(Object.keys(MR).sort(), en);
+  });
+
+  it("preserves every slot, so a translated sentence cannot lose its value", () => {
+    // A translator dropping {amount} would render an em dash where a rupee
+    // figure belongs — a silent hole rather than a visible failure.
+    for (const [name, cat] of [["hi", HINDI], ["mr", MR]] as const) {
+      for (const [k, v] of Object.entries(EN)) {
+        const want = (v.match(/\{(\w+)\}/g) ?? []).sort();
+        const got = (cat[k].match(/\{(\w+)\}/g) ?? []).sort();
+        assert.deepEqual(got, want, name + " " + k + " slot mismatch");
+      }
+    }
+  });
+
+  it("actually renders in Devanagari, not English fallback", () => {
+    const devanagari = /[\u0900-\u097F]/;
+    for (const loc of ["hi", "mr"] as const) {
+      assert.match(resolve("entry.headline" as CatalogueKey, {}, loc), devanagari);
+      assert.match(resolve("verdict.MOBILE_NOT_LINKED.sentence" as CatalogueKey, {}, loc), devanagari);
+      assert.match(resolve("banner.prototype" as CatalogueKey, {}, loc), devanagari);
+    }
+  });
+});

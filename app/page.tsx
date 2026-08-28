@@ -14,7 +14,6 @@
  * No captcha (P1). No login. No scroll to reach the primary action. */
 
 import Link from "next/link";
-import { MicButton } from "../components/MicButton";
 import { useLocale } from "../components/LocaleProvider";
 import { resolve } from "../content/resolve";
 import type { CatalogueKey } from "../lib/content";
@@ -130,7 +129,6 @@ export default function EntryPage() {
             </li>
           ))}
         </ul>
-        <MicButton locale={locale} />
       </section>
 
       {/* A real sequence, so numbering it carries information. */}

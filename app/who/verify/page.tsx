@@ -79,7 +79,7 @@ function VerifyForm() {
         </button>
       </details>
 
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4">
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4">
         <div className="shell">
           <button
             type="button"
