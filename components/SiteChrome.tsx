@@ -57,7 +57,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           </Link>
 
           <div className="order-3 flex basis-full min-w-0 items-center gap-3 lg:order-2 lg:w-0 lg:basis-0 lg:flex-1">
-            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-1 items-center gap-2 xl:flex xl:flex-nowrap xl:justify-start xl:gap-0">
+            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-1 items-center gap-2 xl:flex xl:flex-nowrap xl:justify-start xl:gap-4">
               {MENU.map((group) => (
                 <div
                   key={group.label}
@@ -69,7 +69,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                     type="button"
                     aria-expanded={openMenu === group.label}
                     onClick={() => setOpenMenu(openMenu === group.label ? null : group.label)}
-                    className="inline-flex min-h-12 items-center gap-1 whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1"
+                    className="inline-flex min-h-12 items-center gap-1 whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0"
                   >
                     {resolve(group.label, {}, locale)}
                     <svg
@@ -99,16 +99,16 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 </div>
               ))}
 
-              <Link href="/how-it-works" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
+              <Link href="/how-it-works" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.how_it_works", {}, locale)}
               </Link>
-              <Link href="/demo" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
+              <Link href="/demo" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.demo", {}, locale)}
               </Link>
-              <Link href="/services" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
+              <Link href="/services" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.services", {}, locale)}
               </Link>
-              <Link href="/whats-real" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
+              <Link href="/whats-real" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.real", {}, locale)}
               </Link>
             </nav>
