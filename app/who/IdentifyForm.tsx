@@ -98,10 +98,9 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
       </div>
 
       <form
-        className="mt-6 grid gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]"
+        className="mt-6"
         onSubmit={(e: FormEvent) => { e.preventDefault(); void lookup(value); }}
       >
-        <div>
         <label htmlFor="identifier" className="block text-label font-semibold text-ink">
           {resolve(active.label, {}, locale)}
         </label>
@@ -121,8 +120,6 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
           </p>
         )}
 
-        </div>
-        <div>
         <details className="mt-6 rounded-card border border-rule bg-paper p-4">
           <summary className="cursor-pointer text-body font-semibold text-teal-deep">
             {resolve("who.dont_have", {}, locale)}
@@ -135,7 +132,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
         <section className="mt-8">
           <h2 className="text-head font-semibold text-ink">{resolve("who.demo_heading", {}, locale)}</h2>
           <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("who.demo_body", {}, locale)}</p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {personas.map((p) => (
               <li key={p.reference}>
                 <button
@@ -177,8 +174,6 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
           </button>
         </section>
 
-        </div>
-
         {/* §11.5 - primary action pinned to the bottom for thumb reach. */}
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4">
           <div className="shell">
@@ -195,5 +190,4 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
     </main>
   );
 }
-
 
