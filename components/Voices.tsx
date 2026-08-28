@@ -1,6 +1,6 @@
 "use client";
 
-/* Illustrative voices - a continuously rotating strip.
+/* Illustrative voices - a compact static section.
  *
  * THESE ARE NOT REAL QUOTES, AND THE SECTION SAYS SO ABOVE THE FOLD.
  *
@@ -15,8 +15,8 @@
  * The quotes describe the failure modes the engine actually diagnoses, so the
  * section earns its place rather than decorating the page.
  *
- * CSS marquee, no library. Pauses on hover and on keyboard focus so a reader is
- * never outrun, and stops entirely under prefers-reduced-motion. */
+ * Compact cards. A reader should encounter each illustrative
+ * example once, in a predictable order. */
 
 import { useLocale } from "./LocaleProvider";
 import { resolve } from "../content/resolve";
@@ -31,7 +31,7 @@ export function Voices() {
   const cards = Array.from({ length: COUNT }, (_, i) => (
     <figure
       key={i}
-      className="w-[18rem] shrink-0 rounded-card border border-rule bg-paper p-4 sm:w-[21rem]"
+      className="rounded-card border border-rule bg-paper p-4"
     >
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75"
            strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="text-teal-deep">
@@ -53,13 +53,8 @@ export function Voices() {
         </p>
       </div>
 
-      <div className="marquee mt-6 overflow-hidden">
-        <div className="marquee-track flex w-max gap-4 px-4">
-          {cards}
-          {/* Duplicated so the track can loop seamlessly. Hidden from assistive
-              tech, which reads the first set once. */}
-          <div aria-hidden="true" className="flex gap-4">{cards}</div>
-        </div>
+      <div className="mt-6 grid gap-4 px-4 sm:grid-cols-2 lg:grid-cols-3">
+        {cards}
       </div>
     </section>
   );

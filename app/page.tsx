@@ -86,7 +86,7 @@ export default function EntryPage() {
 
   return (
     <main>
-      {/* Hero band - anchors the page. No carousel: it would hide content
+      {/* Hero band - anchors the page. No rotating content: it would hide content
           behind a timer on the one screen that has three seconds to be
           understood. No photograph: §11.9 budgets zero images on the primary
           path, and photographs fail first on 2G. */}

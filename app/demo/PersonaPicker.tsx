@@ -156,12 +156,12 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
           ))}
         </div>
 
-        <ul className="mt-6 grid gap-4 md:grid-cols-2">
+        <ul className="mt-6 grid max-w-4xl gap-4 md:grid-cols-2">
           {filtered.map((p) => (
-            <li key={p.ref}>
+            <li key={p.ref} className="min-w-0">
               <Link
                 href={"/case/" + encodeURIComponent(p.reference)}
-                className="card-lift flex h-full flex-col justify-between rounded-card border border-rule bg-paper p-5 transition-shadow hover:bg-white hover:shadow-md"
+                className="card-lift flex h-full min-w-0 flex-col justify-between overflow-hidden rounded-card border border-rule bg-paper p-5 transition-shadow hover:bg-white hover:shadow-md"
               >
                 <div>
                   <div className="flex items-baseline justify-between gap-3">

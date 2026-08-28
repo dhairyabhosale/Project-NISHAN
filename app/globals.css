@@ -187,15 +187,6 @@ a:active, button:active { transform: scale(0.985); }
 }
 .skeleton { background: var(--rule); border-radius: 2px; animation: skeleton 1.4s ease-in-out infinite; }
 
-/* Carousel track. Paused on hover and focus so a reader is never outrun. */
-@keyframes marquee {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.marquee-track { animation: marquee 42s linear infinite; will-change: transform; }
-.marquee:hover .marquee-track,
-.marquee:focus-within .marquee-track { animation-play-state: paused; }
-
 /* §11.5 and the skill's reduced-motion rule: render the FINAL state, never a
    half-finished one. Every animation above resolves to where it was going. */
 @media (prefers-reduced-motion: reduce) {
@@ -205,7 +196,6 @@ a:active, button:active { transform: scale(0.985); }
     transition-duration: 0.001ms !important;
     scroll-behavior: auto !important;
   }
-  .marquee-track { animation: none !important; transform: none !important; }
   .accordion-in { max-height: none !important; }
   a:active, button:active { transform: none; }
 }
@@ -228,26 +218,4 @@ a:active, button:active { transform: scale(0.985); }
 @media (prefers-reduced-motion: reduce) {
   .stat-cycle { animation: none !important; transform: none !important; }
 }
-
-/* Accessibility Mode Overrides */
-html.font-large body { font-size: 20px; }
-html.font-large .text-answer { font-size: 34px !important; }
-html.font-large .text-head { font-size: 25px !important; }
-html.font-large .text-body { font-size: 20px !important; }
-html.font-large .text-label { font-size: 17px !important; }
-
-html.high-contrast {
-  --teal-deep: #004d40;
-  --cyan-pale: #ffffff;
-  --rule: #000000;
-  --ink: #000000;
-  --ink-soft: #222222;
-  --white: #ffffff;
-  --green: #1b5e20;
-  --green-soft: #dcedc8;
-  --pending: #bf360c;
-  --stop: #b71c1c;
-}
-html.high-contrast .border-rule { border-color: #000000 !important; }
-html.high-contrast .rounded-card { border-width: 2px !important; }
 

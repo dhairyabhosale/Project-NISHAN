@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useLocale } from "../../components/LocaleProvider";
 import { resolve } from "../../content/resolve";
+import type { CatalogueKey } from "../../lib/content";
 
 export default function HowItWorksPage() {
   const { locale } = useLocale();
@@ -41,12 +42,13 @@ export default function HowItWorksPage() {
   ];
 
   const flowNodes = [
-    { label: "Citizen or Helper", icon: "1" },
-    { label: "NISHAN Interface", icon: "2" },
-    { label: "Identity and Records", icon: "3" },
-    { label: "Precedence Rules Engine", icon: "4" },
-    { label: "Diagnosis Engine", icon: "5" },
-    { label: "Action Recommendation and Slip", icon: "6" }
+    { label: resolve("how_page.flow.citizen", {}, locale), icon: "1" },
+    { label: resolve("how_page.flow.interface", {}, locale), icon: "2" },
+    { label: resolve("how_page.flow.identity", {}, locale), icon: "3" },
+    { label: resolve("how_page.flow.verification", {}, locale), icon: "4" },
+    { label: resolve("how_page.flow.diagnosis", {}, locale), icon: "5" },
+    { label: resolve("how_page.flow.action", {}, locale), icon: "6" },
+    { label: resolve("how_page.flow.resolution", {}, locale), icon: "7" }
   ];
 
   return (
@@ -108,20 +110,20 @@ export default function HowItWorksPage() {
           {resolve("how_page.flow.title", {}, locale)}
         </h2>
 
-        <div className="mt-6 rounded-card border border-rule bg-paper p-6">
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 rounded-card border border-rule bg-paper p-4 sm:p-6">
+          <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label={resolve("how_page.flow.title", {}, locale)}>
             {flowNodes.map((node, i) => (
-              <div key={node.label} className="relative flex items-center gap-3 rounded-card border border-rule bg-cyan-pale/40 p-4">
+              <li key={node.label} className="relative flex min-h-20 items-center gap-3 rounded-card border border-rule bg-cyan-pale/40 p-4">
                 <span className="grid size-8 place-items-center rounded-full bg-teal-deep text-paper font-bold text-label" aria-hidden="true">
                   {node.icon}
                 </span>
                 <div>
-                  <span className="block text-label font-bold text-ink-soft uppercase text-[12px]">Stage {i + 1}</span>
+                  <span className="block text-label font-bold uppercase text-ink-soft">{resolve(("how_page.flow.stage." + (i + 1)) as CatalogueKey, {}, locale)}</span>
                   <span className="text-body font-semibold text-ink">{node.label}</span>
                 </div>
-              </div>
+              </li>
             ))}
-          </div>
+          </ol>
         </div>
       </section>
 
@@ -139,17 +141,17 @@ export default function HowItWorksPage() {
               {resolve("how_page.proto.desc", {}, locale)}
             </p>
             <ul className="mt-4 space-y-2 text-label text-ink-soft">
-              <li className="flex items-center gap-2">
-                <span className="text-teal-deep font-bold">Ҝ�</span>
-                <span>Deterministic rules engine running in zero external latency</span>
+              <li className="flex items-start gap-2">
+                <span className="text-teal-deep font-bold" aria-hidden="true">✓</span>
+                <span>{resolve("how_page.proto.point1", {}, locale)}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="text-teal-deep font-bold">Ҝ�</span>
-                <span>Multi-Government Service Layer simulation with fault injection</span>
+              <li className="flex items-start gap-2">
+                <span className="text-teal-deep font-bold" aria-hidden="true">✓</span>
+                <span>{resolve("how_page.proto.point2", {}, locale)}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="text-teal-deep font-bold">Ҝ�</span>
-                <span>Zero farmer tracking or analytics; in-browser session privacy</span>
+              <li className="flex items-start gap-2">
+                <span className="text-teal-deep font-bold" aria-hidden="true">✓</span>
+                <span>{resolve("how_page.proto.point3", {}, locale)}</span>
               </li>
             </ul>
           </div>
@@ -165,17 +167,17 @@ export default function HowItWorksPage() {
               {resolve("how_page.prod.desc", {}, locale)}
             </p>
             <ul className="mt-4 space-y-2 text-label text-ink-soft">
-              <li className="flex items-center gap-2">
-                <span className="text-pending font-bold">→</span>
-                <span>UIDAI e-KYC and Aadhaar verification gateway</span>
+              <li className="flex items-start gap-2">
+                <span className="text-pending font-bold" aria-hidden="true">→</span>
+                <span>{resolve("how_page.prod.point1", {}, locale)}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="text-pending font-bold"></span>
-                <span>State Land Records API integration (e-Bhulekh / Meebhoomi)</span>
+              <li className="flex items-start gap-2">
+                <span className="text-pending font-bold" aria-hidden="true">→</span>
+                <span>{resolve("how_page.prod.point2", {}, locale)}</span>
               </li>
-              <li className="flex items-center gap-2">
-                <span className="text-pending font-bold"></span>
-                <span>NPCI Aadhaar Payments Bridge and PFMS DBT Bharat ledger</span>
+              <li className="flex items-start gap-2">
+                <span className="text-pending font-bold" aria-hidden="true">→</span>
+                <span>{resolve("how_page.prod.point3", {}, locale)}</span>
               </li>
             </ul>
           </div>

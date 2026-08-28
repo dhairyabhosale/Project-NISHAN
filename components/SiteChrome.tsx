@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
-import { AccessibilityControls } from "./AccessibilityControls";
 import { BhashiniWidget } from "./BhashiniWidget";
 import { ConnectionStrip } from "./ConnectionStrip";
 import { LanguageSelector } from "./LanguageSelector";
@@ -48,21 +47,14 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
-      <span
-        aria-hidden="true"
-        className="fixed right-3 top-3 z-[60] rounded-card border-2 border-pending bg-paper px-2.5 py-1 text-label font-bold text-pending shadow-sm"
-      >
-        {resolve("banner.chip", {}, locale)}
-      </span>
-
       <header className="on-teal bg-teal-deep text-paper">
-        <div className="shell flex items-center justify-between gap-3 py-4 pe-[104px]">
-          <Link href="/" className="rounded-card">
+        <div className="shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 py-4">
+          <Link href="/" className="order-1 basis-full rounded-card sm:basis-auto">
             <NishanLogo locale={locale} />
           </Link>
 
-          <div className="flex items-center gap-2">
-            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden items-center gap-1 lg:flex">
+          <div className="order-3 flex basis-full items-center gap-3 lg:order-2 lg:min-w-0 lg:flex-1">
+            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-1 items-center justify-end gap-1 lg:flex">
               {MENU.map((group) => (
                 <div
                   key={group.label}
@@ -118,9 +110,13 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               </Link>
             </nav>
 
-            <AccessibilityControls />
-            <LanguageSelector />
+          </div>
 
+          <div className="order-2 ml-auto flex basis-full items-center justify-end gap-2 sm:basis-auto lg:order-3">
+            <p className="rounded-card border-2 border-pending bg-paper px-2.5 py-1 text-label font-bold text-pending">
+              {resolve("banner.chip", {}, locale)}
+            </p>
+            <LanguageSelector />
             <button
               type="button"
               onClick={() => setMobileOpen((o) => !o)}

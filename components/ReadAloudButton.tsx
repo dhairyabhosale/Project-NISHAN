@@ -55,8 +55,8 @@ export function ReadAloudButton({
   }
 
   const label = speaking
-    ? resolve("a11y.stop_reading", {}, locale)
-    : resolve("a11y.read_aloud", {}, locale);
+    ? resolve("voice.stop_reading", {}, locale)
+    : resolve("voice.read_aloud", {}, locale);
 
   return (
     <button
