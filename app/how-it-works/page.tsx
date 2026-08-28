@@ -57,6 +57,19 @@ export default function HowItWorksPage() {
         <h1 className="text-answer font-semibold text-ink leading-tight">
           {resolve("how_page.title", {}, locale)}
         </h1>
+        <p className="mt-2 text-body font-medium tracking-wide text-teal-deep sm:whitespace-nowrap">
+          {resolve("how_page.full_name", {}, locale).split(" ").map((word, index) => (
+            <span key={`${word}-${index}`}>
+              {index > 0 ? " " : ""}
+              {word === "&" ? word : (
+                <>
+                  <strong>{word.charAt(0)}</strong>
+                  {word.slice(1)}
+                </>
+              )}
+            </span>
+          ))}
+        </p>
         <p className="mt-3 max-w-3l text-head text-ink-soft leading-relaxed">
           {resolve("how_page.subtitle", {}, locale)}
         </p>

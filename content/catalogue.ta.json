@@ -561,6 +561,7 @@
   "voice.read_aloud": "TODO_TA: Listen",
   "voice.stop_reading": "TODO_TA: Stop listening",
   "how_page.title": "TODO_TA: How NISHAN Works",
+  "how_page.full_name": "Nidhi Investigation, Status, Help & Accountability Navigator",
   "how_page.subtitle": "TODO_TA: Simplifying complex government scheme troubleshooting into five clear, guided steps.",
   "how_page.step1.title": "TODO_TA: 1. Citizen input",
   "how_page.step1.desc": "TODO_TA: The citizen enters a synthetic lookup identifier - Aadhaar, mobile, or registration number.",

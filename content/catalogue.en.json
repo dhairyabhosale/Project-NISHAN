@@ -561,6 +561,7 @@
   "voice.read_aloud": "Listen",
   "voice.stop_reading": "Stop listening",
   "how_page.title": "How NISHAN Works",
+  "how_page.full_name": "Nidhi Investigation, Status, Help & Accountability Navigator",
   "how_page.subtitle": "Simplifying complex government scheme troubleshooting into five clear, guided steps.",
   "how_page.step1.title": "1. Citizen input",
   "how_page.step1.desc": "The citizen enters a synthetic lookup identifier - Aadhaar, mobile, or registration number.",
