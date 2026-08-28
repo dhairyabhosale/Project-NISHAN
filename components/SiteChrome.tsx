@@ -51,13 +51,13 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-paper px-2.5 py-1 text-label font-bold text-pending sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
-        <div className="shell flex flex-wrap items-center justify-between gap-x-8 gap-y-3 pb-4 pt-14 lg:pt-12">
-          <Link href="/" className="order-1 basis-full shrink-0 rounded-card sm:basis-auto sm:min-w-[195px] lg:mr-2">
+        <div className="shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pb-4 pt-14 lg:pt-12 xl:flex-nowrap">
+          <Link href="/" className="order-1 basis-full shrink-0 rounded-card sm:basis-auto sm:min-w-[195px] xl:mr-2 xl:min-w-[175px]">
             <NishanLogo locale={locale} />
           </Link>
 
           <div className="order-3 flex basis-full min-w-0 items-center gap-3 lg:order-2 lg:w-0 lg:basis-0 lg:flex-1">
-            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-1 items-center gap-2 lg:flex lg:flex-wrap lg:justify-start">
+            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-1 items-center gap-2 xl:flex xl:flex-nowrap xl:justify-start xl:gap-0">
               {MENU.map((group) => (
                 <div
                   key={group.label}
@@ -69,7 +69,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                     type="button"
                     aria-expanded={openMenu === group.label}
                     onClick={() => setOpenMenu(openMenu === group.label ? null : group.label)}
-                    className="inline-flex min-h-12 items-center gap-1.5 whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10"
+                    className="inline-flex min-h-12 items-center gap-1 whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1"
                   >
                     {resolve(group.label, {}, locale)}
                     <svg
@@ -99,30 +99,30 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 </div>
               ))}
 
-              <Link href="/how-it-works" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
+              <Link href="/how-it-works" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
                 {resolve("nav.how_it_works", {}, locale)}
               </Link>
-              <Link href="/demo" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
+              <Link href="/demo" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
                 {resolve("nav.demo", {}, locale)}
               </Link>
-              <Link href="/services" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
+              <Link href="/services" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
                 {resolve("nav.services", {}, locale)}
               </Link>
-              <Link href="/whats-real" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-3 text-label font-semibold hover:bg-white/10">
+              <Link href="/whats-real" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-1">
                 {resolve("nav.real", {}, locale)}
               </Link>
             </nav>
 
           </div>
 
-          <div className="order-2 ml-auto flex basis-full items-center justify-end gap-2 sm:basis-auto lg:order-3 lg:shrink-0">
+          <div className="order-2 ml-auto flex basis-full items-center justify-end gap-2 sm:basis-auto lg:order-3 lg:shrink-0 xl:ml-2">
             <LanguageSelector />
             <button
               type="button"
               onClick={() => setMobileOpen((o) => !o)}
               aria-expanded={mobileOpen}
               aria-label={resolve("nav.menu", {}, locale)}
-              className="grid size-12 shrink-0 place-items-center rounded-card hover:bg-white/10 lg:hidden"
+              className="grid size-12 shrink-0 place-items-center rounded-card hover:bg-white/10 xl:hidden"
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                 {mobileOpen ? <path d="m6 6 12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
@@ -132,7 +132,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         </div>
 
         {mobileOpen && (
-          <nav aria-label={resolve("nav.menu", {}, locale)} className="shell border-t border-white/20 pb-4 lg:hidden">
+          <nav aria-label={resolve("nav.menu", {}, locale)} className="shell border-t border-white/20 pb-4 xl:hidden">
             {MENU.map((group) => (
               <div key={group.label} className="border-b border-white/15 py-2">
                 <p className="py-1 text-label font-bold uppercase tracking-wide opacity-80">{resolve(group.label, {}, locale)}</p>
