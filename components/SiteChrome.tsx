@@ -51,8 +51,8 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-paper px-2.5 py-1 text-label font-bold text-pending sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
-        <div className="shell flex flex-wrap items-center justify-between gap-x-6 gap-y-3 pb-4 pt-14 lg:pt-12">
-          <Link href="/" className="order-1 basis-full rounded-card sm:basis-auto">
+        <div className="shell flex flex-wrap items-center justify-between gap-x-8 gap-y-3 pb-4 pt-14 lg:pt-12">
+          <Link href="/" className="order-1 basis-full shrink-0 rounded-card sm:basis-auto sm:min-w-[195px]">
             <NishanLogo locale={locale} />
           </Link>
 

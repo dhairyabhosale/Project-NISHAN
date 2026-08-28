@@ -21,12 +21,6 @@ export interface PersonaCard {
   category: "healthy" | "ekyc" | "bank" | "land" | "eligibility";
 }
 
-const FAULTS: { spec: string; label: CatalogueKey }[] = [
-  { spec: "mNPCI:timeout", label: "demo.fault.npci" },
-  { spec: "mUIDAI:timeout", label: "demo.fault.uidai" },
-  { spec: "mSCHEME:timeout", label: "demo.fault.scheme" }
-];
-
 export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   const { locale } = useLocale();
   const router = useRouter();
@@ -38,8 +32,6 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
     : personas.filter((p) => p.category === filter);
 
   const selectedPersona = personas.find((p) => p.ref === selectedRef) ?? personas[0];
-  const first = personas[1]?.reference ?? personas[0]?.reference ?? "";
-
   const filterTabs = [
     { id: "all", label: resolve("demo.filter_all", {}, locale) },
     { id: "healthy", label: resolve("demo.filter_healthy", {}, locale) },
@@ -204,23 +196,6 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
         </Link>
       </section>
 
-      <section className="mt-6 rounded-card border-2 border-pending bg-paper p-5">
-        <h2 className="text-head font-semibold text-ink">{resolve("demo.fault_heading", {}, locale)}</h2>
-        <p className="mt-2 prose-measure text-body text-ink">{resolve("demo.fault_body", {}, locale)}</p>
-        <ul className="mt-4 grid gap-3 sm:grid-cols-3">
-          {FAULTS.map((f) => (
-            <li key={f.spec}>
-              <Link
-                href={"/case/" + encodeURIComponent(first) + "?fault=" + encodeURIComponent(f.spec)}
-                className="card-lift flex h-full flex-col justify-between rounded-card border border-rule bg-cyan-pale p-4 hover:bg-white"
-              >
-                <span className="text-body font-semibold text-ink">{resolve(f.label, {}, locale)}</span>
-                <span className="data mt-2 text-label font-semibold text-stop">?fault={f.spec}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
     </main>
   );
 }
