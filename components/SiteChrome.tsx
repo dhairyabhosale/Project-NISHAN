@@ -9,7 +9,6 @@ import { NishanLogo } from "./NishanLogo";
 import { useLocale } from "./LocaleProvider";
 import { resolve } from "../content/resolve";
 import type { CatalogueKey } from "../lib/content";
-import { HeaderDashedGrid } from "./HeaderDashedGrid";
 
 /* Site chrome - header, footer, and global affordances. */
 
@@ -50,7 +49,6 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
       <header className="on-teal relative bg-teal-deep text-paper">
-        <HeaderDashedGrid />
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-paper px-2.5 py-1 text-label font-bold text-pending sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
