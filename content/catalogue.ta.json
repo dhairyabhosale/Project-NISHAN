@@ -499,5 +499,17 @@
   "who.demo_body": "TODO_TA: Eight made-up people, each stopped at a different gate. Pick one to see the whole journey without typing anything.",
   "demo.fault.npci": "TODO_TA: Silence the bank-link system",
   "demo.fault.uidai": "TODO_TA: Silence the identity system",
-  "demo.fault.scheme": "TODO_TA: Silence the scheme register"
+  "demo.fault.scheme": "TODO_TA: Silence the scheme register",
+  "newdemo.title": "TODO_TA: Build your own demo case",
+  "newdemo.standfirst": "TODO_TA: Pick a situation and a name, and we will build a working case you can open, share and diagnose. The engine decides the verdict, not the label you pick - if the records disagreed with it, the engine would win.",
+  "newdemo.synthetic": "TODO_TA: Every number generated here is structurally invalid as a real credential. Do not enter a real name or a real Aadhaar number.",
+  "newdemo.name_label": "TODO_TA: A name for this case",
+  "newdemo.name_hint": "TODO_TA: Any made-up name. It appears on the case and on the printed slip.",
+  "newdemo.blocker_label": "TODO_TA: What should be stopping the payment?",
+  "newdemo.create": "TODO_TA: Create this case",
+  "newdemo.ready": "TODO_TA: Your case is ready",
+  "newdemo.open": "TODO_TA: Open this case",
+  "newdemo.share": "TODO_TA: This link carries the whole case, so it works on any device and does not expire.",
+  "newdemo.error": "TODO_TA: That did not work. Check the name and try again.",
+  "demo.build_own": "TODO_TA: Build your own demo case"
 }

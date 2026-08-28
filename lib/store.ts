@@ -22,6 +22,11 @@ import { diagnose } from "../engine/diagnose";
 import { readSnapshot } from "../mocks";
 import type { FaultMap } from "../mocks/fault";
 import { PERSONAS, CURRENT_CYCLE, findPersonaByIdentifier } from "../mocks/fixtures";
+import type { PersonaFixture } from "../mocks/fixtures";
+import { diagnose as runDiagnose } from "../engine/diagnose";
+import { readSystem } from "../mocks";
+import { SYSTEM_CODES } from "./types/systems";
+import type { SystemResult, SystemSnapshot, SystemCode } from "./types/systems";
 import { stoppedAt, RAIL_GATES } from "./types/diagnosis";
 import type { Diagnosis } from "./types/diagnosis";
 import type { CaseState } from "./types/case";
@@ -154,6 +159,48 @@ export function listEvents(reference: string): CaseEvent[] {
 /** §12.5: "Delete this case" hard-deletes the case and all its events. */
 export function deleteCase(reference: string): boolean {
   return events.delete(reference);
+}
+
+/**
+ * Diagnose a persona supplied directly rather than looked up by reference.
+ *
+ * Used by user-created demo cases, which are encoded into their link rather
+ * than stored - see lib/demoCase.ts. The engine and the fault layer are the
+ * same ones the seeded personas use, so a custom case is diagnosed by the real
+ * rules and can disagree with the label the user picked.
+ */
+export async function openCustomCase(
+  persona: PersonaFixture,
+  now: string,
+  cycle = CURRENT_CYCLE,
+  faults: FaultMap = {}
+): Promise<CaseRecord> {
+  const results = await Promise.all(
+    SYSTEM_CODES.map(async (code) => {
+      const r = await readSystem(code, "__none__", faults[code] ?? {});
+      // readSystem resolves fixtures by reference; a custom persona is handed
+      // in directly, so graft its record onto the same result envelope. That
+      // keeps fault injection, staleness and the reachable/unreachable split
+      // behaving exactly as they do for a seeded persona.
+      if (!r.ok) return r;
+      return { ...r, record: persona[code] } as SystemResult<typeof code>;
+    })
+  );
+  const byCode = Object.fromEntries(results.map((r) => [r.system, r])) as {
+    [K in SystemCode]: SystemResult<K>;
+  };
+  const snapshot: SystemSnapshot = { beneficiaryRef: persona.ref, ...byCode };
+  const diagnosis = runDiagnose(snapshot, { cycle, now });
+
+  return {
+    reference: referenceFor(persona.ref, cycle),
+    beneficiaryRef: persona.ref,
+    cycle,
+    state: stateFor(diagnosis),
+    diagnosis,
+    gates: gatesFor(diagnosis.primaryBlocker),
+    createdAt: now
+  };
 }
 
 export { CURRENT_CYCLE };

@@ -61,7 +61,14 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
       {/* One tap each. A reviewer should never have to hand-edit a URL to see
           the engine refuse to guess - that refusal is the strongest twenty
           seconds in the demo. */}
-      <section className="mt-10 rounded-card border-2 border-pending bg-paper p-5">
+      <section className="mt-10 rounded-card border border-rule bg-paper p-5">
+        <h2 className="text-head font-semibold text-ink">{resolve("demo.build_own", {}, locale)}</h2>
+        <Link href="/demo/new" className="mt-3 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
+          {resolve("newdemo.create", {}, locale)}
+        </Link>
+      </section>
+
+      <section className="mt-6 rounded-card border-2 border-pending bg-paper p-5">
         <h2 className="text-head font-semibold text-ink">{resolve("demo.fault_heading", {}, locale)}</h2>
         <p className="mt-2 prose-measure text-body text-ink">{resolve("demo.fault_body", {}, locale)}</p>
         <ul className="mt-4 grid gap-3 sm:grid-cols-3">

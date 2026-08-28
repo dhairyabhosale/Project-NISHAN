@@ -7,7 +7,8 @@
  * `?fault=` reaches the MGSL from here (§8.4). NSH-405, the fault switch UI, is
  * cut — the capability is triggered by URL in the video instead. */
 
-import { getCase } from "../../../lib/store";
+import { getCase, openCustomCase } from "../../../lib/store";
+import { decodeSpec, personaForSpec } from "../../../lib/demoCase";
 import { parseFaultSpec } from "../../../mocks/fault";
 import { CaseView } from "./CaseView";
 import { CaseNotFound } from "./CaseNotFound";
@@ -19,10 +20,19 @@ export default async function CasePage({
   searchParams
 }: {
   params: { id: string };
-  searchParams: { fault?: string };
+  searchParams: { fault?: string; d?: string };
 }) {
   const faults = parseFaultSpec(searchParams.fault ?? null);
-  const record = await getCase(decodeURIComponent(params.id), new Date().toISOString(), undefined, faults);
+  const now = new Date().toISOString();
+
+  // A user-created case travels in its own link (lib/demoCase.ts) rather than
+  // in server memory, so it opens on any instance and survives a restart.
+  const spec = searchParams.d ? decodeSpec(searchParams.d) : null;
+  const custom = spec ? personaForSpec(spec) : null;
+
+  const record = custom
+    ? await openCustomCase(custom, now, undefined, faults)
+    : await getCase(decodeURIComponent(params.id), now, undefined, faults);
 
   if (!record) return <CaseNotFound />;
 

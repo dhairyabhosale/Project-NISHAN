@@ -499,5 +499,17 @@
   "who.demo_body": "Eight made-up people, each stopped at a different gate. Pick one to see the whole journey without typing anything.",
   "demo.fault.npci": "Silence the bank-link system",
   "demo.fault.uidai": "Silence the identity system",
-  "demo.fault.scheme": "Silence the scheme register"
+  "demo.fault.scheme": "Silence the scheme register",
+  "newdemo.title": "Build your own demo case",
+  "newdemo.standfirst": "Pick a situation and a name, and we will build a working case you can open, share and diagnose. The engine decides the verdict, not the label you pick - if the records disagreed with it, the engine would win.",
+  "newdemo.synthetic": "Every number generated here is structurally invalid as a real credential. Do not enter a real name or a real Aadhaar number.",
+  "newdemo.name_label": "A name for this case",
+  "newdemo.name_hint": "Any made-up name. It appears on the case and on the printed slip.",
+  "newdemo.blocker_label": "What should be stopping the payment?",
+  "newdemo.create": "Create this case",
+  "newdemo.ready": "Your case is ready",
+  "newdemo.open": "Open this case",
+  "newdemo.share": "This link carries the whole case, so it works on any device and does not expire.",
+  "newdemo.error": "That did not work. Check the name and try again.",
+  "demo.build_own": "Build your own demo case"
 }

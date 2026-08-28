@@ -48,7 +48,13 @@ Tick one line per checklist item. Resume from the lowest unticked number.
       non-dismissible, present on every screen and surviving scroll. Header row
       reserves 104px inline-end so nav never slides under it. Full 12.7 sentence
       still closes every page in the footer; badge carries it as a title.
-- [ ] 11. USER-CREATED DEMO CASES
+- [x] 11. USER-CREATED DEMO CASES - /demo/new: pick a blocker, enter a name,
+      get a working reference. STATELESS: the case is encoded into its own link
+      so it opens on any serverless instance and survives a restart, same reason
+      references are derived not allocated. Picking a blocker chooses the
+      SITUATION not the answer - the real engine diagnoses a cloned fixture with
+      fresh 12.3 identifiers. Verified: B4 request -> NSH-8A74 -> case renders
+      the B4 verdict with MOCKACC/NSHDEMO ids only.
 - [x] 12. LOGO + FAVICON - new inline-SVG wordmark: framed custody rail, three
       cleared gates stepping in, a barrier drawn shut, money standing at it.
       Squarer and better balanced; disc large enough to read at favicon size.
