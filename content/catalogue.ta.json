@@ -612,5 +612,12 @@
   "demo.auto_fill": "TODO_TA: Quick scenario loader",
   "demo.select_scenario": "TODO_TA: Choose a test scenario to inspect:",
   "demo.reset": "TODO_TA: Reset selection",
-  "nav.demo": "TODO_TA: Demo"
+  "nav.demo": "TODO_TA: Demo",
+  "error.title": "TODO_TA: This page did not load",
+  "error.body": "TODO_TA: Something on our side stopped while this page was being built. Nothing you have done is lost, and no record has been changed. Try again, or start a fresh payment check.",
+  "error.retry": "TODO_TA: Try again",
+  "error.home": "TODO_TA: Check a payment",
+  "notfound.title": "TODO_TA: There is nothing at this address",
+  "notfound.body": "TODO_TA: The link you followed does not point to a page on this site. It may have been mistyped, or it may be a link to a page that never existed. Start from a payment check instead.",
+  "notfound.action": "TODO_TA: Check a payment"
 }

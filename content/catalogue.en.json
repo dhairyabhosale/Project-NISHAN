@@ -612,5 +612,12 @@
   "demo.auto_fill": "Quick scenario loader",
   "demo.select_scenario": "Choose a test scenario to inspect:",
   "demo.reset": "Reset selection",
-  "nav.demo": "Demo"
+  "nav.demo": "Demo",
+  "error.title": "This page did not load",
+  "error.body": "Something on our side stopped while this page was being built. Nothing you have done is lost, and no record has been changed. Try again, or start a fresh payment check.",
+  "error.retry": "Try again",
+  "error.home": "Check a payment",
+  "notfound.title": "There is nothing at this address",
+  "notfound.body": "The link you followed does not point to a page on this site. It may have been mistyped, or it may be a link to a page that never existed. Start from a payment check instead.",
+  "notfound.action": "Check a payment"
 }
