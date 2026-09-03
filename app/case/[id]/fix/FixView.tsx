@@ -19,6 +19,7 @@ import { resolve } from "../../../../content/resolve";
 import { renderVerdict } from "../../../../content/verdict";
 import { ReadAloudButton } from "../../../../components/ReadAloudButton";
 import { AUTHORITY_KEY, authorityFor, fixPathFor, needsOfficer } from "../../../../content/fixPaths";
+import { availableActions, ruledOutActions, officeOnly } from "../../../../lib/actions";
 import type { Diagnosis } from "../../../../lib/types/diagnosis";
 import type { CatalogueKey } from "../../../../lib/content";
 
@@ -53,6 +54,10 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
       return next;
     });
   }
+
+  const actions = availableActions(diagnosis);
+  const ruledOut = ruledOutActions(diagnosis);
+  const onlyOffice = officeOnly(diagnosis);
 
   const primary = path?.routes.find((r) => r.available) ?? null;
   const others = path?.routes.filter((r) => r !== primary) ?? [];
@@ -188,6 +193,57 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
 
       </div>
       </div>
+
+      {/* P10, answered. The portal would send the reader to an app download or
+          an office for these; they finish here. Offered BEFORE the step list,
+          because a reader who can finish in a minute should not have to read
+          three steps about a bus first. */}
+      {actions.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-head font-semibold text-ink">{resolve("act.heading", {}, locale)}</h2>
+          <p className="mt-2 prose-measure text-body text-ink">{resolve("act.standfirst", {}, locale)}</p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {actions.map((a) => (
+              <li key={a.id}>
+                <Link
+                  href={"/case/" + encodeURIComponent(reference) + "/act/" + a.id.toLowerCase()}
+                  className="card-lift flex h-full flex-col rounded-card border-2 border-teal-deep bg-paper p-5"
+                >
+                  <span className="text-body font-semibold text-ink">{resolve(a.titleKey, {}, locale)}</span>
+                  <span className="mt-2 text-label text-ink">{resolve(a.bodyKey, {}, locale)}</span>
+                  <span className="mt-3 text-label font-semibold text-teal-deep">{resolve(a.ctaKey, {}, locale)}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* §10.4: an impossible route is shown ruled out WITH THE REASON, never
+          hidden. Hiding it makes the reader wonder; offering it wastes a day. */}
+      {ruledOut.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">
+            {resolve("act.ruled_out_heading", {}, locale)}
+          </h2>
+          <ul className="mt-3 space-y-3">
+            {ruledOut.map(({ spec, becauseKey }) => (
+              <li key={spec.id} className="rounded-card border border-rule bg-paper p-4">
+                <span className="block text-body font-semibold text-ink">{resolve(spec.titleKey, {}, locale)}</span>
+                <span className="mt-1 block prose-measure text-label text-ink">{resolve(becauseKey, {}, locale)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Nothing can be finished from a phone, and saying why is better than a
+          form that would achieve nothing. */}
+      {onlyOffice && (
+        <p className="mt-8 prose-measure rounded-card border border-rule bg-paper p-4 text-body text-ink">
+          {resolve("act.office_only", {}, locale)}
+        </p>
+      )}
 
       {/* Where the journey forks. A blocker only an officer can clear needs a
           complaint with a deadline behind it (§3.6); a self-serve one does not,

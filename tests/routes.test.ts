@@ -57,7 +57,10 @@ const PAGES = [
   "/case/NSH-3DCE", "/case/NSH-3DCE/fix", "/case/NSH-3DCE/complaint",
   "/case/NSH-D33F/complaint",
   "/case/NSH-3DCE/timeline", "/case/NSH-3DCE/timeline?advance=15",
-  "/case/NSH-3DCE/timeline?advance=45", "/case/NSH-3D44/timeline"
+  "/case/NSH-3DCE/timeline?advance=45", "/case/NSH-3D44/timeline",
+  // P10: actions that finish in the browser, plus the one that is ruled out.
+  "/case/NSH-D33F/act/ekyc_face", "/case/NSH-D33F/act/update_mobile",
+  "/case/NSH-B676/act/reseed_aadhaar", "/case/NSH-3DCE/act/confirm_name"
 ];
 
 async function get(url: string, init?: RequestInit): Promise<{ status: number; body: string }> {
@@ -481,5 +484,99 @@ describe("Track - the timeline", () => {
 
   it("is reachable from the case screen", () => {
     assert.ok(served["/case/NSH-3DCE"].includes("/timeline"), "Track is orphaned from the case screen");
+  });
+});
+
+describe("P10 - actions that finish in the browser", () => {
+  it("offers Lakshmi both of hers on the Fix Path", () => {
+    const fix = served["/case/NSH-D33F/fix"];
+    assert.ok(fix.includes("/act/ekyc_face"), "the camera route is not offered");
+    assert.ok(fix.includes("/act/update_mobile"), "the mobile route is not offered");
+  });
+
+  it("carries a §12.7 disclosure on every action screen, before the control", () => {
+    for (const route of ["/case/NSH-D33F/act/ekyc_face", "/case/NSH-D33F/act/update_mobile",
+                         "/case/NSH-B676/act/reseed_aadhaar"]) {
+      assert.ok(/simulated/i.test(visible(served[route])), route + " has no disclosure");
+    }
+  });
+
+  it("promises the camera frame never leaves the device, on the screen that uses it", () => {
+    const text = visible(served["/case/NSH-D33F/act/ekyc_face"]);
+    assert.ok(text.includes("never sent anywhere"), "the camera screen does not say where the image goes");
+    assert.ok(text.includes("No real Aadhaar system is contacted"));
+  });
+
+  it("shows Sarala the name fix RULED OUT, with the reason", () => {
+    // §10.4, and the single most useful sentence in the product.
+    const text = visible(served["/case/NSH-3DCE/act/confirm_name"]);
+    assert.ok(text.includes("two different people"), "the refusal does not say why");
+    assert.equal(/<input|<textarea/.test(served["/case/NSH-3DCE/act/confirm_name"]), false,
+      "a ruled-out action still offered a form");
+  });
+
+  it("offers Sarala no completable action at all, and explains instead", () => {
+    /* Behaviour, not phrasing. The previous version of this asserted a phrase
+       and went red when the copy improved - the same trap as "you can fix
+       yourself". What must hold is that no action is offered, that the refusal
+       carries its reason, and that the Visit Slip is still there. */
+    const html = served["/case/NSH-3DCE/fix"];
+    assert.equal(html.includes("/act/"), false, "an action was offered on a case nothing can finish");
+    assert.ok(visible(html).includes("two different people"), "the refusal lost its reason");
+    assert.ok(html.includes("/fix/slip"), "the Visit Slip was dropped where it is the only route");
+  });
+
+  it("states an expected-by window on every action", () => {
+    for (const route of ["/case/NSH-D33F/act/ekyc_face", "/case/NSH-B676/act/reseed_aadhaar"]) {
+      assert.ok(/take effect/.test(visible(served[route])), route + " gives no expected-by window");
+    }
+  });
+
+  it("404s an unknown action instead of rendering an empty shell", async () => {
+    assert.equal((await get("/case/NSH-D33F/act/not_an_action")).status, 404);
+  });
+});
+
+describe("P10 - the action endpoint", () => {
+  const post = (body: string) => fetch(BASE + "/api/action", {
+    method: "POST", headers: { "content-type": "application/json", origin: BASE }, body
+  });
+
+  it("records a completion", async () => {
+    const res = await post(JSON.stringify({
+      reference: "NSH-D33F", action: "EKYC_FACE", at: "2026-09-03T10:00:00.000Z"
+    }));
+    assert.equal(res.status, 200);
+    assert.ok((await res.json()).events >= 1);
+  });
+
+  it("§8.7: recording it twice does not add a second row", async () => {
+    const body = JSON.stringify({ reference: "NSH-B676", action: "RESEED_AADHAAR", at: "2026-09-03T10:00:00.000Z" });
+    const first = await (await post(body)).json();
+    const second = await (await post(body)).json();
+    assert.equal(first.events, second.events, "a replay added a row");
+  });
+
+  it("refuses an unknown action, a bad reference and a bad date", async () => {
+    const bad = [
+      { reference: "NSH-D33F", action: "NOPE", at: "2026-09-03T10:00:00.000Z" },
+      { reference: "not-a-ref", action: "EKYC_FACE", at: "2026-09-03T10:00:00.000Z" },
+      { reference: "NSH-D33F", action: "EKYC_FACE", at: "tomorrow" },
+      { reference: "NSH-D33F", action: "EKYC_FACE" }
+    ];
+    for (const b of bad) {
+      assert.equal((await post(JSON.stringify(b))).status, 400, JSON.stringify(b));
+    }
+  });
+
+  it("does not store the reader's own data, only that it happened", async () => {
+    // §12.1: data we do not need, we do not collect. A new mobile number is
+    // the reader's, and this endpoint has no use for it.
+    await post(JSON.stringify({
+      reference: "NSH-D33F", action: "UPDATE_MOBILE", at: "2026-09-03T10:00:00.000Z",
+      detail: { mobile: "+91 5551234567" }
+    }));
+    const timeline = visible((await get("/case/NSH-D33F/timeline")).body);
+    assert.equal(timeline.includes("5551234567"), false, "the endpoint stored and rendered submitted data");
   });
 });
