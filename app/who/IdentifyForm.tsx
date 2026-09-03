@@ -20,8 +20,7 @@ import type { CatalogueKey } from "../../lib/content";
 export interface DemoCase {
   reference: string;
   label: string;
-  blocker: string;
-  demonstrates: string;
+  personaRef: string;
 }
 
 type Tab = "aadhaar" | "mobile" | "regno";
@@ -34,6 +33,7 @@ const TABS: { id: Tab; tab: CatalogueKey; label: CatalogueKey; hint: CatalogueKe
 
 export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
   const { locale } = useLocale();
+  const k = (s: string) => s as CatalogueKey;
   const router = useRouter();
   const params = useSearchParams();
   const assisted = params.get("assisted") === "1";
@@ -173,8 +173,8 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
                     <span className="text-body font-semibold text-ink">{p.label}</span>
                     <span className="data text-label text-ink-soft">{p.reference}</span>
                   </span>
-                  <span className="mt-2 text-label font-semibold uppercase tracking-wide text-teal-deep">{p.blocker}</span>
-                  <span className="mt-1 text-label text-ink-soft">{p.demonstrates}</span>
+                  <span className="mt-2 text-label font-semibold uppercase tracking-wide text-teal-deep">{resolve(k("persona." + p.personaRef + ".stopped"), {}, locale)}</span>
+                  <span className="mt-1 text-label text-ink-soft">{resolve(k("persona." + p.personaRef + ".summary"), {}, locale)}</span>
                 </button>
               </li>
             ))}

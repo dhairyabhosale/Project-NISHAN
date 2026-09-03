@@ -57,11 +57,11 @@ export function decodeSpec(encoded: string): DemoSpec | null {
 }
 
 /** Blockers a user can pick, each backed by a fixture that already produces it. */
-export function availableBlockers(): { blocker: string; reason: string; demonstrates: string }[] {
+export function availableBlockers(): { blocker: string; reason: string; ref: string }[] {
   return PERSONAS.map((p) => ({
     blocker: p.expects.blocker,
     reason: p.expects.reason,
-    demonstrates: p.demonstrates
+    ref: p.ref
   }));
 }
 

@@ -15,15 +15,17 @@ import Link from "next/link";
 import { useState } from "react";
 import { useLocale } from "../../../components/LocaleProvider";
 import { resolve } from "../../../content/resolve";
+import type { CatalogueKey } from "../../../lib/content";
 
 export interface BlockerOption {
   blocker: string;
   reason: string;
-  demonstrates: string;
+  ref: string;
 }
 
 export function NewDemoForm({ blockers }: { blockers: BlockerOption[] }) {
   const { locale } = useLocale();
+  const k = (s: string) => s as CatalogueKey;
   const [name, setName] = useState("");
   const [blocker, setBlocker] = useState(blockers[0]?.blocker ?? "B3");
   const [link, setLink] = useState<string | null>(null);
@@ -94,8 +96,8 @@ export function NewDemoForm({ blockers }: { blockers: BlockerOption[] }) {
                     className="mt-1 size-5 shrink-0"
                   />
                   <span>
-                    <span className="block text-body font-semibold text-ink">{b.blocker}</span>
-                    <span className="block text-label text-ink-soft">{b.demonstrates}</span>
+                    <span className="block text-body font-semibold text-ink">{resolve(k("persona." + b.ref + ".stopped"), {}, locale)}</span>
+                    <span className="block text-label text-ink-soft">{resolve(k("persona." + b.ref + ".summary"), {}, locale)}</span>
                   </span>
                 </label>
               </li>

@@ -10,19 +10,16 @@ import type { CatalogueKey } from "../../lib/content";
 export interface PersonaCard {
   ref: string;
   label: string;
-  demonstrates: string;
-  blocker: string;
-  reason: string;
   reference: string;
   aadhaar: string;
   regNo: string;
-  mobile: string;
   portalStatus: string;
   category: "healthy" | "ekyc" | "bank" | "land" | "eligibility";
 }
 
 export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   const { locale } = useLocale();
+  const k = (s: string) => s as CatalogueKey;
   const router = useRouter();
   const [filter, setFilter] = useState<string>("all");
   const [selectedRef, setSelectedRef] = useState<string>(personas[0]?.ref ?? "");
@@ -89,7 +86,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
             >
               {personas.map((p) => (
                 <option key={p.ref} value={p.ref}>
-                  [{p.ref}] {p.label} - {p.blocker} ({p.demonstrates.slice(0, 42)}...)
+                  {p.label} - {resolve(k("persona." + p.ref + ".stopped"), {}, locale)}
                 </option>
               ))}
             </select>
@@ -119,10 +116,10 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
                 <span className="data font-bold text-teal-deep">{selectedPersona.reference}</span>
               </div>
               <div className="mt-3 space-y-1.5 text-ink-soft">
-                <p><strong className="text-ink font-semibold">Synthetic Aadhaar:</strong> <span className="data">{selectedPersona.aadhaar}</span></p>
-                <p><strong className="text-ink font-semibold">Registration No:</strong> <span className="data">{selectedPersona.regNo}</span></p>
-                <p><strong className="text-ink font-semibold">Official Portal String:</strong> <span className="data text-stop font-medium">{selectedPersona.portalStatus}</span></p>
-                <p><strong className="text-ink font-semibold">NISHAN Root Verdict:</strong> <span className="font-bold text-teal-deep">{selectedPersona.blocker} - {selectedPersona.reason}</span></p>
+                <p><strong className="text-ink font-semibold">{resolve("demo.field_aadhaar", {}, locale)}</strong> <span className="data">{selectedPersona.aadhaar}</span></p>
+                <p><strong className="text-ink font-semibold">{resolve("demo.field_reg", {}, locale)}</strong> <span className="data">{selectedPersona.regNo}</span></p>
+                <p><strong className="text-ink font-semibold">{resolve("demo.field_portal", {}, locale)}</strong> <span className="data font-medium text-ink">{selectedPersona.portalStatus}</span></p>
+                <p><strong className="text-ink font-semibold">{resolve("demo.field_verdict", {}, locale)}</strong> <span className="font-bold text-teal-deep">{resolve(k("persona." + selectedPersona.ref + ".stopped"), {}, locale)}</span></p>
               </div>
             </div>
           )}
@@ -162,17 +159,14 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
                     <span className="rounded bg-cyan-pale px-2 py-0.5 text-label font-bold text-teal-deep">
-                      {p.blocker}
-                    </span>
-                    <span className="rounded border border-rule px-2 py-0.5 text-label text-ink-soft">
-                      {p.reason}
+                      {resolve(k("persona." + p.ref + ".stopped"), {}, locale)}
                     </span>
                   </div>
                   <p className="mt-3 text-label text-ink leading-relaxed font-medium">
-                    {p.demonstrates}
+                    {resolve(k("persona." + p.ref + ".summary"), {}, locale)}
                   </p>
                   <p className="mt-2 text-label text-ink-soft">
-                    <span className="font-semibold text-ink">Portal reported:</span> <span className="data">{p.portalStatus}</span>
+                    <span className="font-semibold text-ink">{resolve("demo.portal_reported", {}, locale)}</span> <span className="data">{p.portalStatus}</span>
                   </p>
                 </div>
 

@@ -12,8 +12,7 @@ export default function IdentifyPage() {
   const personas = PERSONAS.map((p) => ({
     reference: referenceFor(p.ref, CURRENT_CYCLE),
     label: p.label,
-    blocker: p.expects.blocker,
-    demonstrates: p.demonstrates
+    personaRef: p.ref
   }));
 
   return (

@@ -25,8 +25,6 @@ import type {
 export interface PersonaFixture {
   ref: string;
   label: string;
-  /** Which blocker this persona exists to demonstrate (§8.4). */
-  demonstrates: string;
   /** The verdict the engine must return. E5 table-drives off this, and E3 is
    *  wrong if any persona returns anything else. */
   expects: { blocker: string; reason: string };
@@ -70,7 +68,6 @@ function creditsThrough22(last4: string): BankRecord["credits"] {
 const LAKSHMI: PersonaFixture = {
   ref: "P1",
   label: "Lakshmi D.",
-  demonstrates: "B3 e-KYC incomplete, Aadhaar mobile not linked - the OTP route is dead",
   expects: { blocker: "B3", reason: "MOBILE_NOT_LINKED" },
   mSCHEME: {
     reg_no: "NSHDEMO-1001", name: "Lakshmi Devi", village: "Ariyur", state: "Tamil Nadu",
@@ -96,7 +93,6 @@ const LAKSHMI: PersonaFixture = {
 const RAMESH: PersonaFixture = {
   ref: "P2",
   label: "Ramesh P.",
-  demonstrates: "B4 mapper inactive - approved money with nowhere to land",
   expects: { blocker: "B4", reason: "MAPPER_INACTIVE" },
   mSCHEME: {
     reg_no: "NSHDEMO-1002", name: "Ramesh Pandian", village: "Kootampuli", state: "Tamil Nadu",
@@ -122,7 +118,6 @@ const RAMESH: PersonaFixture = {
 const SARALA: PersonaFixture = {
   ref: "P3",
   label: "Sarala M.",
-  demonstrates: "B5 land record name mismatch - needs an officer, not a self-serve fix",
   expects: { blocker: "B5", reason: "LAND_NAME_MISMATCH" },
   mSCHEME: {
     reg_no: "NSHDEMO-1003", name: "Sarala Murugesan", village: "Vellakoil", state: "Tamil Nadu",
@@ -152,7 +147,6 @@ const SARALA: PersonaFixture = {
 const ANBU: PersonaFixture = {
   ref: "P4",
   label: "Anbu K.",
-  demonstrates: "B6a payment in flight; also the MTS/Class IV/Group D carve-out control",
   expects: { blocker: "B6a", reason: "FTO_IN_QUEUE" },
   mSCHEME: {
     reg_no: "NSHDEMO-1004", name: "Anbu Kannan", village: "Thirumangalam", state: "Tamil Nadu",
@@ -180,7 +174,6 @@ const ANBU: PersonaFixture = {
 const FATIMA: PersonaFixture = {
   ref: "P5",
   label: "Fatima B.",
-  demonstrates: "B6b payment returned by the bank - dormant account",
   expects: { blocker: "B6b", reason: "ACCOUNT_DORMANT" },
   mSCHEME: {
     reg_no: "NSHDEMO-1005", name: "Fatima Begum", village: "Ambur", state: "Tamil Nadu",
@@ -205,7 +198,6 @@ const FATIMA: PersonaFixture = {
 const GOVINDAN: PersonaFixture = {
   ref: "P6",
   label: "Govindan S.",
-  demonstrates: "B6c already credited - the money arrived and nobody told him",
   expects: { blocker: "B6c", reason: "CREDITED" },
   mSCHEME: {
     reg_no: "NSHDEMO-1006", name: "Govindan Subramani", village: "Sirkazhi", state: "Tamil Nadu",
@@ -237,7 +229,6 @@ const GOVINDAN: PersonaFixture = {
 const MURUGAN: PersonaFixture = {
   ref: "P7",
   label: "Murugan V.",
-  demonstrates: "B2 exclusion on a tax flag - contestable, drives the evidence path",
   expects: { blocker: "B2", reason: "INCOME_TAX_PAYER" },
   mSCHEME: {
     reg_no: "NSHDEMO-1007", name: "Murugan Velayudham", village: "Palladam", state: "Tamil Nadu",
@@ -267,7 +258,6 @@ const MURUGAN: PersonaFixture = {
 const SELVI: PersonaFixture = {
   ref: "P8",
   label: "Selvi R.",
-  demonstrates: "B1+B3+B4+B5 composite - precedence: only B1 is shown",
   expects: { blocker: "B1", reason: "REGISTRATION_REJECTED" },
   mSCHEME: {
     reg_no: "NSHDEMO-1008", name: "Selvi Ramanathan", village: "Aruppukottai", state: "Tamil Nadu",

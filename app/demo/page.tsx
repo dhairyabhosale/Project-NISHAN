@@ -25,13 +25,9 @@ export default function DemoPage() {
   const personas = PERSONAS.map((p) => ({
     ref: p.ref,
     label: p.label,
-    demonstrates: p.demonstrates,
-    blocker: p.expects.blocker,
-    reason: p.expects.reason,
     reference: referenceFor(p.ref, CURRENT_CYCLE),
     aadhaar: p.mUIDAI?.aadhaar_ref ?? "",
     regNo: p.mSCHEME?.reg_no ?? "",
-    mobile: p.mUIDAI?.linked_mobile ?? "Unlinked",
     portalStatus: p.mSCHEME?.status_string ?? "",
     category: categoryFor(p.ref)
   }));
