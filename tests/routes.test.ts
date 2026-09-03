@@ -55,7 +55,9 @@ const PAGES = [
   // Escalate and Track. NSH-3DCE is Sarala M., the one blocker in the build
   // that only an officer can clear, so it is the case that reaches these.
   "/case/NSH-3DCE", "/case/NSH-3DCE/fix", "/case/NSH-3DCE/complaint",
-  "/case/NSH-D33F/complaint"
+  "/case/NSH-D33F/complaint",
+  "/case/NSH-3DCE/timeline", "/case/NSH-3DCE/timeline?advance=15",
+  "/case/NSH-3DCE/timeline?advance=45", "/case/NSH-3D44/timeline"
 ];
 
 async function get(url: string, init?: RequestInit): Promise<{ status: number; body: string }> {
@@ -430,5 +432,54 @@ describe("Escalate - the complaint screen", () => {
       "the officer case has no route to the complaint screen");
     assert.equal(served["/case/NSH-D33F/fix"].includes("/complaint"), false,
       "a self-serve Fix Path offers a complaint it should not");
+  });
+});
+
+describe("Track - the timeline", () => {
+  const T = "/case/NSH-3DCE/timeline";
+
+  it("renders the events the server holds, without JavaScript", () => {
+    // §8.8: the timeline IS the audit trail. The diagnosis event exists the
+    // moment a case is opened, so it must be in the first response.
+    const text = mainText(served[T]);
+    assert.ok(text.includes("seven government records"), "no diagnosis event in the server HTML");
+    assert.ok(text.length > 250, "only " + text.length + " characters of timeline");
+  });
+
+  it("says the list is the record, not a summary written for the screen", () => {
+    assert.ok(visible(served[T]).includes("not a summary written for this screen"));
+  });
+
+  it("labels the time-travel control as a demo control", () => {
+    // §8.9 and §15: the capability ships, and it does not pretend to be a
+    // citizen feature.
+    assert.ok(visible(served[T]).includes("Demo control"), "the control is unlabelled");
+    assert.ok(visible(served[T]).includes("not part of the citizen product"));
+  });
+
+  it("advances the clock by link, so a shifted view is shareable", () => {
+    assert.ok(served[T].includes("advance=15"), "no time-travel link");
+    assert.ok(visible(served["/case/NSH-3DCE/timeline?advance=15"]).includes("15 days from now"),
+      "advancing did not change what the page says");
+  });
+
+  it("ignores a hostile advance value instead of trusting it", async () => {
+    for (const bad of ["-500", "abc", "1e9", "99999", ""]) {
+      const { status, body } = await get(T + "?advance=" + encodeURIComponent(bad));
+      assert.equal(status, 200, "advance=" + bad + " returned " + status);
+      assert.equal(/NaN|Invalid Date/.test(visible(body)), false, "advance=" + bad + " broke a date");
+    }
+  });
+
+  it("shows a credited case as the success terminal, with amount and date", () => {
+    // §16.9: RESOLVED_CREDITED is the only success terminal and it has to LOOK
+    // like one, not merely be typed as one.
+    const text = visible(served["/case/NSH-3D44/timeline"]);
+    assert.ok(text.includes("2026-06-24"), "the credit date is missing");
+    assert.ok(text.includes("closed the right way"), "a credited case is not shown as a win");
+  });
+
+  it("is reachable from the case screen", () => {
+    assert.ok(served["/case/NSH-3DCE"].includes("/timeline"), "Track is orphaned from the case screen");
   });
 });

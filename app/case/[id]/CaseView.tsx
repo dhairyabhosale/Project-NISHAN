@@ -54,6 +54,18 @@ export function CaseView({
         </div>
       </div>
 
+      {/* Track (§6.1 capability 5) is reachable from the case, not orphaned. A
+          secondary link rather than a second pinned button: the primary action
+          is still to fix the thing, and §6.2 allows one primary per screen. */}
+      <p className="mt-8">
+        <Link
+          href={"/case/" + encodeURIComponent(reference) + "/timeline"}
+          className="inline-flex min-h-12 items-center rounded-card border-2 border-teal-deep px-5 text-body font-semibold text-teal-deep"
+        >
+          {resolve("case.timeline_cta", {}, locale)}
+        </Link>
+      </p>
+
       {/* §11.5 - primary action pinned bottom, 56px, thumb reach. */}
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4">
         <div className="shell">

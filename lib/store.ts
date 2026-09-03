@@ -35,7 +35,8 @@ export interface CaseEvent {
   actor: "citizen" | "helper" | "system" | "office";
   fromState: CaseState | null;
   toState: CaseState;
-  kind: "diagnosis" | "fix_step" | "credit" | "grievance" | "escalation";
+  /** "action" is a completable in-browser action (§P10) - see lib/actions.ts. */
+  kind: "diagnosis" | "fix_step" | "credit" | "grievance" | "escalation" | "action";
   detail: Record<string, unknown>;
   /** §8.7: a replayed action is a no-op if already applied. */
   idempotencyKey: string;
