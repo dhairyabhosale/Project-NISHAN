@@ -189,14 +189,35 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
       </div>
       </div>
 
+      {/* Where the journey forks. A blocker only an officer can clear needs a
+          complaint with a deadline behind it (§3.6); a self-serve one does not,
+          and offering one anyway would send a reader to file about something
+          they can finish themselves in ten minutes. */}
+      {officer && (
+        <p className="mt-8 prose-measure rounded-card border border-rule bg-paper p-4 text-label text-ink">
+          {resolve("fix.complain_note", {}, locale)}
+        </p>
+      )}
+
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-rule bg-paper p-4 pb-24 sm:pb-4">
-        <div className="shell">
+        <div className="shell flex flex-col gap-3 sm:flex-row">
           <Link
             href={"/case/" + encodeURIComponent(reference) + "/fix/slip"}
-            className="flex min-h-14 w-full items-center justify-center rounded-card bg-teal-deep text-body font-semibold text-paper"
+            className={
+              "flex min-h-14 flex-1 items-center justify-center rounded-card text-body font-semibold " +
+              (officer ? "border-2 border-teal-deep text-teal-deep" : "bg-teal-deep text-paper")
+            }
           >
             {resolve("fix.slip_cta", {}, locale)}
           </Link>
+          {officer && (
+            <Link
+              href={"/case/" + encodeURIComponent(reference) + "/complaint"}
+              className="flex min-h-14 flex-1 items-center justify-center rounded-card bg-teal-deep px-4 text-center text-body font-semibold text-paper"
+            >
+              {resolve("fix.complain_cta", {}, locale)}
+            </Link>
+          )}
         </div>
       </div>
     </main>

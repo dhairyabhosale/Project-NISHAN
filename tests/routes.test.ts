@@ -51,7 +51,11 @@ const PAGES = [
   "/", "/who", "/who/verify?ref=NSH-D33F", "/services", "/faq", "/contact",
   "/how-it-works", "/whats-real", "/demo", "/demo/new",
   "/case/NSH-D33F", "/case/NSH-D33F/fix", "/case/NSH-D33F/fix/slip",
-  "/case/NSH-3D44", "/case/NSH-7CF2"
+  "/case/NSH-3D44", "/case/NSH-7CF2",
+  // Escalate and Track. NSH-3DCE is Sarala M., the one blocker in the build
+  // that only an officer can clear, so it is the case that reaches these.
+  "/case/NSH-3DCE", "/case/NSH-3DCE/fix", "/case/NSH-3DCE/complaint",
+  "/case/NSH-D33F/complaint"
 ];
 
 async function get(url: string, init?: RequestInit): Promise<{ status: number; body: string }> {
@@ -378,5 +382,53 @@ describe("F12 - the delete endpoint", () => {
     assert.equal((await first.json()).deleted, 1, "the case had no events to delete");
     const second = await post(JSON.stringify({ references: ["NSH-3DCE"] }));
     assert.equal((await second.json()).deleted, 0, "the events survived the first delete");
+  });
+});
+
+describe("Escalate - the complaint screen", () => {
+  const OFFICER = "/case/NSH-3DCE/complaint";   // Sarala M., B5, needs an officer
+  const SELF = "/case/NSH-D33F/complaint";      // Lakshmi D., B3, fixes it herself
+
+  it("§3.7: the draft names every fact a farmer could not have supplied", async () => {
+    const text = visible(served[OFFICER]);
+    for (const fact of ["NSHDEMO-1003", "2026-06-20", "Stopped by State", "KH-40552", "2,000"]) {
+      assert.ok(text.includes(fact), "the complaint screen omits " + fact);
+    }
+  });
+
+  it("carries the §12.7 disclosure at the file button", async () => {
+    assert.ok(visible(served[OFFICER]).includes("not sent to any government office"),
+      "the filing disclosure is missing, which is the most misleading moment in the product");
+  });
+
+  it("states the routing in prose, with no tier numbers", async () => {
+    const text = visible(served[OFFICER]);
+    assert.ok(text.includes("State Nodal Officer"), "the routing does not say where it goes");
+    assert.equal(/\b(tier|Tier)\s*[123]\b/.test(text), false, "tier numbers leaked into user-facing copy");
+    assert.equal(/\bT[123]\b/.test(text), false, "tier codes leaked into user-facing copy");
+  });
+
+  it("shows the draft before filing, in an editable field", async () => {
+    assert.match(served[OFFICER], /<textarea/, "the draft is not editable");
+  });
+
+  it("turns a self-serve blocker away instead of inviting a pointless complaint", () => {
+    /* Asserted on behaviour, not on prose. An earlier version of this checked
+       for a phrase, and rewriting the copy broke the test without anything
+       being wrong with the product - which teaches the wrong lesson when it
+       goes red. What must be true is that no draft and no file button are
+       offered, and that the reader is sent back to the steps. */
+    assert.equal(/<textarea/.test(served[SELF]), false, "a self-serve case got a draft");
+    assert.equal(visible(served[SELF]).includes("not sent to any government office"), false,
+      "a self-serve case got the filing disclosure, so it got a file button");
+    assert.ok(served[SELF].includes("/case/NSH-D33F/fix"), "no route back to the steps");
+    assert.ok(mainText(served[SELF]).length > 250, "the turn-away page is too thin to be useful");
+  });
+
+  it("is reachable from the Fix Path for an officer blocker, and not otherwise", async () => {
+    assert.ok(served["/case/NSH-3DCE/fix"].includes("/complaint"),
+      "the officer case has no route to the complaint screen");
+    assert.equal(served["/case/NSH-D33F/fix"].includes("/complaint"), false,
+      "a self-serve Fix Path offers a complaint it should not");
   });
 });

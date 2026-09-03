@@ -25,15 +25,17 @@ import { PERSONAS, CURRENT_CYCLE, findPersonaByIdentifier, type PersonaFixture }
 import { SYSTEM_CODES } from "./types/systems";
 import type { SystemResult, SystemSnapshot, SystemCode } from "./types/systems";
 import { stoppedAt, RAIL_GATES } from "./types/diagnosis";
+import { escalationEvents } from "./escalation";
 import type { Diagnosis } from "./types/diagnosis";
 import type { CaseState } from "./types/case";
 
 export interface CaseEvent {
   at: string;
-  actor: "citizen" | "helper" | "system";
+  /** §8.8. "office" stands in for the mock officer side of a grievance. */
+  actor: "citizen" | "helper" | "system" | "office";
   fromState: CaseState | null;
   toState: CaseState;
-  kind: "diagnosis" | "fix_step" | "credit";
+  kind: "diagnosis" | "fix_step" | "credit" | "grievance" | "escalation";
   detail: Record<string, unknown>;
   /** §8.7: a replayed action is a no-op if already applied. */
   idempotencyKey: string;
@@ -201,3 +203,41 @@ export async function openCustomCase(
 }
 
 export { CURRENT_CYCLE };
+
+/* ── Grievance ────────────────────────────────────────────────────────────────
+
+   A filing is one fact: the moment it happened. Everything else about the
+   clock - the tier, the deadline, the days remaining, the CPGRAMS offer - is a
+   pure function of that instant and the instant you are asking (lib/escalation).
+   So nothing here stores a tier or a due date that could drift out of step with
+   the rules that produced it.
+
+   Where the filing date itself lives, and why it is not only in this map: the
+   log is one instance's memory, and on this host almost every request gets a
+   fresh instance. So the device also keeps it, and the case page accepts it as
+   a parameter. Same reasoning as a derived case reference (top of this file) -
+   state that cannot be reconstructed hands out links that break a second
+   later. Disclosed on /whats-real rather than implied away.
+-------------------------------------------------------------------------------*/
+
+/**
+ * Bring the log up to date for a filed grievance, and return it.
+ *
+ * This is what §8.9's hourly job would do, called on read instead. Every event
+ * carries a deterministic idempotency key, so running it on every request
+ * converges on exactly the log a scheduler would have built rather than
+ * appending a row each time (§8.7).
+ */
+export function materialiseGrievance(reference: string, filedAt: string, now: string): CaseEvent[] {
+  let log = listEvents(reference);
+  for (const event of escalationEvents(reference, filedAt, now)) {
+    log = appendEvent(reference, event);
+  }
+  return log;
+}
+
+/** Events in the order a reader wants them: newest first (§11.7 S9). */
+export function timelineFor(reference: string, filedAt: string | null, now: string): CaseEvent[] {
+  const log = filedAt ? materialiseGrievance(reference, filedAt, now) : listEvents(reference);
+  return [...log].sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
+}

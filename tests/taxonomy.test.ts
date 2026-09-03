@@ -140,9 +140,10 @@ describe("E4 - catalogue integrity", () => {
   });
 
   it("uses only slots the engine can actually fill", () => {
-    // A slot the engine never supplies renders as an em dash forever, which is
+    // A slot nothing supplies renders as the missing marker forever, which is
     // a silent hole in a sentence rather than a loud failure. Every name here
-    // is produced by Diagnosis.facts or by Evidence.slots.
+    // is produced by Diagnosis.facts, by Evidence.slots, or by the grievance
+    // composer, which passes case data the engine does not carry as facts.
     const KNOWN = new Set([
       // from Diagnosis.facts
       "amount", "cycle", "reg_no", "name", "village", "state", "released_on",
@@ -153,7 +154,10 @@ describe("E4 - catalogue integrity", () => {
       "reason", "year", "pension", "threshold", "acquired_on", "cutoff",
       "on_record", "on_aadhaar", "other_bank", "land_name", "date", "cleared",
       // structural / UI
-      "code", "days", "language", "done", "total", "authority"
+      "code", "days", "language", "done", "total", "authority",
+      // from content/grievance.ts, which composes the draft from case data
+      // rather than from the engine directly
+      "portal_status", "filed_on", "reference"
     ]);
     for (const [k, v] of Object.entries(catalogue("en"))) {
       for (const raw of v.match(/\{(\w+)\}/g) ?? []) {
