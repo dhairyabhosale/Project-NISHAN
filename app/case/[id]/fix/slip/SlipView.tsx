@@ -31,7 +31,7 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
   const carry = path?.routes.find((r) => r.available)?.carryKeys ?? [];
 
   return (
-    <main className="page-in shell pb-40 pt-8 print:px-0 print:pb-0 print:pt-0">
+    <main className="page-in shell pb-48 pt-8 sm:pb-28 print:px-0 print:pb-0 print:pt-0">
       <div className="print:hidden">
         <Link href={"/case/" + encodeURIComponent(reference) + "/fix"}
               className="inline-flex min-h-12 items-center text-label font-bold text-ink underline underline-offset-4">

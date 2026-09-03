@@ -32,7 +32,7 @@ export function CaseView({
   const credited = diagnosis.primaryBlocker === "B6c";
 
   return (
-    <main className="page-in shell pb-40 pt-8">
+    <main className="page-in shell pb-48 pt-8 sm:pb-28">
       <CaseHeader id={reference} amount={amount} locale={locale} />
 
       <div className="mt-6">

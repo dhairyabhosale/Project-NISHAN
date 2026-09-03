@@ -56,7 +56,7 @@ export function NewDemoForm({ blockers }: { blockers: BlockerOption[] }) {
     blocker === b ? "border-teal-deep bg-green-soft" : "border-rule bg-paper";
 
   return (
-    <main className="page-in shell pb-40 pt-8">
+    <main className="page-in shell pb-48 pt-8 sm:pb-28">
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("newdemo.title", {}, locale)}</h1>
       <p className="mt-3 prose-measure text-body text-ink">{resolve("newdemo.standfirst", {}, locale)}</p>
 

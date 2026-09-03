@@ -65,7 +65,7 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
     : "";
 
   return (
-    <main className="page-in shell pb-40 pt-8">
+    <main className="page-in shell pb-48 pt-8 sm:pb-28">
       <Link href={"/case/" + encodeURIComponent(reference)}
             className="inline-flex min-h-12 items-center text-label font-bold text-ink underline underline-offset-4">
         {resolve("fix.back_to_case", {}, locale)}

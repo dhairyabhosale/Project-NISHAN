@@ -165,7 +165,7 @@ a:active, button:active { transform: scale(0.985); }
   from { opacity: 0; transform: translateY(6px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.page-in { animation: page-in 220ms ease-out both; }
+.page-in { animation: page-in 220ms ease-out backwards; }
 
 /* Panels that expand: language selector, Bhashini, FAQ accordion. */
 @keyframes panel-in {
