@@ -53,7 +53,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           {resolve("banner.chip", {}, locale)}
         </p>
         <div className="shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pb-4 pt-14 lg:pt-12 xl:flex-nowrap">
-          <Link href="/" className="order-1 basis-full shrink-0 rounded-card sm:basis-auto sm:min-w-[195px] xl:mr-2 xl:min-w-[175px]">
+          <Link href="/" className="order-1 flex min-h-12 basis-full shrink-0 items-center rounded-card sm:basis-auto sm:min-w-[195px] xl:mr-2 xl:min-w-[175px]">
             <NishanLogo locale={locale} />
           </Link>
 
@@ -187,22 +187,22 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("nav.services", {}, locale)}</h2>
               <ul className="mt-2 space-y-1">
                 <li>
-                  <Link href="/who" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                  <Link href="/who" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("nav.find", {}, locale)}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/how-it-works" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                  <Link href="/how-it-works" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("nav.how_it_works", {}, locale)}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/demo" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                  <Link href="/demo" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("nav.demo", {}, locale)}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/services" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                  <Link href="/services" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("services.title", {}, locale)}
                   </Link>
                 </li>
@@ -212,17 +212,17 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("footer.whats_real", {}, locale)}</h2>
               <ul className="mt-2 space-y-1">
                 <li>
-                  <Link href="/whats-real" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                  <Link href="/whats-real" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("footer.whats_real", {}, locale)}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/faq" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                  <Link href="/faq" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("faq.title", {}, locale)}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/contact" className="flex min-h-10 items-center text-body text-teal-deep hover:underline">
+                  <Link href="/contact" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("contact.title", {}, locale)}
                   </Link>
                 </li>

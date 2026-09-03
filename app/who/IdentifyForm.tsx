@@ -119,7 +119,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
         )}
 
         <details className="mt-3">
-          <summary className="cursor-pointer text-label font-semibold text-teal-deep">
+          <summary className="flex min-h-12 cursor-pointer items-center text-label font-semibold text-teal-deep">
             {resolve("who.dont_have", {}, locale)}
           </summary>
           <p className="mt-2 text-label text-ink">{resolve("who.dont_have_body", {}, locale)}</p>

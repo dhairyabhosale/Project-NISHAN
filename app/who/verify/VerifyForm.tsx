@@ -64,7 +64,7 @@ export function VerifyForm({ reference }: { reference: string }) {
       )}
 
       <details className="mt-8 rounded-card border border-rule bg-paper p-4">
-        <summary className="cursor-pointer text-body font-semibold text-teal-deep">
+        <summary className="flex min-h-12 cursor-pointer items-center text-body font-semibold text-teal-deep">
           {resolve("otp.didnt_get", {}, locale)}
         </summary>
         <p className="mt-3 prose-measure text-body text-ink">{resolve("otp.didnt_get_body", {}, locale)}</p>

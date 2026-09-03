@@ -66,7 +66,7 @@ export function ReadAloudButton({
       aria-label={label}
       title={label}
       className={
-        "inline-flex min-h-10 items-center gap-2 rounded-card border border-rule px-3 py-1.5 text-label font-semibold text-ink transition-colors hover:bg-cyan-pale " +
+        "inline-flex min-h-12 items-center gap-2 rounded-card border border-rule px-3 py-2 text-label font-semibold text-ink transition-colors hover:bg-cyan-pale " +
         (speaking ? "border-teal-deep bg-teal-deep text-paper hover:bg-teal-deep " : "bg-paper ") +
         className
       }

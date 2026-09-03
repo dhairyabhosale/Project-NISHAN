@@ -134,7 +134,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
               type="button"
               onClick={() => setFilter(tab.id)}
               aria-pressed={filter === tab.id}
-              className={`min-h-10 rounded-card px-3 py-1.5 text-label font-semibold transition-colors ${
+              className={`min-h-12 rounded-card px-3 py-2 text-label font-semibold transition-colors ${
                 filter === tab.id
                   ? "bg-teal-deep text-paper"
                   : "border border-rule bg-paper text-ink hover:bg-cyan-pale"
