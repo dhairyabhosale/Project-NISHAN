@@ -298,7 +298,7 @@
   "real.row.5.note": "TODO_TA: Our own specification asks for a validation library at the boundary. Adding a dependency the day before submission was judged the larger risk, so inputs are checked by hand. Same coverage, less machinery.",
   "real.row.6.component": "TODO_TA: Mock endpoint isolation",
   "real.row.6.label": "TODO_TA: Weaker than specified",
-  "real.row.6.note": "TODO_TA: Our specification asks that the mock record endpoints not be reachable from outside the app. Inside a single deployment that cannot be enforced at the network layer, so they apply a same-origin check instead. They return synthetic data only.",
+  "real.row.6.note": "TODO_TA: A request from another website is refused. A request that sends no Origin header at all - curl, or another server - is served, because inside a single deployment there is no network boundary to enforce. What comes back is synthetic in every field, and the endpoint is now rate limited, so it cannot be walked in a loop.",
   "real.row.7.component": "TODO_TA: Aadhaar and identity checks",
   "real.row.7.label": "TODO_TA: Simulated",
   "real.row.7.note": "TODO_TA: No real identity system is contacted.",
@@ -640,5 +640,13 @@
   "demo.field_aadhaar": "TODO_TA: Synthetic Aadhaar",
   "demo.field_reg": "TODO_TA: Registration number",
   "demo.field_portal": "TODO_TA: What the official website shows",
-  "demo.field_verdict": "TODO_TA: What NISHAN concludes"
+  "demo.field_verdict": "TODO_TA: What NISHAN concludes",
+  "real.row.18.component": "TODO_TA: Browser security headers",
+  "real.row.18.label": "TODO_TA: Mostly set",
+  "real.row.18.note": "TODO_TA: Content-Security-Policy, Referrer-Policy, Permissions-Policy, nosniff, frame-deny and HSTS are all sent. One gap, deliberately: our specification asks for a policy that forbids inline script, and the framework streams its own payload through inline script tags. Honouring it needs a check on every request that would stop these pages being cached, and that costs seconds on a slow connection. Nothing here loads third-party script, and the policy does forbid this page from sending anything anywhere.",
+  "real.delete_action": "TODO_TA: Delete everything from this device",
+  "real.delete_confirm": "TODO_TA: Delete it. This cannot be undone.",
+  "real.delete_cancel": "TODO_TA: Keep it",
+  "real.delete_done": "TODO_TA: Deleted. Your saved steps, your language choice and the record of any case you opened are gone from this browser and from our side.",
+  "real.delete_none": "TODO_TA: There is nothing saved to delete."
 }

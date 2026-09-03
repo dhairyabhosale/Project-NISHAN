@@ -11,6 +11,7 @@
 
 import { useLocale } from "../../components/LocaleProvider";
 import { resolve } from "../../content/resolve";
+import { DeleteCaseButton } from "../../components/DeleteCaseButton";
 import type { CatalogueKey } from "../../lib/content";
 
 type Status = "real" | "simulated" | "partial" | "not_built" | "planned";
@@ -55,7 +56,8 @@ const ROWS: { status: Status; component: CatalogueKey; label: CatalogueKey; note
   { status: "not_built", component: "real.row.14.component", label: "real.row.14.label", note: "real.row.14.note" },
   { status: "real",      component: "real.row.15.component", label: "real.row.15.label", note: "real.row.15.note" },
   { status: "planned",   component: "real.row.16.component", label: "real.row.16.label", note: "real.row.16.note" },
-  { status: "planned",   component: "real.row.17.component", label: "real.row.17.label", note: "real.row.17.note" }
+  { status: "planned",   component: "real.row.17.component", label: "real.row.17.label", note: "real.row.17.note" },
+  { status: "partial",   component: "real.row.18.component", label: "real.row.18.label", note: "real.row.18.note" }
 ];
 
 const LIMIT_COUNT = 7;
@@ -100,6 +102,7 @@ export default function WhatsRealPage() {
       <section className="mt-12 rounded-card border border-rule bg-paper p-4">
         <h2 className="text-head font-semibold text-ink">{resolve("real.delete_heading", {}, locale)}</h2>
         <p className="mt-2 prose-measure text-body text-ink">{resolve("real.delete_body", {}, locale)}</p>
+        <DeleteCaseButton />
       </section>
     </main>
   );

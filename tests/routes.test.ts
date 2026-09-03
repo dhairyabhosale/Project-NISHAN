@@ -338,3 +338,45 @@ describe("F18 - rate limiting is wired to the endpoints", () => {
     assert.equal(other.status, 200, "a different caller was blocked by someone else's usage");
   });
 });
+
+describe("F12 - the delete endpoint", () => {
+  const post = (body: string) => fetch(BASE + "/api/case/delete", {
+    method: "POST", headers: { "content-type": "application/json", origin: BASE }, body
+  });
+
+  it("accepts a list of references and reports a count", async () => {
+    const res = await post(JSON.stringify({ references: ["NSH-D33F"] }));
+    assert.equal(res.status, 200);
+    assert.equal(typeof (await res.json()).deleted, "number");
+  });
+
+  it("never reports WHICH references existed", async () => {
+    // §12.6 keeps reference lookups from being enumerable to identity data. A
+    // delete that echoed hits back would hand that enumeration straight over.
+    const res = await post(JSON.stringify({ references: ["NSH-D33F", "NSH-0000"] }));
+    const body = await res.json();
+    assert.deepEqual(Object.keys(body), ["deleted"], "the response leaks more than a count");
+  });
+
+  it("ignores anything that is not reference-shaped rather than acting on it", async () => {
+    const res = await post(JSON.stringify({ references: ["", "../../etc", "NSH-ZZZZ", 42, null, {}] }));
+    assert.equal(res.status, 200);
+    assert.equal((await res.json()).deleted, 0);
+  });
+
+  it("rejects malformed bodies and oversized lists", async () => {
+    assert.equal((await post("not json")).status, 400);
+    assert.equal((await post(JSON.stringify({ references: "NSH-D33F" }))).status, 400);
+    assert.equal((await post(JSON.stringify({}))).status, 400);
+    const tooMany = Array.from({ length: 51 }, () => "NSH-D33F");
+    assert.equal((await post(JSON.stringify({ references: tooMany }))).status, 400);
+  });
+
+  it("actually removes the events, so a second delete finds nothing", async () => {
+    await fetch(BASE + "/case/NSH-3DCE");            // opening records a diagnosis event
+    const first = await post(JSON.stringify({ references: ["NSH-3DCE"] }));
+    assert.equal((await first.json()).deleted, 1, "the case had no events to delete");
+    const second = await post(JSON.stringify({ references: ["NSH-3DCE"] }));
+    assert.equal((await second.json()).deleted, 0, "the events survived the first delete");
+  });
+});
