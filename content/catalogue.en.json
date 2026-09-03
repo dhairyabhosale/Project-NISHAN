@@ -298,7 +298,7 @@
   "real.row.5.note": "Our own specification asks for a validation library at the boundary. Adding a dependency the day before submission was judged the larger risk, so inputs are checked by hand. Same coverage, less machinery.",
   "real.row.6.component": "Mock endpoint isolation",
   "real.row.6.label": "Weaker than specified",
-  "real.row.6.note": "A request from another website is refused. A request that sends no Origin header at all - curl, or another server - is served, because inside a single deployment there is no network boundary to enforce. What comes back is synthetic in every field, and the endpoint is now rate limited, so it cannot be walked in a loop.",
+  "real.row.6.note": "A request from another website is refused. A request that sends no Origin header at all - curl, or another server - is served, because inside a single deployment there is no network boundary to enforce. There is a rate limit in the code and it works, but this host starts a fresh instance for almost every request, so the count rarely accumulates: measured on the live site, fourteen rapid requests all succeeded. It would hold on a single-instance deployment, or behind a shared counter this build does not have. What actually protects this is that every field it returns is invented.",
   "real.row.7.component": "Aadhaar and identity checks",
   "real.row.7.label": "Simulated",
   "real.row.7.note": "No real identity system is contacted.",

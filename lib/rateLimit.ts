@@ -6,10 +6,16 @@
  * script walks in seconds, so the limiter is what makes reference mode
  * defensible rather than merely thin.
  *
- * HONEST LIMITATION, and it is disclosed on /whats-real rather than implied
- * away: the counters live in the memory of one server instance. On a
- * serverless host a determined caller who spreads requests across instances
- * gets more than the quota. A shared store (Redis, or the database this build
+ * MEASURED LIMITATION, disclosed on /whats-real rather than implied away:
+ * the counters live in the memory of one server instance. On the live Vercel
+ * deployment almost every request gets a FRESH instance - x-vercel-id differs
+ * on consecutive calls - so the count rarely accumulates at all. Measured
+ * against production: fourteen rapid mock reads all returned 200, where the
+ * same fourteen against a single local server give 200 x10 then 429 x4.
+ *
+ * So this is real and correct code that does not currently bite on this host.
+ * It holds on any single-instance deployment, and it is the right shape for a
+ * shared counter to slot into. A shared store (Redis, or the database this build
  * does not have) is what makes the limit exact. What this does deliver is the
  * thing the limit is actually for here - a single client cannot sit in a loop
  * and enumerate references - and it costs no dependency and no network call.
