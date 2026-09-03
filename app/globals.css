@@ -187,53 +187,6 @@ a:active, button:active { transform: scale(0.985); }
 }
 .skeleton { background: var(--rule); border-radius: 2px; animation: skeleton 1.4s ease-in-out infinite; }
 
-/* Initial route loading follows the reference's four-corner orbit while using
-   NISHAN's existing teal palette. */
-.nishan-loading-screen {
-  position: fixed;
-  inset: 0;
-  z-index: 100;
-  display: grid;
-  place-items: center;
-  background: var(--cyan-pale);
-  opacity: 1;
-  transition: opacity 180ms ease-out;
-}
-
-.nishan-loading-screen.is-exiting {
-  opacity: 0;
-  pointer-events: none;
-}
-
-.sentinel-loader {
-  position: relative;
-  width: 64px;
-  height: 64px;
-}
-
-.sentinel-box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 24px;
-  height: 24px;
-  background: var(--teal-deep);
-  border: 4px solid var(--ink);
-  transform-origin: center;
-  animation: sentinel-orbit 1.6s ease-in-out infinite;
-}
-
-@keyframes sentinel-orbit {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  12.5% { transform: translate(40px, 0) scale(1.35); }
-  25% { transform: translate(40px, 40px) scale(1); }
-  37.5% { transform: translate(0, 40px) scale(1.35); }
-  50% { transform: translate(0, 0) scale(1); }
-  62.5% { transform: translate(40px, 0) scale(1.35); }
-  75% { transform: translate(40px, 40px) scale(1); }
-  87.5% { transform: translate(0, 40px) scale(1.35); }
-}
-
 /* §11.5 and the skill's reduced-motion rule: render the FINAL state, never a
    half-finished one. Every animation above resolves to where it was going. */
 @media (prefers-reduced-motion: reduce) {
@@ -245,7 +198,6 @@ a:active, button:active { transform: scale(0.985); }
   }
   .accordion-in { max-height: none !important; }
   a:active, button:active { transform: none; }
-  .sentinel-box { animation: none; transform: translate(40px, 40px) scale(1); }
 }
 
 /* Stat emphasis - a slow cycle that lifts one figure at a time. Subtle by
