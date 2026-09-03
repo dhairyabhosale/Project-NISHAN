@@ -9,10 +9,23 @@
 
 import { NextResponse } from "next/server";
 import { openCase } from "../../../lib/store";
+import { rateLimit, callerKey } from "../../../lib/rateLimit";
 
 const MAX_IDENTIFIER = 40;
 
+/** §12.6: 20 per 10 minutes per IP. */
+const LIMIT = 20;
+const WINDOW_MS = 10 * 60 * 1000;
+
 export async function POST(request: Request) {
+  const gate = rateLimit(callerKey(request, "lookup"), LIMIT, WINDOW_MS);
+  if (!gate.ok) {
+    return NextResponse.json(
+      { error: "RATE_LIMITED" },
+      { status: 429, headers: { "Retry-After": String(gate.retryAfter) } }
+    );
+  }
+
   let identifier: unknown;
   try {
     const body = await request.json();

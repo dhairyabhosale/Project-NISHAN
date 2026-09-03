@@ -8,10 +8,22 @@
 import { NextResponse } from "next/server";
 import { encodeSpec, personaForSpec } from "../../../lib/demoCase";
 import { referenceFor, CURRENT_CYCLE } from "../../../lib/store";
+import { rateLimit, callerKey } from "../../../lib/rateLimit";
 
 const MAX_NAME = 40;
 
+const LIMIT = 20;
+const WINDOW_MS = 10 * 60 * 1000;
+
 export async function POST(request: Request) {
+  const gate = rateLimit(callerKey(request, "demo-case"), LIMIT, WINDOW_MS);
+  if (!gate.ok) {
+    return NextResponse.json(
+      { error: "RATE_LIMITED" },
+      { status: 429, headers: { "Retry-After": String(gate.retryAfter) } }
+    );
+  }
+
   let body: unknown;
   try {
     body = await request.json();

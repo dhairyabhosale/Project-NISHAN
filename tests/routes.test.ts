@@ -29,7 +29,13 @@ import { MISSING_SLOT } from "../content/resolve";
 
 const ROOT = path.join(__dirname, "..", "..");
 const PORT = Number(process.env.NISHAN_TEST_PORT ?? 3399);
-const BASE = "http://127.0.0.1:" + PORT;
+/* localhost, not 127.0.0.1. `next start` reports its own hostname in
+   request.url, so the same-origin check on /api/mock/* compares an Origin
+   header against "localhost:PORT". Reaching the server by IP made every
+   cross-origin check return 403 - which silently satisfied the assertion below
+   that scans the response for real-looking identifiers, because a 403 body
+   contains none. Same trap as the F8 detector: an assertion that cannot fail. */
+const BASE = "http://localhost:" + PORT;
 
 let server: ChildProcess | null = null;
 
@@ -243,9 +249,92 @@ describe("F17 - the API boundary", () => {
 
   it("returns only synthetic identifiers from the mock systems", async () => {
     const res = await fetch(BASE + "/api/mock/mUIDAI?ref=P1", { headers: { origin: BASE } });
-    const text = JSON.stringify(await res.json());
+    assert.equal(res.status, 200, "expected a real record to scan, got " + res.status);
+    const body = await res.json();
+    assert.ok(body.record, "no record in the response, so this assertion would scan nothing");
+    const text = JSON.stringify(body);
     for (const m of text.replace(/[\s-]/g, "").matchAll(/(?<!\d)\d{12}(?!\d)/g)) {
       assert.ok(m[0].startsWith("9999"), "non-synthetic 12-digit run served: " + m[0]);
     }
+  });
+});
+
+describe("F18 - the §12.6 response headers", () => {
+  const required: [string, RegExp][] = [
+    ["content-security-policy", /connect-src 'self'/],
+    ["content-security-policy", /object-src 'none'/],
+    ["content-security-policy", /frame-ancestors 'none'/],
+    ["x-content-type-options", /^nosniff$/],
+    ["referrer-policy", /strict-origin-when-cross-origin/],
+    ["permissions-policy", /microphone=\(\)/],
+    ["permissions-policy", /camera=\(\)/],
+    ["permissions-policy", /geolocation=\(\)/]
+  ];
+
+  it("sets every specified header on a page response", async () => {
+    const res = await fetch(BASE + "/");
+    for (const [header, shape] of required) {
+      const value = res.headers.get(header);
+      assert.ok(value, "missing header: " + header);
+      assert.match(value, shape, header + " = " + value);
+    }
+  });
+
+  it("sets them on every route, not just the landing page", async () => {
+    for (const route of PAGES) {
+      const res = await fetch(BASE + route);
+      assert.ok(res.headers.get("permissions-policy"), route + " has no Permissions-Policy");
+      assert.ok(res.headers.get("content-security-policy"), route + " has no CSP");
+    }
+  });
+
+  it("denies the microphone, which is the claim the mic button makes in words", async () => {
+    // §9.4 says the button requests no permission. This header is how a
+    // reviewer checks that in devtools instead of taking it on trust.
+    const policy = (await fetch(BASE + "/")).headers.get("permissions-policy") ?? "";
+    for (const feature of ["microphone", "camera", "geolocation"]) {
+      assert.match(policy, new RegExp(feature + "=\(\)"), feature + " is not denied: " + policy);
+    }
+  });
+});
+
+describe("F18 - rate limiting is wired to the endpoints", () => {
+  it("refuses a caller who exceeds the mock-system quota", async () => {
+    // §12.6 caps case-shaped reads at 10 a minute. The mock endpoints are the
+    // enumerable surface, so they carry that limit.
+    const codes: number[] = [];
+    for (let i = 0; i < 14; i++) {
+      const res = await fetch(BASE + "/api/mock/mUIDAI?ref=P1", {
+        headers: { origin: BASE, "x-forwarded-for": "198.51.100.42" }
+      });
+      codes.push(res.status);
+    }
+    assert.ok(codes.includes(429), "no request was refused: " + codes.join(","));
+    assert.equal(codes[0], 200, "the first request should have succeeded");
+  });
+
+  it("sends Retry-After with a refusal", async () => {
+    for (let i = 0; i < 14; i++) {
+      await fetch(BASE + "/api/mock/mUIDAI?ref=P1", {
+        headers: { origin: BASE, "x-forwarded-for": "198.51.100.99" }
+      });
+    }
+    const res = await fetch(BASE + "/api/mock/mUIDAI?ref=P1", {
+      headers: { origin: BASE, "x-forwarded-for": "198.51.100.99" }
+    });
+    assert.equal(res.status, 429);
+    assert.ok(Number(res.headers.get("retry-after")) >= 1, "no usable Retry-After");
+  });
+
+  it("does not let one caller exhaust another's quota", async () => {
+    for (let i = 0; i < 14; i++) {
+      await fetch(BASE + "/api/mock/mUIDAI?ref=P1", {
+        headers: { origin: BASE, "x-forwarded-for": "198.51.100.7" }
+      });
+    }
+    const other = await fetch(BASE + "/api/mock/mUIDAI?ref=P1", {
+      headers: { origin: BASE, "x-forwarded-for": "203.0.113.200" }
+    });
+    assert.equal(other.status, 200, "a different caller was blocked by someone else's usage");
   });
 });

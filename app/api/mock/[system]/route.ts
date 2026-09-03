@@ -19,6 +19,7 @@ import { NextResponse } from "next/server";
 import { SYSTEM_CODES } from "../../../../lib/types/systems";
 import type { SystemCode } from "../../../../lib/types/systems";
 import { readFaultMap } from "../../../../mocks/fault";
+import { rateLimit, callerKey } from "../../../../lib/rateLimit";
 import { readSystem } from "../../../../mocks";
 
 function isSystemCode(v: string): v is SystemCode {
@@ -37,11 +38,24 @@ function sameOrigin(request: Request, url: URL): boolean {
   }
 }
 
+/** §12.6: the mock systems are the enumerable surface, so they get the
+ *  tighter of the two limits - 10 a minute, as for a case read. */
+const LIMIT = 10;
+const WINDOW_MS = 60 * 1000;
+
 export async function GET(request: Request, context: { params: { system: string } }) {
   const url = new URL(request.url);
 
   if (!sameOrigin(request, url)) {
     return NextResponse.json({ error: "CROSS_ORIGIN_BLOCKED" }, { status: 403 });
+  }
+
+  const gate = rateLimit(callerKey(request, "mock"), LIMIT, WINDOW_MS);
+  if (!gate.ok) {
+    return NextResponse.json(
+      { error: "RATE_LIMITED" },
+      { status: 429, headers: { "Retry-After": String(gate.retryAfter) } }
+    );
   }
 
   const system = context.params.system;
