@@ -82,7 +82,7 @@ export function OfficeMap() {
                   }
                 >
                   <span className="text-body font-semibold text-ink">{resolve(o.name, {}, locale)}</span>
-                  <span className="text-label text-ink-soft">
+                  <span className={"text-label " + (on ? "text-ink" : "text-ink-soft")}>
                     {resolve(o.kind, {}, locale)} - {resolve(o.distance, {}, locale)}
                   </span>
                 </button>

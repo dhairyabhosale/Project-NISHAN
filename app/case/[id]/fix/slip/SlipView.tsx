@@ -40,9 +40,9 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
       </div>
 
       <article className="mt-4 max-w-3xl rounded-card border-2 border-ink bg-paper p-6 md:p-8 print:max-w-none print:rounded-none print:border-0 print:p-0">
-        <p className="text-label font-semibold uppercase tracking-wide text-ink-soft">
+        <h1 className="text-label font-semibold uppercase tracking-wide text-ink-soft">
           {resolve("slip.title", {}, locale)} · {resolve("slip.for_officer", {}, locale)}
-        </p>
+        </h1>
         <p className="data mt-1 text-answer font-bold text-ink">{reference}</p>
 
         <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 border-t border-ink pt-4">

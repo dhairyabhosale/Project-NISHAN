@@ -97,7 +97,7 @@ export function NewDemoForm({ blockers }: { blockers: BlockerOption[] }) {
                   />
                   <span>
                     <span className="block text-body font-semibold text-ink">{resolve(k("persona." + b.ref + ".stopped"), {}, locale)}</span>
-                    <span className="block text-label text-ink-soft">{resolve(k("persona." + b.ref + ".summary"), {}, locale)}</span>
+                    <span className={"block text-label " + (blocker === b.blocker ? "text-ink" : "text-ink-soft")}>{resolve(k("persona." + b.ref + ".summary"), {}, locale)}</span>
                   </span>
                 </label>
               </li>

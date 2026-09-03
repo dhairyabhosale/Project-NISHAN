@@ -49,7 +49,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
       <header className="on-teal relative bg-teal-deep text-paper">
-        <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-paper px-2.5 py-1 text-label font-bold text-pending sm:right-4">
+        <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
         <div className="shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pb-4 pt-14 lg:pt-12 xl:flex-nowrap">

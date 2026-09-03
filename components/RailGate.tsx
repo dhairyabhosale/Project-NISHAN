@@ -28,6 +28,17 @@ const LABEL_TONE: Record<GateState, string> = {
   UNREACHED: "text-ink-soft"
 };
 
+/* The state word under the gate label.
+ *
+ * PASSED sits on --green-soft, where --ink-soft measures 3.58:1 and fails even
+ * AA. --ink on --green-soft is 9.87:1 (§11.3). UNREACHED sits on the page
+ * ground where --ink-soft is a permitted label colour. */
+const STATE_LABEL_TONE: Record<GateState, string> = {
+  PASSED: "text-ink",
+  BLOCKED: "font-semibold text-stop",
+  UNREACHED: "text-ink-soft"
+};
+
 const STATE_KEY: Record<GateState, CatalogueKey> = {
   PASSED: "rail.passed",
   BLOCKED: "rail.blocked",
@@ -79,7 +90,7 @@ export function RailGate({
           <p className={`text-body font-semibold leading-snug ${LABEL_TONE[state]}`}>
             {resolve(labelKey, {}, locale)}
           </p>
-          <p className={`mt-1 text-label ${state === "BLOCKED" ? "font-semibold text-stop" : "text-ink-soft"}`}>
+          <p className={`mt-1 text-label ${STATE_LABEL_TONE[state]}`}>
             {resolve(STATE_KEY[state], {}, locale)}
           </p>
         </div>

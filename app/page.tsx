@@ -94,7 +94,7 @@ export default function EntryPage() {
           <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
             {resolve("entry.headline", {}, locale)}
           </h1>
-          <p className="mt-5 prose-measure text-body opacity-95">{resolve("entry.standfirst", {}, locale)}</p>
+          <p className="mt-5 prose-measure text-[20px] font-semibold leading-relaxed">{resolve("entry.standfirst", {}, locale)}</p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="/who" className="inline-flex min-h-14 items-center rounded-card bg-paper px-6 text-body font-semibold text-teal-deep">
               {resolve("hero.cta", {}, locale)}

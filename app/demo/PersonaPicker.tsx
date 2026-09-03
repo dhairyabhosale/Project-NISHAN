@@ -56,7 +56,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
       <div className="mt-6 rounded-card border-2 border-pending bg-paper p-4">
         <div className="flex items-center gap-2">
           <span className="inline-block size-2.5 rounded-full bg-pending" aria-hidden="true" />
-          <span className="text-label font-bold uppercase tracking-wider text-pending">
+          <span className="text-label font-bold uppercase tracking-wider text-ink">
             {resolve("demo.test_data_pill", {}, locale)}
           </span>
         </div>
