@@ -11,6 +11,7 @@ import { describe, it } from "node:test";
 
 import { encodeSpec, decodeSpec, availableBlockers, personaForSpec, type DemoSpec } from "../lib/demoCase";
 import { LANGUAGES, CATALOGUE_LOCALES, isResolved, localeFor } from "../lib/languages";
+import { readStoredLocale, writeStoredLocale, LOCALE_STORAGE_KEY } from "../lib/localePreference";
 import { PERSONAS } from "../mocks/fixtures";
 import { SYSTEM_CODES } from "../lib/types/systems";
 
@@ -146,5 +147,69 @@ describe("F17 - the language list is honest about itself", () => {
       assert.equal(localeFor(l.code), "en", l.code + " should fall back rather than half-translate");
     }
     assert.equal(localeFor("nonsense"), "en");
+  });
+});
+
+/* ── AUDIT.md F4 - the language choice survives a page load ──────────────────
+   Pure functions over a Storage-like object, so the rule can be tested without
+   a browser. The end-to-end behaviour is asserted in routes.test.ts (the served
+   lang attribute) and verified in a real browser. ------------------------- */
+
+describe("F4 - locale preference persistence", () => {
+  const store = () => {
+    const map = new Map<string, string>();
+    return {
+      getItem: (k: string) => map.get(k) ?? null,
+      setItem: (k: string, v: string) => { map.set(k, v); },
+      map
+    };
+  };
+
+  it("round-trips every catalogue locale", () => {
+    for (const loc of CATALOGUE_LOCALES) {
+      const s = store();
+      writeStoredLocale(s, loc);
+      assert.equal(readStoredLocale(s), loc, loc);
+    }
+  });
+
+  it("writes under a namespaced key, not a bare one", () => {
+    const s = store();
+    writeStoredLocale(s, "hi");
+    assert.equal(LOCALE_STORAGE_KEY, "nishan.locale");
+    assert.equal(s.map.get("nishan.locale"), "hi");
+  });
+
+  it("returns null when nothing has been chosen", () => {
+    assert.equal(readStoredLocale(store()), null);
+  });
+
+  it("ignores a stored value that is not a locale we ship", () => {
+    // A stale or hand-edited value must not select a catalogue that does not
+    // exist, which would render every string through the missing-key fallback.
+    for (const junk of ["", "  ", "fr", "en-GB", "zz", "[object Object]", "null", "hi;drop"]) {
+      const s = store();
+      s.setItem(LOCALE_STORAGE_KEY, junk);
+      assert.equal(readStoredLocale(s), null, JSON.stringify(junk));
+    }
+  });
+
+  it("tolerates surrounding whitespace", () => {
+    const s = store();
+    s.setItem(LOCALE_STORAGE_KEY, "  mr  ");
+    assert.equal(readStoredLocale(s), "mr");
+  });
+
+  it("never throws when storage itself is unavailable", () => {
+    // A private window throws on access. A reader whose browser refuses storage
+    // must still get a working page rather than a crash.
+    const hostile = {
+      getItem() { throw new Error("SecurityError"); },
+      setItem() { throw new Error("SecurityError"); }
+    };
+    assert.equal(readStoredLocale(hostile), null);
+    assert.doesNotThrow(() => writeStoredLocale(hostile, "hi"));
+    assert.equal(readStoredLocale(null), null);
+    assert.doesNotThrow(() => writeStoredLocale(null, "hi"));
   });
 });
