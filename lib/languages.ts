@@ -1,8 +1,8 @@
 /* The language set pmkisan.gov.in offers - CLAUDE.md §10.2.
  *
- * The SELECTOR covers the full set. The TRANSLATIONS do not: English is the
- * only resolved locale for Stage 1 and every other option says so in the
- * selector itself.
+ * The SELECTOR covers the full set. The TRANSLATIONS do not: English, Hindi,
+ * Marathi and Tamil resolve fully; every other option says so in the selector
+ * itself.
  *
  * A farmer who sees her language listed and then gets a half-English screen is
  * worse served than one who sees it listed as coming. The selector is honest
@@ -33,7 +33,7 @@ export const LANGUAGES: readonly Language[] = [
   { code: "ne", english: "Nepali", endonym: "नेपाली", resolved: false },
   { code: "or", english: "Odia", endonym: "ଓଡ଼ିଆ", resolved: false },
   { code: "pa", english: "Punjabi", endonym: "ਪੰਜਾਬੀ", resolved: false },
-  { code: "ta", english: "Tamil", endonym: "தமிழ்", resolved: false },
+  { code: "ta", english: "Tamil", endonym: "தமிழ்", resolved: true },
   { code: "te", english: "Telugu", endonym: "తెలుగు", resolved: false },
   { code: "ur", english: "Urdu", endonym: "اردو", resolved: false }
 ];

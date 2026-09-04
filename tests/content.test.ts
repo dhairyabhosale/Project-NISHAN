@@ -9,7 +9,9 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { diagnose } from "../engine/diagnose";
-import { MISSING_SLOT, loadLocale, resolve } from "../content/resolve";
+import { MISSING_SLOT, UNTRANSLATED, loadLocale, resolve } from "../content/resolve";
+import { CATALOGUE_LOCALES, LANGUAGES } from "../lib/languages";
+import TA_MODULE from "../content/catalogue.ta.json";
 import { daysBetween, isOverdue, renderEvidence, renderVerdict } from "../content/verdict";
 import { readSnapshot } from "../mocks";
 import { CURRENT_CYCLE, PERSONAS } from "../mocks/fixtures";
@@ -222,34 +224,62 @@ describe("E6 - §10.5 copy rules, enforced", () => {
 
 describe("E6 - no placeholder ever reaches a screen (§10.2)", () => {
   const HI = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.hi.json"), "utf8")) as Record<string, string>;
-  const TA = JSON.parse(fs.readFileSync(path.join(ROOT, "content", "catalogue.ta.json"), "utf8")) as Record<string, string>;
 
-  it("hi and ta are still mostly placeholders, which is why the guard exists", () => {
-    const placeholders = Object.values(TA).filter((v) => v.startsWith("TODO_")).length;
-    assert.ok(placeholders > 100, "expected an unresolved locale, found " + placeholders);
-  });
+  /* This block used to open by asserting that ta was MOSTLY placeholders.
+     That was true when it was written and is now false - every catalogue
+     locale is fully authored - and two assertions beneath it could not fail
+     as a consequence. One searched hi for a placeholder that no longer exists
+     and non-null-asserted the undefined away; the other proved only that an
+     UNLOADED locale falls back to English, which it would do with no guard at
+     all, because the test never called loadLocale.
 
-  it("resolving an unresolved locale falls back to English, never TODO_", () => {
-    for (const key of Object.keys(EN)) {
-      for (const loc of ["hi", "ta"] as const) {
-        const out = resolve(key as CatalogueKey, {}, loc);
-        assert.equal(out.startsWith("TODO_"), false, loc + " leaked a placeholder for " + key);
-      }
+     What replaces them is the invariant §10.2 actually turns on: nothing we
+     ship carries a placeholder, nothing claims to be resolved without a
+     catalogue behind it, and the resolver suppresses a placeholder if one
+     ever appears in a locale that IS loaded. Each can be made to fail. */
+
+  it("ships no placeholder in any catalogue locale", () => {
+    for (const loc of CATALOGUE_LOCALES) {
+      const cat = JSON.parse(
+        fs.readFileSync(path.join(ROOT, "content", "catalogue." + loc + ".json"), "utf8")
+      ) as Record<string, string>;
+      const left = Object.entries(cat).filter(([, v]) => UNTRANSLATED.test(v)).map(([k]) => k);
+      assert.deepEqual(left, [], loc + " carries placeholders: " + left.slice(0, 5).join(", "));
     }
   });
 
-  it("falls back silently - no apology injected into the sentence", () => {
-    // The selector already says the language is unresolved. Saying it again
-    // inside every sentence would be twenty apologies per screen.
-    const key = Object.keys(EN).find((k) => HI[k]?.startsWith("TODO_"))!;
-    assert.equal(resolve(key as CatalogueKey, {}, "hi"), resolve(key as CatalogueKey, {}, "en"));
+  it("claims a language resolved only where a catalogue backs it", () => {
+    for (const l of LANGUAGES.filter((x) => x.resolved)) {
+      assert.ok(
+        (CATALOGUE_LOCALES as readonly string[]).includes(l.code),
+        l.english + " is marked resolved but has no catalogue"
+      );
+    }
   });
 
-  it("still uses a real translation where one exists", () => {
-    // language.hi carries a genuine endonym in every locale, so the guard must
-    // not flatten values that are actually translated.
+  it("suppresses a placeholder in a LOADED locale, silently", async () => {
+    await loadLocale("ta");
+    const key = "entry.headline" as CatalogueKey;
+    const real = resolve(key, {}, "ta");
+    // If ta had not loaded, real would equal the English and everything below
+    // would pass for the wrong reason. Fail loudly instead.
+    assert.notEqual(real, resolve(key, {}, "en"), "ta did not load; the rest of this test would be vacuous");
+
+    const saved = TA_MODULE[key];
+    try {
+      TA_MODULE[key] = "TODO_TA: " + saved;
+      // Silently: the English text, with no marker and no apology added.
+      assert.equal(resolve(key, {}, "ta"), resolve(key, {}, "en"));
+    } finally {
+      TA_MODULE[key] = saved;
+    }
+    assert.equal(resolve(key, {}, "ta"), real, "the injected placeholder was not cleaned up");
+  });
+
+  it("still uses a real translation where one exists", async () => {
+    await loadLocale("hi");
     assert.equal(resolve("language.hi" as CatalogueKey, {}, "hi"), HI["language.hi"]);
-    assert.equal(HI["language.hi"].startsWith("TODO_"), false);
+    assert.equal(UNTRANSLATED.test(HI["language.hi"]), false);
   });
 });
 
