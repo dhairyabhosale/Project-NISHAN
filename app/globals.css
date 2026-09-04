@@ -278,9 +278,9 @@ a:active, button:active { transform: scale(0.985); }
      came back byte-identical before I noticed, because both were of the bare
      video. Same shape of failure as the Tailwind alpha bug: an invalid colour
      is silently dropped, and nothing anywhere reports it. */
-  --hero-scrim-max: 0.94;
-  --hero-scrim-mid: 0.82;
-  --hero-scrim-end: 74%;
+  --hero-scrim-max: 0.88;
+  --hero-scrim-mid: 0.72;
+  --hero-scrim-end: 70%;
   background-image: linear-gradient(
     to right,
     rgb(var(--ink) / var(--hero-scrim-max)) 0%,
@@ -291,12 +291,17 @@ a:active, button:active { transform: scale(0.985); }
 
 /* The header sits over the video on the landing page only, so it needs its own
    short top-down wash - the video's top edge is not reliably dark, and the nav
-   is white text. Measured, not assumed: see BUILDLOG. */
+   is white text. Measured, not assumed.
+
+   The stops were raised when the video was regraded brighter: the previous
+   0.86/0.55 wash measured 3.72:1 behind the nav against the lighter footage,
+   which fails AA. axe does not catch this - it cannot evaluate contrast
+   against a video element, and reported 0 violations throughout. */
 .hero-header-wash {
   background-image: linear-gradient(
     to bottom,
-    rgb(var(--ink) / 0.86) 0%,
-    rgb(var(--ink) / 0.55) 60%,
+    rgb(var(--ink) / 0.96) 0%,
+    rgb(var(--ink) / 0.94) 82%,
     rgb(var(--ink) / 0) 100%
   );
 }

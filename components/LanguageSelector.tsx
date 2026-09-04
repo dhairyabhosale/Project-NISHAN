@@ -46,7 +46,12 @@ export function LanguageSelector() {
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
         aria-haspopup="listbox"
-        className="inline-flex min-h-12 items-center gap-2 rounded-card border border-paper/40 bg-teal-deep px-3 text-label font-semibold text-paper"
+        /* No fill. The other nav items are plain white text, and a solid teal
+           box here made the language control look like the primary action on
+           the page. An outline keeps it findable without competing, and over
+           the hero video it lets the footage show through rather than punching
+           a rectangle out of it. */
+        className="inline-flex min-h-12 items-center gap-2 rounded-card border border-paper/70 px-3 text-label font-semibold text-paper"
       >
         <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
           <circle cx="10" cy="10" r="7.25" />
