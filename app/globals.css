@@ -233,74 +233,70 @@ a:active, button:active { transform: scale(0.985); }
   .stat-cycle { animation: none !important; transform: none !important; }
 }
 
-/* ── The living hero ─────────────────────────────────────────────────────────
 
-   A slow gradient behind the headline. CSS only: no canvas, no WebGL, no
-   package, and nothing that needs JavaScript to appear.
+/* ── Hero video ───────────────────────────────────────────────────────────────
 
-   WHY THE STOPS ARE ALL DARK TEAL, AND NOT THE FOUR THEME COLOURS.
+   The band behind the headline on the landing page. The video is decoration;
+   the poster underneath it is what the reader gets when the video does not
+   play, and the headline is server-rendered above both.
 
-   White text needs a background luminance of 0.100 or less to reach 7:1. The
-   §11.3 theme colours measure:
+   THE POSTER IS A CSS BACKGROUND, not a second <img>. It is in the first
+   response, costs one 13.6 kB request, and is what stands in whenever
+   HeroVideo decides not to play - reduced motion, save-data, 2G, or no
+   JavaScript at all. The dark fill under it means a slow poster shows dark
+   teal rather than white behind white text.
 
-     --teal-deep   L 0.147   5.32:1
-     --green       L 0.328   2.78:1
-     --green-soft  L 0.589   1.64:1
-     --cyan-pale   L 0.893   1.11:1
+   THE SCRIM IS HORIZONTAL, and that is the decision that makes this work.
 
-   So a gradient that actually travels across those four cannot hold 7:1, and
-   cannot even hold flat teal's 5.32:1 - the moment any green enters the band
-   under the headline, contrast collapses. That is the same wall the WebGL
-   version hit: at the opacity where it was legible it was invisible.
+   A flat overlay caps the headline at about 4.3:1, because it has to fight the
+   video's brightest highlights everywhere at once, and it dulls the whole frame
+   to do it. A gradient spends its opacity where the text is: near-opaque --ink
+   on the left, gone by 65% across. The headline sits on the dark end, the right
+   45% of the frame is completely unobscured, and the video is visibly moving
+   where nobody is trying to read.
 
-   The way through is to move within a NARROW DARK BAND of one hue instead of
-   between four hues. These stops are --teal-deep mixed toward --ink, 70% to
-   45%, measured WITH the grain on top, because the grain lightens the band and
-   the worst frame is what counts. The first pass used 70% and measured 6.82:1 -
-   the stops cleared 7:1 alone and the grain took it under. These clear it as
-   rendered, and the whole
-   band is darker than the flat hero it replaces. Movement is visible because
-   the stops differ from each other, not because any of them is light.
+   TUNE HERE, in one place. Raising --hero-scrim-max raises contrast and hides
+   more video; lowering it does the reverse. The measured worst case at the
+   current value is reported in BUILDLOG.
 
-   The grain is one inline SVG turbulence, no image file and no extra request.
+   Literal rgba(), not bg-ink/94: the tokens carry an <alpha-value> slot now,
+   but this is a multi-stop gradient rather than a utility, so the channels go
+   in directly via rgb(var(--ink) / <n>).
    -------------------------------------------------------------------------- */
+.hero-video-band {
+  background-color: rgb(var(--ink));
+  background-image: url("/hero-poster.webp");
+  background-size: cover;
+  background-position: center;
+}
 
-.hero-living {
-  /* Fallback for anything without color-mix; the same two ends, resolved. */
-  background-image: linear-gradient(115deg, #065a4f 0%, #094a41 28%, #06584d 52%, #073f39 78%, #065a4f 100%);
+.hero-scrim {
+  /* The knobs live HERE, on the element that uses them. They were on
+     .hero-video-band, which is a SIBLING - custom properties inherit down the
+     tree, not sideways, so every stop resolved to nothing, the gradient was
+     invalid, and the scrim painted no pixels at all. Two contrast measurements
+     came back byte-identical before I noticed, because both were of the bare
+     video. Same shape of failure as the Tailwind alpha bug: an invalid colour
+     is silently dropped, and nothing anywhere reports it. */
+  --hero-scrim-max: 0.94;
+  --hero-scrim-mid: 0.82;
+  --hero-scrim-end: 74%;
   background-image: linear-gradient(
-    115deg,
-    color-mix(in srgb, rgb(var(--teal-deep)) 64%, rgb(var(--ink))) 0%,
-    color-mix(in srgb, rgb(var(--teal-deep)) 45%, rgb(var(--ink))) 28%,
-    color-mix(in srgb, rgb(var(--teal-deep)) 62%, rgb(var(--ink))) 52%,
-    color-mix(in srgb, rgb(var(--teal-deep)) 50%, rgb(var(--ink))) 78%,
-    color-mix(in srgb, rgb(var(--teal-deep)) 64%, rgb(var(--ink))) 100%
+    to right,
+    rgb(var(--ink) / var(--hero-scrim-max)) 0%,
+    rgb(var(--ink) / var(--hero-scrim-mid)) 48%,
+    rgb(var(--ink) / 0) var(--hero-scrim-end)
   );
-  background-size: 320% 320%;
-  /* 26s. If the movement is noticed before the headline it is too fast. */
-  animation: hero-drift 26s ease-in-out infinite;
 }
 
-@keyframes hero-drift {
-  0%   { background-position:   0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position:   0% 50%; }
-}
-
-/* Grain. feTurbulence at low opacity, so the band has texture rather than
-   looking like a flat fill that happens to be moving. */
-.hero-living::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.11;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23g)' opacity='0.5'/%3E%3C/svg%3E");
-}
-
-/* §11.5. The one orchestrated motion in this product is the rail marker; a
-   permanently moving background is not covered by that, so a reader who asked
-   for stillness gets a static gradient rather than a slower one. */
-@media (prefers-reduced-motion: reduce) {
-  .hero-living { animation: none; background-position: 0% 50%; }
+/* The header sits over the video on the landing page only, so it needs its own
+   short top-down wash - the video's top edge is not reliably dark, and the nav
+   is white text. Measured, not assumed: see BUILDLOG. */
+.hero-header-wash {
+  background-image: linear-gradient(
+    to bottom,
+    rgb(var(--ink) / 0.86) 0%,
+    rgb(var(--ink) / 0.55) 60%,
+    rgb(var(--ink) / 0) 100%
+  );
 }

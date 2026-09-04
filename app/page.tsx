@@ -14,6 +14,7 @@
  * No captcha (P1). No login. No scroll to reach the primary action. */
 
 import Link from "next/link";
+import { HeroVideo } from "../components/HeroVideo";
 import { ResumeCase } from "../components/ResumeCase";
 import { Voices } from "../components/Voices";
 import { useLocale } from "../components/LocaleProvider";
@@ -86,11 +87,20 @@ export default function EntryPage() {
 
   return (
     <main>
-      {/* Hero band - anchors the page. No rotating content: it would hide content
-          behind a timer on the one screen that has three seconds to be
-          understood. No photograph: §11.9 budgets zero images on the primary
-          path, and photographs fail first on 2G. */}
-      <section className="on-teal hero-living relative isolate overflow-hidden bg-teal-deep py-14 text-paper md:py-20">
+      {/* Hero band. The video is decoration and can fail; the poster is a CSS
+          background underneath it, and the headline below is server-rendered
+          over both. Nothing here is required for the page to work.
+
+          The negative top margin pulls the band up under the transparent header
+          so the video runs behind the nav, and the matching top padding puts
+          the headline back where it always sat. */}
+      <section className="on-teal relative isolate overflow-hidden pb-14 pt-[176px] text-paper md:pb-20 md:pt-[200px]">
+        <div className="hero-video-band absolute inset-0">
+          <HeroVideo />
+        </div>
+        {/* The scrim is what makes the headline legible over moving footage, so
+            it is structural rather than decorative. Tuned in globals.css. */}
+        <div aria-hidden="true" className="hero-scrim absolute inset-0" />
         <div className="shell relative">
           <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
             {resolve("entry.headline", {}, locale)}

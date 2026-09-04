@@ -31,3 +31,9 @@ Thumbs.db
 .test-build/
 *.tmp.js
 .env*
+
+# The ungraded hero source. 3.35 MB, does not loop, and everything shipped is
+# derived from it by the ffmpeg chain recorded in BUILDLOG. Keeping it out of
+# the repo keeps a clone small; keeping the recipe in the log keeps it
+# reproducible.
+growxai-*.mp4

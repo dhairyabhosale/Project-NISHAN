@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { BhashiniWidget } from "./BhashiniWidget";
 import { ConnectionStrip } from "./ConnectionStrip";
@@ -46,9 +47,24 @@ export function SiteChrome({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const backToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
 
+  /* The header goes transparent on the LANDING PAGE ONLY, so the hero video
+     runs behind the nav. Everywhere else it stays solid --teal-deep, because
+     those routes have no video and a transparent header over --cyan-pale would
+     be white text on a pale ground.
+     A short top-down wash carries the white nav over whatever the video is
+     doing at its top edge - measured, not assumed. */
+  const overVideo = usePathname() === "/";
+
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
-      <header className="on-teal relative bg-teal-deep text-paper">
+      <header
+        className={
+          "on-teal text-paper " +
+          (overVideo
+            ? "hero-header-wash absolute inset-x-0 top-0 z-30"
+            : "relative bg-teal-deep")
+        }
+      >
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
