@@ -13,6 +13,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { ResumeCase } from "../../components/ResumeCase";
 import { useLocale } from "../../components/LocaleProvider";
 import { resolve } from "../../content/resolve";
 import type { CatalogueKey } from "../../lib/content";
@@ -71,6 +72,9 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
 
   return (
     <main className="page-in shell pb-16 pt-8">
+      {/* A returning reader should never have to type an identifier twice. */}
+      <div className="mb-8"><ResumeCase /></div>
+
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("who.title", {}, locale)}</h1>
       <p className="mt-3 prose-measure text-body text-ink">{resolve("who.standfirst", {}, locale)}</p>
 

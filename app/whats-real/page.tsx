@@ -52,12 +52,18 @@ const ROWS: { status: Status; component: CatalogueKey; label: CatalogueKey; note
   { status: "simulated", component: "real.row.10.component", label: "real.row.10.label", note: "real.row.10.note" },
   { status: "real",      component: "real.row.11.component", label: "real.row.11.label", note: "real.row.11.note" },
   { status: "not_built", component: "real.row.12.component", label: "real.row.12.label", note: "real.row.12.note" },
-  { status: "not_built", component: "real.row.13.component", label: "real.row.13.label", note: "real.row.13.note" },
-  { status: "not_built", component: "real.row.14.component", label: "real.row.14.label", note: "real.row.14.note" },
+  { status: "partial"  , component: "real.row.13.component", label: "real.row.13.label", note: "real.row.13.note" },
+  { status: "real"     , component: "real.row.14.component", label: "real.row.14.label", note: "real.row.14.note" },
   { status: "real",      component: "real.row.15.component", label: "real.row.15.label", note: "real.row.15.note" },
   { status: "planned",   component: "real.row.16.component", label: "real.row.16.label", note: "real.row.16.note" },
-  { status: "planned",   component: "real.row.17.component", label: "real.row.17.label", note: "real.row.17.note" },
-  { status: "partial",   component: "real.row.18.component", label: "real.row.18.label", note: "real.row.18.note" }
+  { status: "partial",   component: "real.row.17.component", label: "real.row.17.label", note: "real.row.17.note" },
+  { status: "partial",   component: "real.row.18.component", label: "real.row.18.label", note: "real.row.18.note" },
+  { status: "partial",   component: "real.row.19.component", label: "real.row.19.label", note: "real.row.19.note" },
+  { status: "partial",   component: "real.row.20.component", label: "real.row.20.label", note: "real.row.20.note" },
+  { status: "partial",   component: "real.row.21.component", label: "real.row.21.label", note: "real.row.21.note" },
+  { status: "partial",   component: "real.row.22.component", label: "real.row.22.label", note: "real.row.22.note" },
+  { status: "partial",   component: "real.row.23.component", label: "real.row.23.label", note: "real.row.23.note" },
+  { status: "partial",   component: "real.row.24.component", label: "real.row.24.label", note: "real.row.24.note" }
 ];
 
 const LIMIT_COUNT = 7;

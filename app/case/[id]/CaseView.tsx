@@ -14,6 +14,7 @@ import { MoneyRail } from "../../../components/MoneyRail";
 import { StatusCodeChip } from "../../../components/StatusCodeChip";
 import { Verdict } from "../../../components/Verdict";
 import type { GateState } from "../../../components/RailGate";
+import { CaseStatus } from "../../../components/CaseStatus";
 import { useLocale } from "../../../components/LocaleProvider";
 import { resolve } from "../../../content/resolve";
 import type { Diagnosis } from "../../../lib/types/diagnosis";
@@ -38,6 +39,10 @@ export function CaseView({
       <div className="mt-6">
         <Verdict diagnosis={diagnosis} locale={locale} />
       </div>
+
+      {/* The persistent view: where this stands, what is done, what is pending,
+          what is next. Also what remembers the reference for the return path. */}
+      <CaseStatus reference={reference} diagnosis={diagnosis} />
 
       <div className="grid gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         <MoneyRail

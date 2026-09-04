@@ -14,6 +14,7 @@
  * No captcha (P1). No login. No scroll to reach the primary action. */
 
 import Link from "next/link";
+import { ResumeCase } from "../components/ResumeCase";
 import { Voices } from "../components/Voices";
 import { useLocale } from "../components/LocaleProvider";
 import { resolve } from "../content/resolve";
@@ -107,7 +108,9 @@ export default function EntryPage() {
       </section>
 
       <section className="shell py-14">
-        <h2 className="text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
+        {/* Renders nothing on a first visit; one tap back on a return. */}
+        <ResumeCase />
+        <h2 className="mt-8 text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
         <ul className="mt-6 grid gap-4 md:grid-cols-2">
           {CHOICES.map((c) => (
             <li key={c.key}>

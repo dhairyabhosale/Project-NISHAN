@@ -580,3 +580,72 @@ describe("P10 - the action endpoint", () => {
     assert.equal(timeline.includes("5551234567"), false, "the endpoint stored and rendered submitted data");
   });
 });
+
+describe("/services - every row is a decision with a reason", () => {
+  it("gives a reason for every service it lists", async () => {
+    // The question this page has to survive: what is the use of a site that
+    // sends me to the original one? A row without a reason cannot answer it.
+    const enPath = path.join(ROOT, "content", "catalogue.en.json");
+    const cat = JSON.parse(fs.readFileSync(enPath, "utf8")) as Record<string, string>;
+    const rows = Object.keys(cat).filter((k) => /^svc\.\d+\.name$/.test(k)).map((k) => k.split(".")[1]);
+    assert.ok(rows.length >= 20, "only " + rows.length + " services listed");
+    for (const i of rows) {
+      const reason = cat["svc." + i + ".reason"];
+      assert.ok(reason && reason.length > 40, "svc." + i + " has no real reason");
+    }
+  });
+
+  it("never says only to use the official site", () => {
+    const text = visible(served["/services"]);
+    // Every card carries a Why. The count must match the number of rows shown.
+    const whys = (text.match(/\bWhy\b/g) || []).length;
+    assert.ok(whys >= 20, "only " + whys + " reasons rendered");
+  });
+
+  it("names the four things that now finish here", () => {
+    const text = visible(served["/services"]);
+    for (const needle of ["Finish your e-KYC", "Link your Aadhaar to your bank account again",
+                          "Correct a spelling of your name", "Update your mobile number"]) {
+      assert.ok(text.includes(needle), "/services does not offer: " + needle);
+    }
+    assert.ok(text.includes("app download"), "the page does not say what the official route does instead");
+  });
+
+  it("gives a product reason for what is out of scope, not a shrug", () => {
+    const text = visible(served["/services"]);
+    assert.ok(text.includes("inverse problem"), "Online Refund is dismissed without a reason");
+  });
+
+  it("routes a completable service into the journey, not to the portal", () => {
+    // The four completable rows must lead into NISHAN. If they linked out, the
+    // page would be claiming something it does not do.
+    assert.ok(served["/services"].includes("/who"), "no route into the journey");
+  });
+});
+
+describe("Persistent case view", () => {
+  it("shows where the case stands, without a login", () => {
+    const text = mainText(served["/case/NSH-D33F"]);
+    assert.ok(text.includes("Where your case stands"), "no persistent status panel");
+    assert.ok(text.includes("Your next step"), "the panel does not say what to do next");
+  });
+
+  it("tells the reader the reference is the way back in", () => {
+    // §12.4: the reference IS the credential. No account, no password.
+    assert.ok(visible(served["/case/NSH-D33F"]).includes("opens this case on any phone"),
+      "the return path is not explained");
+  });
+
+  it("has no login, no password field and no account anywhere", () => {
+    for (const route of PAGES) {
+      const html = served[route];
+      assert.equal(/type="password"/.test(html), false, route + " has a password field");
+      assert.equal(/\bsign in\b|\blog in\b|\blogin\b/i.test(visible(html)), false,
+        route + " offers a login, which is the theatre we chose not to build");
+    }
+  });
+
+  it("reaches the timeline and the clock from the case screen", () => {
+    assert.ok(served["/case/NSH-D33F"].includes("/timeline"), "Track is not reachable from the case");
+  });
+});

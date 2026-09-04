@@ -12,6 +12,7 @@ import {
   ACTIONS, ACTION_IDS, actionFor, availableActions, ruledOutActions, officeOnly, nothingToDo
 } from "../lib/actions";
 import { readActionsFrom, writeActionTo, ACTION_KEY_PREFIX } from "../lib/actionStore";
+import { readRecentFrom, writeRecentTo, forgetRecentFrom, RECENT_KEY } from "../lib/recentCase";
 import { getCase, referenceFor } from "../lib/store";
 import { PERSONAS, CURRENT_CYCLE } from "../mocks/fixtures";
 import type { Diagnosis } from "../lib/types/diagnosis";
@@ -197,5 +198,75 @@ describe("actionStore - completions on the device", () => {
     assert.deepEqual(readActionsFrom(hostile, "NSH-D33F"), []);
     assert.doesNotThrow(() => writeActionTo(hostile, "NSH-D33F", "EKYC_FACE", AT));
     assert.deepEqual(readActionsFrom(null, "NSH-D33F"), []);
+  });
+});
+
+/* ── The return path. No login, one reference. ───────────────────────────── */
+
+describe("recentCase - the return path", () => {
+  const store = () => {
+    const map = new Map<string, string>();
+    return {
+      getItem: (k: string) => map.get(k) ?? null,
+      setItem: (k: string, v: string) => { map.set(k, v); },
+      removeItem: (k: string) => { map.delete(k); },
+      map
+    };
+  };
+
+  it("remembers one reference and hands it back", () => {
+    const s = store();
+    writeRecentTo(s, "NSH-D33F");
+    assert.equal(readRecentFrom(s), "NSH-D33F");
+  });
+
+  it("keeps ONE, not a history of every case this phone has seen", () => {
+    // §12.1: a list of cases a helper has opened is a record of who they help,
+    // and we have no use for it.
+    const s = store();
+    writeRecentTo(s, "NSH-D33F");
+    writeRecentTo(s, "NSH-3DCE");
+    assert.equal(readRecentFrom(s), "NSH-3DCE");
+    assert.equal(s.map.size, 1, "more than one entry was stored");
+  });
+
+  it("normalises what a reader might paste", () => {
+    const s = store();
+    writeRecentTo(s, "  nsh-d33f  ");
+    assert.equal(readRecentFrom(s), "NSH-D33F");
+  });
+
+  it("refuses anything that is not a §12.3 reference", () => {
+    for (const junk of ["", "NSH-", "NSH-ZZZZ", "../../etc", "<script>", "NSH-D33F extra"]) {
+      const s = store();
+      writeRecentTo(s, junk);
+      assert.equal(readRecentFrom(s), null, junk);
+    }
+  });
+
+  it("ignores a tampered stored value rather than putting it in a link", () => {
+    const s = store();
+    s.setItem(RECENT_KEY, "https://evil.example");
+    assert.equal(readRecentFrom(s), null);
+  });
+
+  it("can be forgotten, because the helper is not always the beneficiary", () => {
+    // §5.2: the modal user is a helper on their own phone.
+    const s = store();
+    writeRecentTo(s, "NSH-D33F");
+    forgetRecentFrom(s);
+    assert.equal(readRecentFrom(s), null);
+  });
+
+  it("never throws when storage is hostile or absent", () => {
+    const hostile = {
+      getItem() { throw new Error("SecurityError"); },
+      setItem() { throw new Error("SecurityError"); },
+      removeItem() { throw new Error("SecurityError"); }
+    };
+    assert.equal(readRecentFrom(hostile), null);
+    assert.doesNotThrow(() => writeRecentTo(hostile, "NSH-D33F"));
+    assert.doesNotThrow(() => forgetRecentFrom(hostile));
+    assert.equal(readRecentFrom(null), null);
   });
 });
