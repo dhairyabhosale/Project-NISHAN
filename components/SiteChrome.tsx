@@ -61,7 +61,10 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         className={
           "on-teal text-paper " +
           (overVideo
-            ? "hero-header-wash absolute inset-x-0 top-0 z-30"
+            // No background at all. The wash that makes this nav legible is an
+            // overlay inside the hero band, which lets it fade over 300px
+            // instead of being trapped inside the header height.
+            ? "absolute inset-x-0 top-0 z-30"
             : "relative bg-teal-deep")
         }
       >

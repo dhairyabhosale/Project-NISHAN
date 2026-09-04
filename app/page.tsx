@@ -98,6 +98,10 @@ export default function EntryPage() {
         <div className="hero-video-band absolute inset-0">
           <HeroVideo />
         </div>
+        {/* Carries the white nav over the video and fades out well below the
+            header, so there is no edge where it ends. It lives here rather than
+            on the header so it has 300px to fade across instead of 112. */}
+        <div aria-hidden="true" className="hero-top-wash absolute inset-x-0 top-0 h-[300px]" />
         {/* The scrim is what makes the headline legible over moving footage, so
             it is structural rather than decorative. Tuned in globals.css. */}
         <div aria-hidden="true" className="hero-scrim absolute inset-0" />
