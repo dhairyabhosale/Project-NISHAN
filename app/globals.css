@@ -5,23 +5,37 @@
 /* ── Design tokens - CLAUDE.md §11.3 ─────────────────────────────────────────
    Theme colours define what the product looks like. Functional additions each
    have exactly one job and appear only when that job is on screen.
-   Contrast rules in §11.3 are binding, not advisory. ------------------------ */
+   Contrast rules in §11.3 are binding, not advisory.
+
+   WHY THESE ARE CHANNEL TRIPLES AND NOT HEX.
+
+   They used to be hex, and every Tailwind opacity modifier on a token silently
+   painted NOTHING. bg-teal-deep/90 compiled to an invalid colour and computed
+   to rgba(0,0,0,0); border-paper/70 fell through to Tailwind's own default
+   grey-200. Nine call sites were affected, including the hero's secondary
+   button, which shipped a grey border on the first screen anyone sees. Nothing
+   errored, nothing warned, and the build was green throughout.
+
+   Tailwind builds "rgb(<channels> / <alpha-value>)", so the variable has to
+   hold the channels rather than a finished colour. Direct CSS use becomes
+   rgb(var(--x)), which is the whole cost of making every /NN modifier work.
+   ------------------------------------------------------------------------- */
 :root {
   /* theme */
-  --teal-deep: #00796b;
-  --green: #4caf50;
-  --green-soft: #a5d6a7;
-  --cyan-pale: #e0f7fa;
-  --white: #ffffff;
+  --teal-deep: 0 121 107;
+  --green: 76 175 80;
+  --green-soft: 165 214 167;
+  --cyan-pale: 224 247 250;
+  --white: 255 255 255;
 
   /* functional - one job each */
-  --ink: #10241f;
-  --ink-soft: #486b64;
-  --stop: #c62828;
-  --pending: #ef6c00;
-  --rule: #b2dfdb;
-  --focus: #00796b;
-  --focus-on-teal: #ffffff;
+  --ink: 16 36 31;
+  --ink-soft: 72 107 100;
+  --stop: 198 40 40;
+  --pending: 239 108 0;
+  --rule: 178 223 219;
+  --focus: 0 121 107;
+  --focus-on-teal: 255 255 255;
 
   /* type scale - §11.4 */
   --t-answer: 30px;
@@ -45,8 +59,8 @@
 
 body {
   margin: 0;
-  background: var(--cyan-pale);
-  color: var(--ink);
+  background: rgb(var(--cyan-pale));
+  color: rgb(var(--ink));
   font-family: var(--font-anek), system-ui, sans-serif;
   font-size: var(--t-body);
   line-height: 1.55;
@@ -67,11 +81,11 @@ button, input { font: inherit; }
    invisible. Any --teal-deep surface carries .on-teal, which flips the ring to
    white. Set as a variable so nesting resolves to the nearest surface. */
 :where(a, button, input, select, textarea, [tabindex]):focus-visible {
-  outline: 3px solid var(--ring, var(--focus));
+  outline: 3px solid var(--ring, rgb(var(--focus)));
   outline-offset: 2px;
 }
 
-.on-teal { --ring: var(--focus-on-teal); }
+.on-teal { --ring: rgb(var(--focus-on-teal)); }
 
 /* ── The one orchestrated motion - §11.5 ─────────────────────────────────────
    The rail marker settling into position on the diagnosis screen. Everything
@@ -99,7 +113,7 @@ button, input { font: inherit; }
 
 /* ── Print - the Visit Slip is a physical artifact (§11.7 S7) ─────────────── */
 @media print {
-  :root { --cyan-pale: #ffffff; }
+  :root { --cyan-pale: 224 247 250; }
   body { background: #fff; font-size: 12pt; }
   /* The prototype banner, header, footer and pinned action are screen furniture. */
   .fixed, header, footer { display: none !important; }
@@ -108,11 +122,11 @@ button, input { font: inherit; }
 }
 
 /* Connection strip - §11.8. Only present when genuinely offline. */
-.offline-strip { background: var(--pending); color: var(--ink); }
+.offline-strip { background: rgb(var(--pending)); color: rgb(var(--ink)); }
 
 /* A white ring is correct on a teal surface and invisible on a panel that sits
    above one. Any light surface nested inside .on-teal resets it. */
-.on-paper { --ring: var(--focus); }
+.on-paper { --ring: rgb(var(--focus)); }
 
 /* ── Page shell ───────────────────────────────────────────────────────────────
    Skill guidance `container-width`: a consistent desktop max-width of
@@ -185,7 +199,7 @@ a:active, button:active { transform: scale(0.985); }
   0%, 100% { opacity: 0.55; }
   50%      { opacity: 0.9; }
 }
-.skeleton { background: var(--rule); border-radius: 2px; animation: skeleton 1.4s ease-in-out infinite; }
+.skeleton { background: rgb(var(--rule)); border-radius: 2px; animation: skeleton 1.4s ease-in-out infinite; }
 
 /* §11.5 and the skill's reduced-motion rule: render the FINAL state, never a
    half-finished one. Every animation above resolves to where it was going. */
@@ -203,8 +217,8 @@ a:active, button:active { transform: scale(0.985); }
 /* Stat emphasis - a slow cycle that lifts one figure at a time. Subtle by
    design: these are published government numbers, not a scoreboard. */
 @keyframes stat-lift {
-  0%, 82%, 100% { transform: translateY(0);     border-color: var(--rule); }
-  8%, 74%       { transform: translateY(-3px);  border-color: var(--teal-deep); }
+  0%, 82%, 100% { transform: translateY(0);     border-color: rgb(var(--rule)); }
+  8%, 74%       { transform: translateY(-3px);  border-color: rgb(var(--teal-deep)); }
 }
 .stat-cycle { animation: stat-lift 16s ease-in-out infinite; }
 .stat-cycle:nth-child(2) { animation-delay: 2s; }

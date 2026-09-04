@@ -649,3 +649,80 @@ describe("Persistent case view", () => {
     assert.ok(served["/case/NSH-D33F"].includes("/timeline"), "Track is not reachable from the case");
   });
 });
+
+describe("Design tokens - nothing paints transparent or an unexpected grey", () => {
+  /* The rendered half of tests/tokens.test.ts.
+   *
+   * The alpha bug was invisible to tsc, to the build and to axe: an element
+   * with a background simply had none, and a white border quietly became
+   * Tailwind's default grey-200. Both are legal CSS. The only way to catch it
+   * is to look at what actually painted. */
+
+  /** Tailwind's default palette greys, which is what a token falls back to
+   *  when its modifier cannot be built. None of these is in §11.3. */
+  const FOREIGN_GREYS = [
+    "rgb(229, 231, 235)", "rgb(209, 213, 219)", "rgb(156, 163, 175)",
+    "rgb(107, 114, 128)", "rgb(243, 244, 246)", "rgb(249, 250, 251)"
+  ];
+
+  it("compiles a rule for every token opacity modifier a page actually ships", () => {
+    /* This is the bug, stated as an assertion: a class was in the HTML, no rule
+       existed for it, and the element painted nothing.
+       Scoped to OUR tokens. bg-white/10 also appears in the header and is fine:
+       it uses Tailwind's own white rather than the --white token, so its rule
+       compiles. That is a consistency wrinkle, not a rendering failure, and a
+       test that conflated the two would cry wolf. */
+    const TOKENS = ["teal-deep", "green", "green-soft", "cyan-pale", "paper",
+                    "ink", "ink-soft", "stop", "pending", "rule"];
+    const dir = path.join(ROOT, ".next", "static", "css");
+    const sheets = fs.readdirSync(dir).filter((f) => f.endsWith(".css"))
+      .map((f) => fs.readFileSync(path.join(dir, f), "utf8")).join("\n");
+
+    const used = new Set<string>();
+    for (const body of Object.values(served)) {
+      for (const m of body.matchAll(/\b(bg|border|text)-([a-z-]+)\/(\d+)/g)) {
+        if (TOKENS.includes(m[2])) used.add(m[1] + "-" + m[2] + "/" + m[3]);
+      }
+    }
+    assert.ok(used.size > 0, "no token opacity modifier is used anywhere, so this proves nothing");
+
+    for (const cls of used) {
+      const [prop, rest] = [cls.split("-")[0], cls.slice(cls.indexOf("-") + 1)];
+      const [token, alpha] = rest.split("/");
+      const needle = "rgb(var(--" + (token === "paper" ? "white" : token) + ")/." + alpha.replace(/0$/, "") + ")";
+      assert.ok(sheets.replace(/\s/g, "").includes(needle.replace(/\s/g, "")),
+        cls + " is in the HTML but no rule paints it - expected " + needle + " (" + prop + ")");
+    }
+  });
+
+  it("emits a real rgb() with an alpha for every opacity modifier it ships", () => {
+    // Read the compiled stylesheet: this is where the bug was visible, and
+    // where a regression would show first.
+    const dir = path.join(ROOT, ".next", "static", "css");
+    const sheets = fs.readdirSync(dir).filter((f) => f.endsWith(".css"))
+      .map((f) => fs.readFileSync(path.join(dir, f), "utf8")).join("\n");
+    // Built with new RegExp so the pattern stays a plain string. The class name
+    // in compiled CSS is literally `.bg-cyan-pale\/50`, backslash included, and
+    // writing that as a literal here is a reliable way to end a regex early.
+    const ALPHA_RULE = new RegExp("\\.[a-z-]+\\\\/\\d+\\{[^}]*\\}", "g");
+    const alphaRules = sheets.match(ALPHA_RULE) ?? [];
+    assert.ok(alphaRules.length > 0, "no opacity-modified utilities were compiled at all");
+    for (const rule of alphaRules) {
+      assert.equal(/:\s*(transparent|initial|inherit)\s*[;}]/.test(rule), false,
+        "an opacity utility compiled to nothing: " + rule.slice(0, 90));
+      assert.match(rule, /rgb\(|rgba\(|hsla?\(/,
+        "an opacity utility produced no usable colour: " + rule.slice(0, 90));
+    }
+  });
+
+  it("uses no colour from outside §11.3 in the compiled stylesheet", () => {
+    const dir = path.join(ROOT, ".next", "static", "css");
+    const sheets = fs.readdirSync(dir).filter((f) => f.endsWith(".css"))
+      .map((f) => fs.readFileSync(path.join(dir, f), "utf8")).join("\n");
+    for (const grey of FOREIGN_GREYS) {
+      const compact = grey.replace(/\s/g, "");
+      assert.equal(sheets.replace(/\s/g, "").includes(compact), false,
+        "Tailwind's default palette leaked in as " + grey + ", which is what a broken token falls back to");
+    }
+  });
+});
