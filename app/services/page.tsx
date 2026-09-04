@@ -100,19 +100,28 @@ export default function ServicesPage() {
   const k = (s: string) => s as CatalogueKey;
 
   function Row({ i, tier, href }: { i: number; tier: Tier; href?: string }) {
+    /* The "complete" card sits on --green-soft, where §11.3 measures --ink-soft
+       at 3.58:1 and --teal-deep at 3.23:1 - both fail. --ink is 9.87:1 there.
+       Same mistake as the rail labels on Day 2, made again on a new surface,
+       and caught by re-running axe rather than by assuming the palette was
+       safe wherever it was applied. */
+    const onFill = tier === "complete";
+    const quiet = onFill ? "text-ink" : "text-ink-soft";
+    const accent = onFill ? "text-ink" : "text-teal-deep";
+
     const inner = (
       <>
         <span className="text-body font-semibold text-ink">{resolve(k("svc." + i + ".name"), {}, locale)}</span>
         <span className="mt-1 block text-label text-ink">{resolve(k("svc." + i + ".body"), {}, locale)}</span>
         {/* The reason is the row. Without it this page is a list of links. */}
         <span className="mt-3 block border-t border-rule pt-3">
-          <span className="block text-label font-bold uppercase tracking-wide text-ink-soft">
+          <span className={"block text-label font-bold uppercase tracking-wide " + quiet}>
             {resolve("services.reason_label", {}, locale)}
           </span>
           <span className="mt-1 block text-label text-ink">{resolve(k("svc." + i + ".reason"), {}, locale)}</span>
         </span>
         {href && (
-          <span className="mt-3 block text-label font-semibold text-teal-deep">
+          <span className={"mt-3 block text-label font-semibold " + accent}>
             {resolve("services.start_here", {}, locale)}
           </span>
         )}

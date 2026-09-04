@@ -90,8 +90,8 @@ export default function EntryPage() {
           behind a timer on the one screen that has three seconds to be
           understood. No photograph: §11.9 budgets zero images on the primary
           path, and photographs fail first on 2G. */}
-      <section className="on-teal bg-teal-deep py-14 text-paper md:py-20">
-        <div className="shell">
+      <section className="on-teal hero-living relative isolate overflow-hidden bg-teal-deep py-14 text-paper md:py-20">
+        <div className="shell relative">
           <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
             {resolve("entry.headline", {}, locale)}
           </h1>
