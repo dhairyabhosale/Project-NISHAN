@@ -77,7 +77,7 @@ export function NishanLogo({ locale }: { locale: Locale }) {
         {/* Item 13: one line at every viewport. The lockup truncates rather
             than wrapping, because a two-line tagline pushes the header taller
             on exactly the 360px screens that can least afford it. */}
-        <span className="mt-1 block truncate whitespace-nowrap text-[11px] leading-tight opacity-90">
+        <span className="logo-tagline mt-1 block truncate whitespace-nowrap text-[11px] leading-tight opacity-90">
           {resolve("logo.tagline", {}, locale)}
         </span>
       </span>

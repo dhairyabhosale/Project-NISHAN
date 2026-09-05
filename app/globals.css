@@ -165,8 +165,14 @@ button, input { font: inherit; }
   box-shadow: 0 8px 24px rgb(var(--ink) / 0.24);
   flex-wrap: nowrap;
 }
+/* The brief asked for near-solid --teal-deep, and this was --ink at 96% - a
+   near-black that reads as a different family from the teal pill above it. The
+   catch is that white on solid --teal-deep is 5.32:1, so the token itself
+   cannot carry a 7:1 headline no matter the opacity. This is --teal-deep taken
+   down until the number holds: same hue, measured at 8.79:1 against the
+   brightest ground the photograph puts behind it, against a 7:1 bar. */
 .home-hero-panel {
-  background: rgba(16, 36, 31, 0.96);
+  background: rgba(0, 78, 69, 0.96);
 }
 @media (min-width: 1280px) {
   .site-home-pill > .order-3 {
@@ -192,6 +198,19 @@ button, input { font: inherit; }
     width: calc(100% - 32px);
     max-width: none;
     padding-inline: 12px;
+    /* The badge is absolutely positioned at top:8px and is ~33px tall. Below sm
+       the pill spans nearly the whole width, so a 16px top margin put the two
+       on top of each other and the badge covered the language selector -
+       measured, not eyeballed. Drop the pill below the badge instead. */
+    margin-top: 48px;
+  }
+  /* The tagline does not clip inside the pill. The logo link shrinks to 124px
+     as it should, but the tagline still lays out at its full 149px and runs
+     under the language selector - measured at 76..225 against a selector at
+     168..291. It is the one part of the lockup carrying no navigation, so below
+     sm it goes rather than overlapping something that does. */
+  .site-home-pill .logo-tagline {
+    display: none;
   }
   .site-home-pill > .order-2 {
     margin-left: 0;
