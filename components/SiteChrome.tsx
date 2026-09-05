@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { BhashiniWidget } from "./BhashiniWidget";
 import { ConnectionStrip } from "./ConnectionStrip";
@@ -113,27 +112,15 @@ export function SiteChrome({ children }: { children: ReactNode }) {
     return () => ro.disconnect();
   }, [locale]);
 
-  /* The header goes transparent on the LANDING PAGE ONLY, so the hero video
-     runs behind the nav. Everywhere else it stays solid --teal-deep, because
-     those routes have no video and a transparent header over --cyan-pale would
-     be white text on a pale ground.
-     A short top-down wash carries the white nav over whatever the video is
-     doing at its top edge - measured, not assumed. */
-  const overVideo = usePathname() === "/";
-
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
-      <header
-        className={
-          "on-teal text-paper " +
-          (overVideo
-            // No background at all. The wash that makes this nav legible is an
-            // overlay inside the hero band, which lets it fade over 300px
-            // instead of being trapped inside the header height.
-            ? "absolute inset-x-0 top-0 z-30"
-            : "relative bg-teal-deep")
-        }
-      >
+      {/* Solid --teal-deep on EVERY route, landing page included. The
+          transparent-over-the-hero variant is gone with the media it existed
+          for: white nav over a photograph is not a colour problem that can be
+          solved, because the strip the header sits across runs from luminance
+          0.065 to 0.947 - dark trees against bright sky - and no text colour
+          clears that range. The band sits above the image instead. */}
+      <header className="on-teal relative bg-teal-deep text-paper">
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>

@@ -14,7 +14,6 @@
  * No captcha (P1). No login. No scroll to reach the primary action. */
 
 import Link from "next/link";
-import { HeroCanvas } from "../components/HeroCanvas";
 import { ResumeCase } from "../components/ResumeCase";
 import { Voices } from "../components/Voices";
 import { useLocale } from "../components/LocaleProvider";
@@ -87,25 +86,12 @@ export default function EntryPage() {
 
   return (
     <main>
-      {/* Hero band. The canvas is decoration and can fail; the static CSS
-          gradient underneath it is in the first response, and the headline is
-          server-rendered over both. Nothing here is required for the page to
-          work.
-
-          The band spans the whole section including the strip behind the
-          header, which is transparent on this route only, and the top padding
-          puts the headline back where it always sat. */}
-      <section className="on-teal relative isolate overflow-hidden pb-14 pt-[176px] text-paper md:pb-20 md:pt-[200px]">
-        <div className="hero-canvas-band absolute inset-0">
-          <HeroCanvas />
-        </div>
-        {/* One top-down fade doing the job the video's two overlays used to
-            split between them: carrying the white nav across the header strip,
-            and holding the headline and standfirst above their contrast bars.
-            It clears entirely by the bottom so the gradient reads light and
-            bright where nobody is reading. Stops tuned in globals.css. */}
-        <div aria-hidden="true" className="hero-fade absolute inset-0" />
-        <div className="shell relative">
+      {/* Hero band - anchors the page. Solid --teal-deep, and the text sits on
+          the teal rather than on any image: white on --teal-deep measures
+          5.32:1 and holds everywhere, which is not true of white on a
+          photograph. */}
+      <section className="on-teal relative bg-teal-deep py-14 text-paper md:py-20">
+        <div className="shell">
           <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
             {resolve("entry.headline", {}, locale)}
           </h1>
