@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { BhashiniWidget } from "./BhashiniWidget";
 import { ConnectionStrip } from "./ConnectionStrip";
@@ -47,6 +48,8 @@ const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffec
 
 export function SiteChrome({ children }: { children: ReactNode }) {
   const { locale } = useLocale();
+  const pathname = usePathname();
+  const isLandingPage = pathname === "/";
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const backToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
@@ -120,11 +123,11 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           solved, because the strip the header sits across runs from luminance
           0.065 to 0.947 - dark trees against bright sky - and no text colour
           clears that range. The band sits above the image instead. */}
-      <header className="on-teal relative bg-teal-deep text-paper">
+      <header className={`on-teal relative text-paper ${isLandingPage ? "site-home-header" : "bg-teal-deep"}`}>
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
-        <div className="shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 pb-4 pt-14 lg:pt-12 xl:flex-nowrap">
+        <div className={`shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 xl:flex-nowrap ${isLandingPage ? "site-home-pill" : "pb-4 pt-14 lg:pt-12"}`}>
           <Link href="/" className="order-1 flex min-h-12 basis-full shrink-0 items-center rounded-card sm:basis-auto sm:min-w-[195px] xl:mr-2 xl:min-w-[175px]">
             <NishanLogo locale={locale} />
           </Link>

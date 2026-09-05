@@ -147,6 +147,64 @@ button, input { font: inherit; }
 /* Prose stays readable regardless of how wide the shell gets. */
 .prose-measure { max-width: 68ch; }
 
+/* The landing page uses the photograph as its opening surface. Its navigation
+   stays legible in a compact pill; every other route keeps the full-width band. */
+.site-home-header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 30;
+  background: transparent;
+}
+.site-home-pill {
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 16px auto 0;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: rgb(var(--teal-deep));
+  box-shadow: 0 8px 24px rgb(var(--ink) / 0.24);
+  flex-wrap: nowrap;
+}
+.home-hero-panel {
+  background: rgba(16, 36, 31, 0.96);
+}
+@media (min-width: 1280px) {
+  .site-home-pill > .order-3 {
+    width: auto;
+    flex: 1 1 auto;
+    flex-basis: auto;
+  }
+}
+@media (max-width: 1279px) {
+  .site-home-pill > .order-3 {
+    display: none;
+  }
+  .site-home-pill > .order-1 {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+  .site-home-pill > .order-2 {
+    order: 3;
+  }
+}
+@media (max-width: 639px) {
+  .site-home-pill {
+    width: calc(100% - 32px);
+    max-width: none;
+    padding-inline: 12px;
+  }
+  .site-home-pill > .order-2 {
+    margin-left: 0;
+    flex: 0 0 auto;
+  }
+  .site-home-pill > .order-2 > button:first-child {
+    padding-inline: 8px;
+  }
+  .site-home-pill > .order-2 > button:last-child {
+    display: grid;
+  }
+}
+
 /* Card lift - the one shadow the design brief allows, and only on hover. */
 .card-lift { transition: transform 160ms ease-out, box-shadow 160ms ease-out, background-color 160ms ease-out; }
 @media (hover: hover) {
@@ -232,5 +290,3 @@ a:active, button:active { transform: scale(0.985); }
 @media (prefers-reduced-motion: reduce) {
   .stat-cycle { animation: none !important; transform: none !important; }
 }
-
-

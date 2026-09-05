@@ -86,45 +86,8 @@ export default function EntryPage() {
 
   return (
     <main>
-      {/* Hero band - anchors the page. Solid --teal-deep, and the text sits on
-          the teal rather than on any image: white on --teal-deep measures
-          5.32:1 and holds everywhere, which is not true of white on a
-          photograph. */}
-      <section className="on-teal relative bg-teal-deep py-14 text-paper md:py-20">
-        <div className="shell">
-          <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
-            {resolve("entry.headline", {}, locale)}
-          </h1>
-          <p className="mt-5 prose-measure text-[20px] font-semibold leading-relaxed">{resolve("entry.standfirst", {}, locale)}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link href="/who" className="inline-flex min-h-14 items-center rounded-card bg-paper px-6 text-body font-semibold text-teal-deep">
-              {resolve("hero.cta", {}, locale)}
-            </Link>
-            <Link href="/demo" className="inline-flex min-h-14 items-center rounded-card border-2 border-paper/70 px-6 text-body font-semibold text-paper">
-              {resolve("hero.secondary", {}, locale)}
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* The photograph, whole. No text sits on it and nothing crops it.
-          WHY NOTHING SITS ON IT: across the strip a header would occupy, the
-          image runs from luminance 0.065 to 0.947 - dark trees against bright
-          sky. White scores 1.05:1 there and --ink scores 1.78:1, so there is no
-          text colour that works across the frame. The teal block above carries
-          every word instead, at 5.32:1.
-
-          WHY IT IS NOT CROPPED: object-contain inside a box locked to the
-          image's own 1672:941, so the height follows the width and the frame is
-          never cut. That is also why the band is short on a phone - about 211px
-          at 375px wide - which is the honest consequence of showing all of it.
-
-          NO LAYOUT SHIFT: width and height are on the element, so the box is
-          reserved from the first byte of HTML rather than when the image
-          decodes. The teal ground behind means the reserved space matches the
-          band around it while the bytes are still arriving. */}
-      <div className="bg-teal-deep">
-        <picture>
+      <section className="home-hero on-teal relative isolate overflow-hidden text-paper">
+        <picture className="absolute inset-0 -z-10 block">
           <source srcSet="/hero-farmer.webp" type="image/webp" />
           <img
             src="/hero-farmer.png"
@@ -134,10 +97,26 @@ export default function EntryPage() {
             loading="eager"
             fetchPriority="high"
             decoding="sync"
-            className="block aspect-[1672/941] w-full object-contain"
+            className="h-full w-full object-cover object-[68%_center]"
           />
         </picture>
-      </div>
+        <div className="shell relative flex min-h-[520px] items-center py-28 md:min-h-[85vh] md:py-32">
+          <div className="home-hero-panel max-w-2xl rounded-card p-6 shadow-xl sm:p-8">
+            <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
+              {resolve("entry.headline", {}, locale)}
+            </h1>
+            <p className="mt-5 max-w-[52ch] text-[20px] font-semibold leading-relaxed">{resolve("entry.standfirst", {}, locale)}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link href="/who" className="inline-flex min-h-14 items-center rounded-card bg-paper px-6 text-body font-semibold text-teal-deep">
+                {resolve("hero.cta", {}, locale)}
+              </Link>
+              <Link href="/demo" className="inline-flex min-h-14 items-center rounded-card border-2 border-paper/70 px-6 text-body font-semibold text-paper">
+                {resolve("hero.secondary", {}, locale)}
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="shell py-14">
         {/* Renders nothing on a first visit; one tap back on a return. */}
