@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { BhashiniWidget } from "./BhashiniWidget";
 import { ConnectionStrip } from "./ConnectionStrip";
 import { LanguageSelector } from "./LanguageSelector";
@@ -41,11 +41,77 @@ const MENU: { label: CatalogueKey; items: { label: CatalogueKey; href: string }[
   }
 ];
 
+/* useLayoutEffect on the client, useEffect on the server, so the fit check runs
+   before paint without warning during SSR. Assigned once at module scope - this
+   is not a conditional hook call. */
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
 export function SiteChrome({ children }: { children: ReactNode }) {
   const { locale } = useLocale();
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const backToTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
+
+  /* WHY THIS EXISTS.
+     The desktop nav is flex-none inside a min-w-0 flex-1 track with
+     justify-end. flex-none means it never shrinks, so once its intrinsic width
+     exceeds the track it does not clip, wrap or compress - it overflows the
+     track's LEFT edge and slides straight across the logo lockup. Tamil hit
+     this first: its nav measured 983px against a 811px track and covered the
+     mark, the wordmark and the subtitle.
+
+     Raising the breakpoint would not have helped. .shell is capped at
+     max-width 1152px, so the track is ~811px at every viewport from 1248px up;
+     a nav that does not fit at 1280 does not fit at 1920 either.
+
+     So the nav is measured against its track and, when it does not fit, it is
+     taken out of flow and the burger takes over - which is the behaviour
+     already used below xl. It is moved to right-full rather than hidden with
+     display:none so it stays measurable and can come back when the locale
+     changes; being off to the left in LTR, it adds no scrollable overflow, and
+     visibility:hidden keeps it out of the tab order and the a11y tree.
+
+     Locale-agnostic on purpose: any label set that outgrows the track collapses,
+     and every locale that fits is untouched. */
+  const navRef = useRef<HTMLElement | null>(null);
+  const trackRef = useRef<HTMLDivElement | null>(null);
+  const burgerRef = useRef<HTMLButtonElement | null>(null);
+  const [navFits, setNavFits] = useState(true);
+
+  useIsomorphicLayoutEffect(() => {
+    const nav = navRef.current;
+    const track = trackRef.current;
+    if (!nav || !track || typeof ResizeObserver === "undefined") return;
+    const measure = () => {
+      // Below xl the nav is display:none and measures 0, which reads as fitting.
+      // That is correct: the burger is already showing at those widths.
+      const needed = nav.scrollWidth;
+      if (needed === 0) { setNavFits(true); return; }
+
+      /* Measure against the space the nav would have IF IT WERE SHOWING, not
+         the space left over now. Collapsing reveals the burger, and the burger
+         takes its own width plus the gap beside it out of the track - so a
+         collapsed nav shrinks the very track it is measured against and can
+         never come back. That latch was real, not theoretical: switching Tamil
+         back to English at 1440 left the nav collapsed, because English needs
+         640px and the burger had cut the track from 690px to 634px.
+
+         Adding the burger's footprint back makes the figure invariant to the
+         state it decides, so the measurement is stable in both directions. */
+      const burger = burgerRef.current;
+      let available = track.clientWidth;
+      if (burger && burger.offsetWidth > 0) {
+        const row = burger.parentElement;
+        const gap = row ? parseFloat(getComputedStyle(row).columnGap) || 0 : 0;
+        available += burger.offsetWidth + gap;
+      }
+      setNavFits(needed <= available);
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(track);
+    return () => ro.disconnect();
+  }, [locale]);
 
   /* The header goes transparent on the LANDING PAGE ONLY, so the hero video
      runs behind the nav. Everywhere else it stays solid --teal-deep, because
@@ -76,8 +142,17 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             <NishanLogo locale={locale} />
           </Link>
 
-          <div className="order-3 flex basis-full min-w-0 items-center justify-end gap-3 lg:order-2 lg:w-0 lg:basis-0 lg:flex-1">
-            <nav aria-label={resolve("nav.menu", {}, locale)} className="hidden min-w-0 flex-none items-center gap-2 xl:flex xl:flex-nowrap xl:justify-end xl:gap-5">
+          <div ref={trackRef} className="relative order-3 flex basis-full min-w-0 items-center justify-end gap-3 lg:order-2 lg:w-0 lg:basis-0 lg:flex-1">
+            <nav
+              ref={navRef}
+              aria-label={resolve("nav.menu", {}, locale)}
+              className={
+                "hidden min-w-0 flex-none items-center gap-2 xl:flex xl:flex-nowrap xl:justify-end xl:gap-5" +
+                // Out of flow, off to the left, invisible: still measurable, adds
+                // no horizontal overflow, and out of the tab order.
+                (navFits ? "" : " xl:absolute xl:right-full xl:top-0 xl:invisible")
+              }
+            >
               {MENU.map((group) => (
                 <div
                   key={group.label}
@@ -138,11 +213,16 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           <div className="order-2 ml-auto flex basis-full items-center justify-end gap-2 sm:basis-auto lg:order-3 lg:shrink-0 xl:ml-2">
             <LanguageSelector />
             <button
+              ref={burgerRef}
               type="button"
               onClick={() => setMobileOpen((o) => !o)}
               aria-expanded={mobileOpen}
               aria-label={resolve("nav.menu", {}, locale)}
-              className="grid size-12 shrink-0 place-items-center rounded-card hover:bg-white/10 xl:hidden"
+              className={
+                "grid size-12 shrink-0 place-items-center rounded-card hover:bg-white/10" +
+                // Hidden at xl only while the desktop nav is actually showing.
+                (navFits ? " xl:hidden" : "")
+              }
             >
               <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                 {mobileOpen ? <path d="m6 6 12 12M18 6 6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
@@ -152,7 +232,14 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         </div>
 
         {mobileOpen && (
-          <nav aria-label={resolve("nav.menu", {}, locale)} className="shell border-t border-white/20 pb-4 xl:hidden">
+          <nav
+            aria-label={resolve("nav.menu", {}, locale)}
+            className={
+              "shell border-t border-white/20 pb-4" +
+              // Must open at xl too when the burger is the only way in.
+              (navFits ? " xl:hidden" : "")
+            }
+          >
             {MENU.map((group) => (
               <div key={group.label} className="border-b border-white/15 py-2">
                 <p className="py-1 text-label font-bold uppercase tracking-wide opacity-80">{resolve(group.label, {}, locale)}</p>

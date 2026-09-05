@@ -726,3 +726,112 @@ describe("Design tokens - nothing paints transparent or an unexpected grey", () 
     }
   });
 });
+
+/* The header overlap, and the contract that stops it coming back.
+ *
+ * WHAT HAPPENED: the desktop nav is flex-none inside a min-w-0 flex-1 track
+ * with justify-end. flex-none means it never shrinks, so once its intrinsic
+ * width passed the track it did not clip, wrap or compress - it overflowed the
+ * track's LEFT edge and sat on top of the logo mark, the wordmark and the
+ * subtitle. Tamil reached it first at 983px of nav against a 811px track.
+ *
+ * WHY A BREAKPOINT WOULD NOT HAVE FIXED IT: .shell is capped at max-width
+ * 1152px, so the track is ~811px at every viewport from 1248px upward. A nav
+ * that does not fit at 1280 does not fit at 1920 either.
+ *
+ * These assertions are structural, and they say so. The pixel proof is a
+ * browser pass - 32 header screenshots across four locales and four widths,
+ * with en/hi/mr compared by hash - which needs a layout engine this suite does
+ * not have. What is checkable here is that the mechanism exists, is wired to
+ * both controls, and is not silently purged, which is the failure mode that
+ * would put the overlap back with no visible error. */
+describe("Header - the nav can never collide with the logo lockup", () => {
+  const chrome = fs.readFileSync(path.join(ROOT, "components", "SiteChrome.tsx"), "utf8");
+  const sheets = () => {
+    const dir = path.join(ROOT, ".next", "static", "css");
+    return fs.readdirSync(dir).filter((f) => f.endsWith(".css"))
+      .map((f) => fs.readFileSync(path.join(dir, f), "utf8")).join(NEWLINE);
+  };
+
+  it("compiles the utilities the collapse is built from", () => {
+    /* Tailwind scans source text, and the collapse classes live in a
+       concatenated expression rather than a static string - exactly the shape
+       that gets purged. A purged collapse is not a broken style, it is the
+       overlap again, with nothing to see in the console. */
+    const css = sheets();
+    /* Tailwind escapes the variant colon, so the selector is literally
+       `.xl\:absolute`. Built from a char code for the same reason NEWLINE is
+       above: a backslash in a literal here is one editor round-trip away from
+       becoming a no-op escape, and `"xl\:absolute"` reads as "xl:absolute",
+       which is not in the stylesheet and never will be. That mistake makes
+       this assertion fail loudly rather than silently, but only by luck. */
+    const BACKSLASH = String.fromCharCode(92);
+    for (const name of ["absolute", "right-full", "invisible", "hidden"]) {
+      const selector = ".xl" + BACKSLASH + ":" + name;
+      assert.ok(css.includes(selector),
+        selector + " never compiled, so the nav cannot be taken out of flow and will overlap the lockup again");
+    }
+  });
+
+  it("measures the nav against the space it actually has", () => {
+    assert.match(chrome, /scrollWidth/, "nothing measures the nav's intrinsic width");
+    assert.match(chrome, /clientWidth/, "nothing measures the track the nav has to fit into");
+    /* Constructed AND observing. Matching the bare word ResizeObserver passed
+       even with the observer stubbed out, because the name survives in the
+       `typeof ResizeObserver === "undefined"` guard - an assertion that could
+       not fail, caught by injecting the stub. */
+    assert.match(chrome, /new ResizeObserver\(/, "no ResizeObserver is constructed");
+    assert.match(chrome, /\.observe\(/, "a ResizeObserver is made but never told what to watch");
+  });
+
+  it("measures against space that does not depend on the answer", () => {
+    /* The latch. Collapsing the nav reveals the burger, and the burger takes
+       its own width plus the gap beside it out of the same track the nav is
+       measured against. Measured naively, a collapsed nav shrinks its own
+       track and can never come back: switching Tamil to English at 1440 left
+       the nav collapsed, because English needs 640px and the burger had cut
+       the track from 690px to 634px.
+
+       So the burger's footprint has to be added back, making the figure
+       invariant to the state it decides. Without this the header is stable in
+       exactly one direction, which is the kind of bug that looks fine in a
+       single screenshot. */
+    const effect = chrome.slice(chrome.indexOf("const measure = ()"), chrome.indexOf("ro.observe("));
+    assert.match(effect, /burgerRef/,
+      "the fit is measured without accounting for the burger, so collapsing shrinks the track it measures against");
+    assert.match(effect, /offsetWidth/, "the burger's width is never added back");
+    assert.match(effect, /columnGap/, "the gap beside the burger is never added back");
+  });
+
+  it("binds both the nav and the burger to the same fit decision", () => {
+    /* If the burger kept a static xl:hidden, collapsing the nav above 1280px
+       would leave that locale with no navigation at all. */
+    const burger = chrome.slice(chrome.indexOf("setMobileOpen((o) => !o)"));
+    assert.match(burger.slice(0, 600), /navFits/,
+      "the burger is not bound to the fit check, so a collapsed nav leaves no way to navigate");
+    const desktopNav = chrome.slice(chrome.indexOf("ref={navRef}"), chrome.indexOf("ref={navRef}") + 600);
+    assert.match(desktopNav, /navFits/, "the desktop nav is not bound to the fit check");
+  });
+
+  it("takes the nav out of flow rather than clipping or truncating it", () => {
+    /* The brief's constraint, and §11.7's: a half-readable nav item is worse
+       than a hidden one. Clipping would also cut off the dropdown panels, which
+       are positioned inside the nav. */
+    const track = chrome.slice(chrome.indexOf("ref={trackRef}"), chrome.indexOf("ref={navRef}"));
+    assert.equal(/overflow-hidden|truncate|text-ellipsis/.test(track), false,
+      "the header track clips its content instead of collapsing the nav");
+    const navBlock = chrome.slice(chrome.indexOf("ref={navRef}"), chrome.indexOf("</nav>"));
+    assert.equal(/truncate|text-ellipsis/.test(navBlock), false,
+      "a nav item truncates, which the brief rules out");
+  });
+
+  it("ships both a desktop nav and a burger on every rendered route", () => {
+    /* Served HTML, so this covers what actually reaches a browser. */
+    for (const [route, html] of Object.entries(served)) {
+      const header = html.slice(0, html.indexOf("</header>") + 9);
+      assert.ok(header.includes("<nav"), route + " serves a header with no nav at all");
+      assert.match(header, /aria-expanded="false"[^>]*class="[^"]*size-12/,
+        route + " serves a header with no burger control, so a collapsed nav has nowhere to go");
+    }
+  });
+});

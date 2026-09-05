@@ -25,6 +25,7 @@ export const LANGUAGES: readonly Language[] = [
   { code: "en", english: "English", endonym: "English", resolved: true },
   { code: "hi", english: "Hindi", endonym: "हिन्दी", resolved: true },
   { code: "mr", english: "Marathi", endonym: "मराठी", resolved: true },
+  { code: "ta", english: "Tamil", endonym: "தமிழ்", resolved: true },
   { code: "as", english: "Assamese", endonym: "অসমীয়া", resolved: false },
   { code: "bn", english: "Bengali", endonym: "বাংলা", resolved: false },
   { code: "gu", english: "Gujarati", endonym: "ગુજરાતી", resolved: false },
@@ -33,7 +34,6 @@ export const LANGUAGES: readonly Language[] = [
   { code: "ne", english: "Nepali", endonym: "नेपाली", resolved: false },
   { code: "or", english: "Odia", endonym: "ଓଡ଼ିଆ", resolved: false },
   { code: "pa", english: "Punjabi", endonym: "ਪੰਜਾਬੀ", resolved: false },
-  { code: "ta", english: "Tamil", endonym: "தமிழ்", resolved: true },
   { code: "te", english: "Telugu", endonym: "తెలుగు", resolved: false },
   { code: "ur", english: "Urdu", endonym: "اردو", resolved: false }
 ];
