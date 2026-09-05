@@ -107,6 +107,38 @@ export default function EntryPage() {
         </div>
       </section>
 
+      {/* The photograph, whole. No text sits on it and nothing crops it.
+          WHY NOTHING SITS ON IT: across the strip a header would occupy, the
+          image runs from luminance 0.065 to 0.947 - dark trees against bright
+          sky. White scores 1.05:1 there and --ink scores 1.78:1, so there is no
+          text colour that works across the frame. The teal block above carries
+          every word instead, at 5.32:1.
+
+          WHY IT IS NOT CROPPED: object-contain inside a box locked to the
+          image's own 1672:941, so the height follows the width and the frame is
+          never cut. That is also why the band is short on a phone - about 211px
+          at 375px wide - which is the honest consequence of showing all of it.
+
+          NO LAYOUT SHIFT: width and height are on the element, so the box is
+          reserved from the first byte of HTML rather than when the image
+          decodes. The teal ground behind means the reserved space matches the
+          band around it while the bytes are still arriving. */}
+      <div className="bg-teal-deep">
+        <picture>
+          <source srcSet="/hero-farmer.webp" type="image/webp" />
+          <img
+            src="/hero-farmer.png"
+            width={1672}
+            height={941}
+            alt={resolve("hero.image_alt", {}, locale)}
+            loading="eager"
+            fetchPriority="high"
+            decoding="sync"
+            className="block aspect-[1672/941] w-full object-contain"
+          />
+        </picture>
+      </div>
+
       <section className="shell py-14">
         {/* Renders nothing on a first visit; one tap back on a return. */}
         <ResumeCase />
