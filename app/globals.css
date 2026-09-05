@@ -161,7 +161,15 @@ button, input { font: inherit; }
   margin: 16px auto 0;
   padding: 8px 16px;
   border-radius: 9999px;
-  background: rgb(var(--teal-deep));
+  /* Glass, not a solid slab: the photograph shows through and is blurred
+     behind it. The alpha is not a taste decision - white on the pill has to
+     clear 4.5:1 against whatever the picture puts behind it, and the sky up
+     there is the brightest part of the frame. Measured, then set.
+     No inner highlight and no bevel: flat glass, not a 3D chip. */
+  background: rgba(0, 121, 107, 0.90);
+  backdrop-filter: blur(16px) saturate(1.1);
+  -webkit-backdrop-filter: blur(16px) saturate(1.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
   box-shadow: 0 8px 24px rgb(var(--ink) / 0.24);
   flex-wrap: nowrap;
 }
@@ -171,8 +179,52 @@ button, input { font: inherit; }
    cannot carry a 7:1 headline no matter the opacity. This is --teal-deep taken
    down until the number holds: same hue, measured at 8.79:1 against the
    brightest ground the photograph puts behind it, against a 7:1 bar. */
-.home-hero-panel {
-  background: rgba(0, 78, 69, 0.96);
+/* HEIGHT FOLLOWS THE PHOTOGRAPH. With the hero box at the image's own
+   1672:941, object-cover crops nothing - so the turban is no longer cut off the
+   top edge, which is what happened when a 2.38:1 box showed a 1.78:1 frame and
+   took 136px off the top. Capped at 1080px so an ultra-wide monitor does not
+   get an absurd band; past that the crop returns, and object-position takes it
+   off the bottom (grass) rather than the top (his head). */
+@media (min-width: 768px) {
+  .home-hero {
+    min-height: min(1080px, calc(100vw * 941 / 1672));
+  }
+}
+
+/* THE WASH THAT REPLACED THE PANEL. The box is gone, but the words still need a
+   ground: measured across the area they occupy, the photograph runs from
+   luminance 0.005 to 0.997. This fades out well before the farmer, so it reads
+   as depth in the picture rather than as a slab laid on it. Stops are tuned
+   against measurement - see the header comment on contrast in BUILDLOG. */
+.home-hero-wash {
+  /* Solved, not styled. At the standfirst the bare photograph measures
+     rgb(140,202,140) - bright field - and white needs the composite under
+     luminance 0.10 to clear 7:1, which takes about 0.73 alpha. The stops hold
+     0.76 to the half-way mark, which is past the right edge of the copy
+     column, and are gone by 66% - well before the farmer's hand at 52%. */
+  background-image: linear-gradient(
+    to right,
+    rgba(0, 58, 51, 0.95) 0%,
+    rgba(0, 58, 51, 0.93) 30%,
+    rgba(0, 58, 51, 0.87) 42%,
+    rgba(0, 58, 51, 0.78) 50%,
+    rgba(0, 58, 51, 0.34) 58%,
+    rgba(0, 58, 51, 0) 66%
+  );
+}
+@media (max-width: 767px) {
+  /* On a phone the copy spans the width, so the wash has to as well - a
+     left-to-right fade would leave the last words on bare photograph. */
+  .home-hero-wash {
+    background-image: linear-gradient(
+      to bottom,
+      rgba(0, 58, 51, 0.86) 0%,
+      rgba(0, 58, 51, 0.93) 22%,
+      rgba(0, 58, 51, 0.93) 82%,
+      rgba(0, 58, 51, 0.70) 94%,
+      rgba(0, 58, 51, 0.55) 100%
+    );
+  }
 }
 @media (min-width: 1280px) {
   .site-home-pill > .order-3 {

@@ -48,20 +48,26 @@ export function LanguageSelector() {
         aria-haspopup="listbox"
         /* No fill. The other nav items are plain white text, and a solid teal
            box here made the language control look like the primary action on
-           the page. An outline keeps it findable without competing, and over
-           the hero video it lets the footage show through rather than punching
-           a rectangle out of it. */
-        className="inline-flex min-h-12 items-center gap-2 rounded-card border border-paper/70 px-3 text-label font-semibold text-paper"
+           the page. An outline keeps it findable without competing.
+
+           THE BUTTON IS 48px TALL; THE OUTLINE IS NOT. The visible box used to
+           be the hit area, so shrinking it would have taken the touch target
+           under the 48px floor. The button keeps its full height and the border
+           moved onto an inner span sized to the text - a smaller box with the
+           same target, and more air between it and the edge of the pill. */
+        className="inline-flex min-h-12 items-center rounded-card text-label font-semibold text-paper"
       >
-        <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
-          <circle cx="10" cy="10" r="7.25" />
-          <path d="M2.75 10h14.5M10 2.75c1.9 2 2.9 4.4 2.9 7.25S11.9 15.25 10 17.25c-1.9-2-2.9-4.4-2.9-7.25S8.1 4.75 10 2.75Z" />
-        </svg>
-        <span>{current.endonym}</span>
-        <svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.25" aria-hidden="true"
-             className={open ? "rotate-180 transition-transform" : "transition-transform"}>
-          <path d="m4 7 6 6 6-6" />
-        </svg>
+        <span className="inline-flex items-center gap-1.5 rounded-card border border-paper/70 px-2 py-1">
+          <svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75" aria-hidden="true">
+            <circle cx="10" cy="10" r="7.25" />
+            <path d="M2.75 10h14.5M10 2.75c1.9 2 2.9 4.4 2.9 7.25S11.9 15.25 10 17.25c-1.9-2-2.9-4.4-2.9-7.25S8.1 4.75 10 2.75Z" />
+          </svg>
+          <span>{current.endonym}</span>
+          <svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.25" aria-hidden="true"
+               className={open ? "rotate-180 transition-transform" : "transition-transform"}>
+            <path d="m4 7 6 6 6-6" />
+          </svg>
+        </span>
       </button>
 
       {open && (

@@ -86,7 +86,7 @@ export default function EntryPage() {
 
   return (
     <main>
-      <section className="home-hero on-teal relative isolate overflow-hidden text-paper">
+      <section className="home-hero on-teal relative isolate flex items-center overflow-hidden text-paper">
         <picture className="absolute inset-0 -z-10 block">
           <source srcSet="/hero-farmer.webp" type="image/webp" />
           <img
@@ -97,11 +97,20 @@ export default function EntryPage() {
             loading="eager"
             fetchPriority="high"
             decoding="sync"
-            className="h-full w-full object-cover object-[68%_center]"
+            className="h-full w-full object-cover object-[70%_top]"
           />
         </picture>
-        <div className="shell relative flex min-h-[520px] items-center py-28 md:min-h-[85vh] md:py-32">
-          <div className="home-hero-panel max-w-2xl rounded-card p-6 shadow-xl sm:p-8">
+        {/* Replaces the hard-edged panel. The words still need a ground - across
+            the area they occupy the photograph runs from luminance 0.005 to
+            0.997 - but a gradient that has faded out before it reaches the
+            farmer reads as part of the picture rather than as a box on top of
+            it. Values are literal rgba(); the tokens have no alpha slot here. */}
+        <div aria-hidden="true" className="home-hero-wash absolute inset-0 -z-10" />
+        {/* The centring lives on the SECTION, not here. This div had its own
+            min-height, so in a hero that is now 810px tall it sat at the top
+            and left a third of the frame empty under the words. */}
+        <div className="shell relative w-full pb-24 pt-32 md:py-28">
+          <div className="home-hero-copy max-w-[22rem] sm:max-w-[26rem] md:max-w-[30rem]">
             <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
               {resolve("entry.headline", {}, locale)}
             </h1>
