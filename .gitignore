@@ -32,8 +32,8 @@ Thumbs.db
 *.tmp.js
 .env*
 
-# The ungraded hero source. 3.35 MB, does not loop, and everything shipped is
-# derived from it by the ffmpeg chain recorded in BUILDLOG. Keeping it out of
-# the repo keeps a clone small; keeping the recipe in the log keeps it
-# reproducible.
+# The ungraded hero source. The hero is a WebGL gradient now and nothing is
+# derived from this file any more, so it is dead weight - but it is 3.35 MB of
+# someone else's download sitting untracked in the working tree, and the rule
+# stays so an absent-minded "git add ." cannot commit it. Safe to delete.
 growxai-*.mp4
