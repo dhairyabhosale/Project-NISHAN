@@ -97,11 +97,11 @@ export default function EntryPage() {
             loading="eager"
             fetchPriority="high"
             decoding="sync"
-            className="h-full w-full object-cover object-[68%_center]"
+            className="h-full w-full object-contain object-[68%_center]"
           />
         </picture>
         <div className="shell relative flex min-h-[520px] items-center py-28 md:min-h-[85vh] md:py-32">
-          <div className="home-hero-panel max-w-2xl rounded-card p-6 shadow-xl sm:p-8">
+          <div className="home-hero-panel max-w-xl -translate-x-4 rounded-card p-5 shadow-xl sm:p-6 md:-translate-x-6">
             <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
               {resolve("entry.headline", {}, locale)}
             </h1>
