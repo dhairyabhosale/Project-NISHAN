@@ -37,3 +37,4 @@ Thumbs.db
 # someone else's download sitting untracked in the working tree, and the rule
 # stays so an absent-minded "git add ." cannot commit it. Safe to delete.
 growxai-*.mp4
+.vercel
