@@ -191,41 +191,6 @@ button, input { font: inherit; }
   }
 }
 
-/* THE WASH THAT REPLACED THE PANEL. The box is gone, but the words still need a
-   ground: measured across the area they occupy, the photograph runs from
-   luminance 0.005 to 0.997. This fades out well before the farmer, so it reads
-   as depth in the picture rather than as a slab laid on it. Stops are tuned
-   against measurement - see the header comment on contrast in BUILDLOG. */
-.home-hero-wash {
-  /* Solved, not styled. At the standfirst the bare photograph measures
-     rgb(140,202,140) - bright field - and white needs the composite under
-     luminance 0.10 to clear 7:1, which takes about 0.73 alpha. The stops hold
-     0.76 to the half-way mark, which is past the right edge of the copy
-     column, and are gone by 66% - well before the farmer's hand at 52%. */
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 58, 51, 0.95) 0%,
-    rgba(0, 58, 51, 0.93) 30%,
-    rgba(0, 58, 51, 0.87) 42%,
-    rgba(0, 58, 51, 0.78) 50%,
-    rgba(0, 58, 51, 0.34) 58%,
-    rgba(0, 58, 51, 0) 66%
-  );
-}
-@media (max-width: 767px) {
-  /* On a phone the copy spans the width, so the wash has to as well - a
-     left-to-right fade would leave the last words on bare photograph. */
-  .home-hero-wash {
-    background-image: linear-gradient(
-      to bottom,
-      rgba(0, 58, 51, 0.86) 0%,
-      rgba(0, 58, 51, 0.93) 22%,
-      rgba(0, 58, 51, 0.93) 82%,
-      rgba(0, 58, 51, 0.70) 94%,
-      rgba(0, 58, 51, 0.55) 100%
-    );
-  }
-}
 @media (min-width: 1280px) {
   .site-home-pill > .order-3 {
     width: auto;

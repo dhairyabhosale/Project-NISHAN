@@ -100,12 +100,14 @@ export default function EntryPage() {
             className="h-full w-full object-cover object-[70%_top]"
           />
         </picture>
-        {/* Replaces the hard-edged panel. The words still need a ground - across
-            the area they occupy the photograph runs from luminance 0.005 to
-            0.997 - but a gradient that has faded out before it reaches the
-            farmer reads as part of the picture rather than as a box on top of
-            it. Values are literal rgba(); the tokens have no alpha slot here. */}
-        <div aria-hidden="true" className="home-hero-wash absolute inset-0 -z-10" />
+        {/* No scrim, no wash, no panel: the words sit on the bare photograph.
+            Chosen on the look, with the cost measured and accepted - across the
+            area the copy occupies the picture runs from luminance 0.005 to
+            0.997, so the headline measures 1.27-1.93:1 and the standfirst
+            1.00-1.51:1 against the 7:1 CLAUDE.md §11.3 requires. At 375px part
+            of the standfirst lands on white grass and disappears. §11.3 and
+            this screen disagree; recorded here rather than resolved silently.
+            The primary CTA still passes at 5.32:1 - it carries its own fill. */}
         {/* The centring lives on the SECTION, not here. This div had its own
             min-height, so in a hero that is now 810px tall it sat at the top
             and left a third of the frame empty under the words. */}
