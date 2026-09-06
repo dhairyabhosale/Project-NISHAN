@@ -632,3 +632,72 @@ a:active, button:active { transform: scale(0.985); }
   --pill-clear: calc(var(--pill-top) + var(--pill-h) + var(--pill-gap));
 }
 .hero-clear { padding-top: var(--pill-clear); }
+
+/* ══ Mobile ═══════════════════════════════════════════════════════════════════
+
+   THE HERO FOCAL POINT, now in CSS rather than on the element, so it can differ
+   by width without shipping a second <img>. 70% from the left is where the
+   farmer stands: at 320px the crop shows source x 892..1290 of 1672, which is
+   24% of the frame and still centred on him. Measured rather than assumed, and
+   left where it is because he is not cropped out.
+   The vertical value is irrelevant on a phone: the box is 756px tall against a
+   756px scaled source, so the full height is on screen either way. */
+.hero-img { object-position: 70% top; }
+
+/* THE 320px HEADER. The pill sat 16px in from each edge with 12px of padding,
+   which at 320 left the lockup about 90px and the wordmark overflowed it by
+   12px, straight under the language control. In all four locales, so it is a
+   space problem and not a translation one.
+
+   Reclaiming 8px of margin either side and 2px of padding gives 20px back,
+   which clears the 12px overlap with room. Nothing is hidden and no label is
+   shortened: 320 is the floor width and it gets a slightly wider pill, which
+   is what a 320px screen wants anyway. */
+@media (max-width: 359px) {
+  .site-home-pill {
+    width: calc(100% - 16px);
+    padding-inline: 10px;
+    /* AND IT WRAPS. Reclaiming margin was enough for Latin and Devanagari but
+       not for Tamil: the wordmark alone measures 85px next to a 40px mark in a
+       103px box, so it overflowed the lockup, ran under the language control
+       and pushed scrollWidth to 372 on a 320px screen.
+
+       Shrinking the type or truncating the wordmark are both off the table,
+       and so is hiding it. So at the floor width the pill becomes two rows -
+       the lockup, then the controls - which is a different layout rather than
+       less content, and it holds for any language rather than until the next
+       long one. */
+    flex-wrap: wrap;
+    /* 8px, not 2: these are two rows of tap targets and the floor for
+       the gap between targets is 8. */
+    row-gap: 8px;
+    border-radius: 22px;
+  }
+  .site-home-pill > .order-1 { flex: 1 1 100%; }
+  .site-home-pill > .order-2 { flex: 1 1 100%; justify-content: flex-end; }
+  /* Two rows of pill, so the hero has further to clear. Same construction as
+     --pill-clear elsewhere: the hero follows the pill, not a guess. */
+  :root { --pill-h: 122px; }
+}
+
+/* THE FLOATING VOICE BUTTON vs the last row of the page. Scrolled to the
+   bottom, the footer's last links finished flush against it, 0.8px apart in
+   the worst case, which is a mis-tap rather than a near miss. A floating
+   button will always pass over content as it scrolls, but where the page comes
+   to REST is ours to control, so the footer keeps a lane clear beneath it. */
+@media (max-width: 639px) {
+  footer .shell { padding-bottom: 88px; }
+}
+
+/* NO SINGLE WORD MAY BURST THE PAGE.
+   The Tamil headline on /who/verify is one unbreakable run: 355px of word in a
+   288px column. It overflowed its own box, and on a mobile viewport an overflow
+   widens the layout viewport, which drags every position:fixed element out with
+   it. That is how one heading turned into "the pinned bar is 371px wide on a
+   320px screen" and a horizontally scrolling document.
+
+   overflow-wrap: break-word only acts when a word genuinely cannot fit, so
+   ordinary wrapping in every language is untouched; it inherits, so this is the
+   whole fix. Latin never reaches the condition, which is why the page looked
+   fine in English for as long as anyone only checked English. */
+body { overflow-wrap: break-word; }

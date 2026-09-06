@@ -168,7 +168,11 @@ export function ActView({
               aria-invalid={invalid || undefined}
               aria-describedby={invalid ? "mobile-err" : "mobile-hint"}
               onChange={(e) => { setMobile(e.target.value.replace(/\D/g, "").slice(0, 10)); setInvalid(false); }}
-              className="data min-w-0 flex-1 bg-paper px-3 text-ink outline-none"
+              /* self-stretch: a flex child with align-items:center is only as
+                 tall as its line box, so this input was a 24px tap target
+                 inside a 56px-tall wrapper. The wrapper looked right and the
+                 target was not. */
+              className="data min-w-0 flex-1 self-stretch bg-paper px-3 text-ink outline-none"
             />
           </div>
           <p id="mobile-hint" className="mt-2 prose-measure text-label text-ink-soft">{resolve("act.mobile.hint", {}, locale)}</p>

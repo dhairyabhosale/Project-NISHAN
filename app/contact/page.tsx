@@ -80,7 +80,7 @@ export default function ContactPage() {
       </section>
 
       <section className="shell py-12">
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
           <div>
             <h2 className="text-head font-semibold text-ink">{resolve("contact.reach_heading", {}, locale)}</h2>
             <dl className="mt-4 space-y-4">

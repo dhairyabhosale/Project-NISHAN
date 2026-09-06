@@ -236,7 +236,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           <div className="grid gap-8 md:grid-cols-3">
             <div>
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("nav.services", {}, locale)}</h2>
-              <ul className="mt-2 space-y-1">
+              <ul className="mt-2 space-y-2">
                 <li>
                   <Link href="/who" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("nav.find", {}, locale)}
@@ -261,7 +261,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             </div>
             <div>
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("footer.whats_real", {}, locale)}</h2>
-              <ul className="mt-2 space-y-1">
+              <ul className="mt-2 space-y-2">
                 <li>
                   <Link href="/whats-real" className="flex min-h-12 items-center text-body text-teal-deep hover:underline">
                     {resolve("footer.whats_real", {}, locale)}

@@ -92,7 +92,7 @@ export function TimelineView({
                 ? resolve("clock.last_day", {}, locale)
                 : resolve("clock.days_left", { days: clock.daysRemaining }, locale)}
           </p>
-          <dl className="mt-4 grid gap-2 sm:grid-cols-2">
+          <dl className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div>
               <dt className="text-label text-ink-soft">{resolve("clock.due_on", {}, locale)}</dt>
               <dd className="data text-body font-semibold text-ink">{clock.dueAt.slice(0, 10)}</dd>

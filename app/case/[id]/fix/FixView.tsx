@@ -79,7 +79,7 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
       <h1 className="mt-4 text-answer font-semibold leading-tight text-ink">{resolve("fix.title", {}, locale)}</h1>
       <p className="mt-3 prose-measure text-body text-ink">{verdict.sentence}</p>
 
-      <div className="grid gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+      <div className="grid grid-cols-1 gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
       <div className="lg:order-2">
       <section className="mt-8 rounded-card border border-rule bg-paper p-4">
         <h2 className="text-label font-semibold uppercase tracking-wide text-ink-soft">
@@ -202,7 +202,7 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
         <section className="mt-8">
           <h2 className="text-head font-semibold text-ink">{resolve("act.heading", {}, locale)}</h2>
           <p className="mt-2 prose-measure text-body text-ink">{resolve("act.standfirst", {}, locale)}</p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
             {actions.map((a) => (
               <li key={a.id}>
                 <Link

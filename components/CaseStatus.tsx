@@ -103,7 +103,7 @@ export function CaseStatus({ reference, diagnosis }: { reference: string; diagno
             {loaded && done.length === 0 && !filedAt
               ? resolve("status.nothing_done", {}, locale)
               : (
-                <ul className="space-y-1">
+                <ul className="space-y-2">
                   {done.map((a) => (
                     <li key={a.id} className="flex gap-2">
                       <span aria-hidden="true" className="text-ink">✓</span>

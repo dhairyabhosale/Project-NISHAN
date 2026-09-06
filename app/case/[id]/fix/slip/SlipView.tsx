@@ -45,7 +45,7 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
         </h1>
         <p className="data mt-1 text-answer font-bold text-ink">{reference}</p>
 
-        <dl className="mt-6 grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 border-t border-ink pt-4">
+        <dl className="mt-6 grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-2 border-t border-ink pt-4">
           <dt className="text-label text-ink-soft">{resolve("slip.case_for", {}, locale)}</dt>
           <dd className="text-body font-semibold text-ink">{f.name ?? "-"}</dd>
           <dt className="text-label text-ink-soft">{resolve("slip.village", {}, locale)}</dt>

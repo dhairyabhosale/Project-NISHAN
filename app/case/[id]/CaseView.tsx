@@ -44,7 +44,7 @@ export function CaseView({
           what is next. Also what remembers the reference for the return path. */}
       <CaseStatus reference={reference} diagnosis={diagnosis} />
 
-      <div className="grid gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+      <div className="grid grid-cols-1 gap-x-10 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
         <MoneyRail
           gates={gates}
           blockedAtIndex={gates.indexOf("BLOCKED")}

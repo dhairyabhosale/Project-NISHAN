@@ -84,7 +84,7 @@ export default function WhatsRealPage() {
               <h2 className="text-body font-semibold text-ink">
                 {resolve(row.component, {}, locale)}
               </h2>
-              <span className={`shrink-0 rounded-card px-2 py-1 text-[13px] font-semibold ${TONE[row.status]}`}>
+              <span className={`min-w-0 rounded-card px-2 py-1 text-[13px] font-semibold ${TONE[row.status]}`}>
                 {resolve(row.label, {}, locale)}
               </span>
             </div>

@@ -24,7 +24,7 @@ export function EvidenceTable({ diagnosis, locale }: { diagnosis: Diagnosis; loc
         {rows.map((r, i) => (
           <li key={r.field + i} className="rounded-card border border-rule bg-paper p-4">
             <p className="text-label font-semibold text-ink">{r.field}</p>
-            <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-3 gap-y-1">
+            <dl className="mt-2 grid grid-cols-[auto_minmax(0,1fr)] gap-x-3 gap-y-1">
               <dt className="text-label text-ink-soft">{resolve("evidence.observed", {}, locale)}</dt>
               <dd className="data text-ink">{r.observed}</dd>
               <dt className="text-label text-ink-soft">{resolve("evidence.expected", {}, locale)}</dt>

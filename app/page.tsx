@@ -90,7 +90,16 @@ export default function EntryPage() {
     <main>
       <section className="home-hero on-teal relative isolate flex items-center overflow-hidden text-paper">
         <picture className="absolute inset-0 -z-10 block">
-          <source srcSet="/hero-farmer.webp" type="image/webp" />
+          {/* One asset used to serve every viewport: 253kB and an LCP of
+              5024ms on Slow 3G at 6x CPU, on the connection least able to
+              afford it. sizes="100vw" because the hero is always full width,
+              so the browser picks by device pixel width: a 360px phone at 1x
+              takes the 480 (19kB), at 2x the 768 (37kB). */}
+          <source
+            type="image/webp"
+            sizes="100vw"
+            srcSet="/hero-farmer-480.webp 480w, /hero-farmer-768.webp 768w, /hero-farmer-1200.webp 1200w, /hero-farmer.webp 1672w"
+          />
           <img
             src="/hero-farmer.png"
             width={1672}
@@ -99,7 +108,7 @@ export default function EntryPage() {
             loading="eager"
             fetchPriority="high"
             decoding="sync"
-            className="h-full w-full object-cover object-[70%_top]"
+            className="hero-img h-full w-full object-cover"
           />
         </picture>
         {/* No scrim, no wash, no panel: the words sit on the bare photograph.
@@ -151,7 +160,7 @@ export default function EntryPage() {
         {/* Renders nothing on a first visit; one tap back on a return. */}
         <ResumeCase />
         <h2 data-reveal className="mt-8 text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
-        <ul data-reveal-group className="mt-6 grid gap-4 md:grid-cols-2">
+        <ul data-reveal-group className="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2">
           {CHOICES.map((c) => (
             <li key={c.key}>
               <Link
@@ -159,7 +168,11 @@ export default function EntryPage() {
                 className="card-lift flex h-full min-h-[96px] items-center gap-4 rounded-card border border-rule bg-paper p-5 text-ink hover:bg-white"
               >
                 <span className="shrink-0 text-teal-deep">{c.icon}</span>
-                <span className="flex-1">
+                {/* min-w-0: a flex item defaults to min-width:auto, so it
+                    cannot shrink below its longest word. Tamil has no spaces to
+                    break on in these labels, so the card grew to 356px inside a
+                    320px screen and took the whole document with it. */}
+                <span className="min-w-0 flex-1">
                   <span className="block text-body font-semibold leading-snug">{resolve(c.label, {}, locale)}</span>
                   <span className="mt-1 block text-label text-ink-soft">{resolve(c.hint, {}, locale)}</span>
                 </span>
@@ -177,7 +190,7 @@ export default function EntryPage() {
         <div className="shell">
           <h2 data-reveal className="text-head font-semibold text-ink">{resolve("how.heading", {}, locale)}</h2>
           <p data-reveal className="mt-2 prose-measure text-body text-ink">{resolve("how.standfirst", {}, locale)}</p>
-          <ol data-reveal-group className="mt-8 grid gap-4 md:grid-cols-3">
+          <ol data-reveal-group className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3">
             {STEPS.map((n) => (
               <li key={n} className="rounded-card border border-rule bg-cyan-pale p-5">
                 <span className="data grid size-10 place-items-center rounded-card bg-teal-deep text-paper">{n}</span>
@@ -196,7 +209,7 @@ export default function EntryPage() {
         <div className="shell">
         <h2 data-reveal className="text-[28px] font-semibold leading-tight text-ink md:text-[34px]">{resolve("facts.heading", {}, locale)}</h2>
         <p data-reveal className="mt-3 prose-measure text-body text-ink-soft">{resolve("facts.standfirst", {}, locale)}</p>
-        <dl data-reveal-group className="mt-10 grid gap-5 sm:grid-cols-2">
+        <dl data-reveal-group className="mt-10 grid grid-cols-1 gap-5 sm:grid-cols-2">
           {FACTS.map((n) => (
             <div key={n} className="stat-cycle rounded-card border border-rule bg-paper p-6">
               <dt className="stat-figure font-bold text-teal-deep">

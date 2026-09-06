@@ -43,7 +43,7 @@ export function OfficeMap() {
   const current = OFFICES.find((o) => o.id === active) ?? OFFICES[0];
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+    <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
       <div className="overflow-hidden rounded-card border border-rule bg-paper">
         <svg viewBox="0 0 100 90" className="block w-full" role="img" aria-label={resolve("contact.map_alt", {}, locale)}>
           <rect width="100" height="90" fill="rgb(var(--cyan-pale))" />

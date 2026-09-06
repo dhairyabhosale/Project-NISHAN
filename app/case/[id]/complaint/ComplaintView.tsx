@@ -106,7 +106,7 @@ export function ComplaintView({ reference, diagnosis, initialDraft, totalSteps }
       <main className="page-in shell pb-16 pt-8">
         <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("complaint.filed_heading", {}, locale)}</h1>
 
-        <dl className="mt-8 grid gap-4 sm:grid-cols-2">
+        <dl className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
           <div className="rounded-card border border-rule bg-paper p-5">
             <dt className="text-label text-ink-soft">{resolve("complaint.filed_reference", {}, locale)}</dt>
             <dd className="data mt-1 text-answer font-bold text-teal-deep">{reference}</dd>
