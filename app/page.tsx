@@ -101,27 +101,35 @@ export default function EntryPage() {
           />
         </picture>
         {/* No scrim, no wash, no panel: the words sit on the bare photograph.
-            Chosen on the look, with the cost measured and accepted - across the
+            Chosen on the look, with the cost measured and accepted. Across the
             area the copy occupies the picture runs from luminance 0.005 to
-            0.997, so the headline measures 1.27-1.93:1 and the standfirst
-            1.00-1.51:1 against the 7:1 CLAUDE.md §11.3 requires. At 375px part
-            of the standfirst lands on white grass and disappears. §11.3 and
-            this screen disagree; recorded here rather than resolved silently.
-            The primary CTA still passes at 5.32:1 - it carries its own fill. */}
+            0.997, and nothing a text treatment can do closes that.
+
+            Measured with the glyph fill hidden but .hero-shadow left on, so
+            the figure is the ground the letterforms actually sit against:
+            headline 1.13-1.84:1, standfirst 1.02-1.72:1, secondary action
+            1.65-2.49:1, against the 7:1 CLAUDE.md §11.3 requires for body
+            copy. The shadow is worth roughly a tenth of a point and is there
+            for perceived edge, not for the number. At 375px part of the
+            standfirst still lands on white grass at 1.02:1.
+
+            §11.3 and this screen disagree. Recorded here rather than resolved
+            silently. The primary action passes at 5.32:1 throughout, because
+            it carries its own white fill. */}
         {/* The centring lives on the SECTION, not here. This div had its own
             min-height, so in a hero that is now 810px tall it sat at the top
             and left a third of the frame empty under the words. */}
         <div className="shell relative w-full pb-24 pt-32 md:py-28">
           <div className="home-hero-copy max-w-[22rem] sm:max-w-[26rem] md:max-w-[30rem]">
-            <h1 className="max-w-[20ch] text-answer font-semibold leading-tight md:text-[40px]">
+            <h1 className="hero-shadow max-w-[20ch] text-[34px] font-bold leading-tight md:text-[46px]">
               {resolve("entry.headline", {}, locale)}
             </h1>
-            <p className="mt-5 max-w-[52ch] text-[20px] font-semibold leading-relaxed">{resolve("entry.standfirst", {}, locale)}</p>
+            <p className="hero-shadow mt-5 max-w-[52ch] text-[22px] font-bold leading-relaxed">{resolve("entry.standfirst", {}, locale)}</p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link href="/who" className="inline-flex min-h-14 items-center rounded-card bg-paper px-6 text-body font-semibold text-teal-deep">
                 {resolve("hero.cta", {}, locale)}
               </Link>
-              <Link href="/demo" className="inline-flex min-h-14 items-center rounded-card border-2 border-paper/70 px-6 text-body font-semibold text-paper">
+              <Link href="/demo" className="hero-shadow inline-flex min-h-14 items-center rounded-card border-2 border-paper/70 px-6 text-body font-semibold text-paper">
                 {resolve("hero.secondary", {}, locale)}
               </Link>
             </div>
