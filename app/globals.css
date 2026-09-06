@@ -158,7 +158,12 @@ button, input { font: inherit; }
 .site-home-pill {
   width: max-content;
   max-width: calc(100% - 32px);
-  margin: 16px auto 0;
+  /* 48, not 16: the prototype badge is pinned to the header top-right, and a
+     pill wide enough to reach it slides underneath. In Tamil it did, at 1440
+     and 1280. Clearing the badge by margin is locale-proof and width-proof,
+     where shortening labels only holds until the next long language. The
+     narrow breakpoint already used 48 for the same reason. */
+  margin: 48px auto 0;
   padding: 8px 16px;
   border-radius: 9999px;
   /* Glass, not a solid slab: the photograph shows through and is blurred
@@ -433,7 +438,7 @@ a:active, button:active { transform: scale(0.985); }
    legible than the resting one. */
 .btn-pop,
 .btn-fill,
-.btn-ghost {
+.nav-pop {
   transition: transform var(--d-quick) var(--ease-out),
               box-shadow var(--d-quick) var(--ease-out),
               background-color var(--d-quick) var(--ease-out),
@@ -460,21 +465,13 @@ a:active, button:active { transform: scale(0.985); }
     text-shadow: none;
   }
 
-  /* Bare text: a rule draws itself in from the left. */
-  .btn-ghost { position: relative; }
-  .btn-ghost::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 6px;
-    height: 2px;
-    background: currentColor;
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform var(--d-quick) var(--ease-out);
-  }
-  .btn-ghost:hover::after { transform: scaleX(1); }
+  /* Nav items: the word itself grows and lifts. On a coloured band an
+     underline reads as a link decoration and a tint reads as a pressed state,
+     and neither says "this is the thing under your cursor" as directly as the
+     label getting bigger. --ease-pop overshoots slightly, which is what makes
+     it read as a pop rather than a zoom. Transform only, so a nav item growing
+     cannot reflow the bar it sits in. */
+  .nav-pop:hover { transform: scale(1.11) translateY(-1px); }
 }
 .btn-pop:active { transform: translateY(0) scale(0.985); }
 

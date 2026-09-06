@@ -30,6 +30,11 @@ const FaceCheck = dynamicImport(
 
 /** §12.3: the 5-series is not an allocated Indian mobile series, so a reader
  *  cannot enter a real number here even by accident. */
+/** 55512 34567. Five and five is how an Indian mobile number is read aloud
+    and how it is printed on a passbook, and grouping it as it is typed is
+    what §11.7 asks of every identifier field. */
+const grouped = (d: string) => (d.length > 5 ? d.slice(0, 5) + " " + d.slice(5) : d);
+
 const DEMO_MOBILE = /^5\d{9}$/;
 
 export function ActView({
@@ -128,7 +133,12 @@ export function ActView({
         {resolve(spec.disclosureKey, {}, locale)}
       </p>
 
-      {actionId === "EKYC_FACE" && <FaceCheck onVerified={() => complete({ method: "face" })} />}
+      {actionId === "EKYC_FACE" && (
+        <FaceCheck
+          onVerified={() => complete({ method: "face" })}
+          otherWayHref={"/case/" + encodeURIComponent(reference) + "/act/update_mobile"}
+        />
+      )}
 
       {actionId === "UPDATE_MOBILE" && (
         <div className="mt-6">
@@ -141,17 +151,29 @@ export function ActView({
           <label htmlFor="mobile" className="mt-4 block text-label font-semibold text-ink">
             {resolve("act.mobile.label", {}, locale)}
           </label>
-          <input
-            id="mobile"
-            value={mobile}
-            inputMode="numeric"
-            autoComplete="off"
-            onChange={(e) => { setMobile(e.target.value.replace(/\D/g, "").slice(0, 10)); setInvalid(false); }}
-            className="data mt-2 min-h-14 w-full rounded-card border-2 border-rule bg-paper px-4 text-ink"
-          />
-          <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("act.mobile.hint", {}, locale)}</p>
+          <div
+            className={
+              "mt-2 flex min-h-14 w-full items-center overflow-hidden rounded-card border-2 bg-paper " +
+              (invalid ? "border-stop" : "border-rule")
+            }
+          >
+            {/* The country code is fixed, so it is furniture rather than
+                something to type. Shown, not implied. */}
+            <span className="data select-none border-r border-rule px-3 text-ink-soft" aria-hidden="true">+91</span>
+            <input
+              id="mobile"
+              value={grouped(mobile)}
+              inputMode="numeric"
+              autoComplete="off"
+              aria-invalid={invalid || undefined}
+              aria-describedby={invalid ? "mobile-err" : "mobile-hint"}
+              onChange={(e) => { setMobile(e.target.value.replace(/\D/g, "").slice(0, 10)); setInvalid(false); }}
+              className="data min-w-0 flex-1 bg-paper px-3 text-ink outline-none"
+            />
+          </div>
+          <p id="mobile-hint" className="mt-2 prose-measure text-label text-ink-soft">{resolve("act.mobile.hint", {}, locale)}</p>
           {invalid && (
-            <p className="mt-3 rounded-card border-2 border-stop bg-paper p-3 text-body text-ink" role="alert">
+            <p id="mobile-err" className="mt-3 rounded-card border-2 border-stop bg-paper p-3 text-body text-ink" role="alert">
               {resolve("act.mobile.invalid", {}, locale)}
             </p>
           )}

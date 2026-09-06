@@ -46,20 +46,22 @@ export function OfficeMap() {
     <div className="grid gap-6 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
       <div className="overflow-hidden rounded-card border border-rule bg-paper">
         <svg viewBox="0 0 100 90" className="block w-full" role="img" aria-label={resolve("contact.map_alt", {}, locale)}>
-          <rect width="100" height="90" fill="var(--cyan-pale)" />
+          <rect width="100" height="90" fill="rgb(var(--cyan-pale))" />
           {/* Roads: the structure a person actually navigates by. */}
-          <path d="M0 40h100M52 0v90M0 70h100M24 0v90" stroke="var(--rule)" strokeWidth="2.5" fill="none" />
-          <path d="M0 18h100M80 0v90" stroke="var(--rule)" strokeWidth="1.2" fill="none" />
+          <path d="M0 40h100M52 0v90M0 70h100M24 0v90" stroke="rgb(var(--rule))" strokeWidth="2.5" fill="none" />
+          <path d="M0 18h100M80 0v90" stroke="rgb(var(--rule))" strokeWidth="1.2" fill="none" />
           {/* Field blocks. */}
           {[[4, 44], [30, 44], [58, 44], [84, 74]].map(([x, y], i) => (
-            <rect key={i} x={x} y={y} width="14" height="20" fill="var(--green-soft)" opacity="0.55" />
+            <rect key={i} x={x} y={y} width="14" height="20" fill="rgb(var(--green-soft))" opacity="0.55" />
           ))}
           {OFFICES.map((o) => {
             const on = o.id === active;
             return (
-              <g key={o.id} onClick={() => setActive(o.id)} style={{ cursor: "pointer" }}>
-                <circle cx={o.x} cy={o.y} r={on ? 5.5 : 4} fill={on ? "var(--teal-deep)" : "var(--ink-soft)"} />
-                <circle cx={o.x} cy={o.y} r="1.6" fill="var(--white)" />
+              <g key={o.id} onClick={() => setActive(o.id)} style={{ cursor: "pointer" }} aria-hidden="true">
+                {on && <circle cx={o.x} cy={o.y} r="8.5" fill="rgb(var(--teal-deep))" opacity="0.18" />}
+                <circle cx={o.x} cy={o.y} r={on ? 5.5 : 4} fill={on ? "rgb(var(--teal-deep))" : "rgb(var(--ink-soft))"} />
+                <circle cx={o.x} cy={o.y} r="1.6" fill="rgb(var(--white))" />
+                <title>{resolve(o.name, {}, locale)}</title>
               </g>
             );
           })}

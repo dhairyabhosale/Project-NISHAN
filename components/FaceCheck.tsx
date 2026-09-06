@@ -49,7 +49,11 @@ const PROMPT: Record<"center" | "turn" | "blink" | "ready", CatalogueKey> = {
 /** Long enough for the reader to actually do the thing being asked. */
 const STEP_MS = 2600;
 
-export function FaceCheck({ onVerified }: { onVerified: () => void }) {
+/* `otherWayHref` is where the reader goes when the camera cannot work for
+   them. §10.4 and §16 both say a route that is unavailable is shown ruled out
+   WITH the way through, never left as a wall: the denied state named the
+   alternatives in prose and then offered no control to reach any of them. */
+export function FaceCheck({ onVerified, otherWayHref }: { onVerified: () => void; otherWayHref?: string }) {
   const { locale } = useLocale();
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
@@ -123,9 +127,30 @@ export function FaceCheck({ onVerified }: { onVerified: () => void }) {
 
   if (phase === "denied") {
     return (
-      <p className="mt-4 rounded-card border-2 border-pending bg-paper p-4 text-body text-ink" role="alert">
-        {resolve("act.ekyc.denied", {}, locale)}
-      </p>
+      <div className="mt-4">
+        <p className="rounded-card border-2 border-pending bg-paper p-4 text-body text-ink" role="alert">
+          {resolve("act.ekyc.denied", {}, locale)}
+        </p>
+        <div className="mt-4 flex flex-wrap gap-3">
+          {/* Permission can be granted after the fact, so the first offer is
+              simply to ask again. */}
+          <button
+            type="button"
+            onClick={() => setPhase("idle")}
+            className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
+          >
+            {resolve("act.ekyc.retry", {}, locale)}
+          </button>
+          {otherWayHref && (
+            <a
+              href={otherWayHref}
+              className="btn-fill inline-flex min-h-14 items-center rounded-card border-2 border-teal-deep px-5 text-body font-semibold text-teal-deep"
+            >
+              {resolve("act.ekyc.other_way", {}, locale)}
+            </a>
+          )}
+        </div>
+      </div>
     );
   }
 
@@ -160,9 +185,25 @@ export function FaceCheck({ onVerified }: { onVerified: () => void }) {
       </div>
 
       {prompt && (
-        <p className="mt-4 rounded-card bg-cyan-pale p-4 text-answer font-semibold leading-tight text-ink" role="status">
-          {resolve(prompt, {}, locale)}
-        </p>
+        <div className="mt-4 rounded-card bg-cyan-pale p-4">
+          <p className="text-answer font-semibold leading-tight text-ink" role="status">
+            {resolve(prompt, {}, locale)}
+          </p>
+          {/* How far through the sequence, without a new string to translate:
+              a filled step is one that is done or running. */}
+          <ol className="mt-3 flex gap-2" aria-hidden="true">
+            {(["center", "turn", "blink"] as const).map((step, i) => {
+              const at = ["center", "turn", "blink"].indexOf(phase);
+              const done = phase === "ready" || (at >= 0 && i <= at);
+              return (
+                <li
+                  key={step}
+                  className={"h-1.5 flex-1 rounded-marker " + (done ? "bg-teal-deep" : "bg-rule")}
+                />
+              );
+            })}
+          </ol>
+        </div>
       )}
 
       <p className="mt-3 prose-measure text-label text-ink-soft">{resolve("act.ekyc.live_note", {}, locale)}</p>

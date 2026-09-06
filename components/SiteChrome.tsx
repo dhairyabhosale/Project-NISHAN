@@ -163,7 +163,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                     type="button"
                     aria-expanded={openMenu === group.label}
                     onClick={() => setOpenMenu(openMenu === group.label ? null : group.label)}
-                    className="btn-ghost inline-flex min-h-12 items-center gap-1 whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0"
+                    className="nav-pop inline-flex min-h-12 items-center gap-1 whitespace-nowrap rounded-card px-1.5 text-label font-semibold xl:px-0"
                   >
                     {resolve(group.label, {}, locale)}
                     <svg
@@ -193,16 +193,16 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 </div>
               ))}
 
-              <Link href="/how-it-works" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/how-it-works" className="nav-pop inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold xl:px-0">
                 {resolve("nav.how_it_works", {}, locale)}
               </Link>
-              <Link href="/demo" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/demo" className="nav-pop inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold xl:px-0">
                 {resolve("nav.demo", {}, locale)}
               </Link>
-              <Link href="/services" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/services" className="nav-pop inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold xl:px-0">
                 {resolve("nav.services", {}, locale)}
               </Link>
-              <Link href="/whats-real" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/whats-real" className="nav-pop inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold xl:px-0">
                 {resolve("nav.real", {}, locale)}
               </Link>
             </nav>
