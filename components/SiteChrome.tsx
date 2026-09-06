@@ -7,6 +7,8 @@ import { BhashiniWidget } from "./BhashiniWidget";
 import { ConnectionStrip } from "./ConnectionStrip";
 import { LanguageSelector } from "./LanguageSelector";
 import { NishanLogo } from "./NishanLogo";
+import { RouteSweep } from "./RouteSweep";
+import { ScrollReveal } from "./ScrollReveal";
 import { useLocale } from "./LocaleProvider";
 import { resolve } from "../content/resolve";
 import type { CatalogueKey } from "../lib/content";
@@ -117,6 +119,10 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
   return (
     <div className="flex min-h-screen flex-col bg-cyan-pale text-ink">
+      {/* Both render nothing. One arms below-the-fold reveals, the other
+          draws the route change on the top edge. */}
+      <ScrollReveal />
+      <RouteSweep />
       {/* Solid --teal-deep on EVERY route, landing page included. The
           transparent-over-the-hero variant is gone with the media it existed
           for: white nav over a photograph is not a colour problem that can be
@@ -127,7 +133,10 @@ export function SiteChrome({ children }: { children: ReactNode }) {
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
-        <div className={`shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 xl:flex-nowrap ${isLandingPage ? "site-home-pill" : "pb-4 pt-14 lg:pt-12"}`}>
+        {/* `rise` here rather than on <header>: this lives in the layout, so it
+            plays once per full page load and not on client-side navigation,
+            which is the "first time" the entrance is meant to mark. */}
+        <div className={`rise shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 xl:flex-nowrap ${isLandingPage ? "site-home-pill" : "pb-4 pt-14 lg:pt-12"}`}>
           <Link href="/" className="order-1 flex min-h-12 basis-full shrink-0 items-center rounded-card sm:basis-auto sm:min-w-[195px] xl:mr-2 xl:min-w-[175px]">
             <NishanLogo locale={locale} />
           </Link>
@@ -154,7 +163,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                     type="button"
                     aria-expanded={openMenu === group.label}
                     onClick={() => setOpenMenu(openMenu === group.label ? null : group.label)}
-                    className="inline-flex min-h-12 items-center gap-1 whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0"
+                    className="btn-ghost inline-flex min-h-12 items-center gap-1 whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0"
                   >
                     {resolve(group.label, {}, locale)}
                     <svg
@@ -184,16 +193,16 @@ export function SiteChrome({ children }: { children: ReactNode }) {
                 </div>
               ))}
 
-              <Link href="/how-it-works" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/how-it-works" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.how_it_works", {}, locale)}
               </Link>
-              <Link href="/demo" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/demo" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.demo", {}, locale)}
               </Link>
-              <Link href="/services" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/services" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.services", {}, locale)}
               </Link>
-              <Link href="/whats-real" className="inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
+              <Link href="/whats-real" className="btn-ghost inline-flex min-h-12 items-center whitespace-nowrap rounded-card px-1.5 text-label font-semibold hover:bg-white/10 xl:px-0">
                 {resolve("nav.real", {}, locale)}
               </Link>
             </nav>
@@ -272,7 +281,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               type="button"
               onClick={backToTop}
               aria-label={resolve("footer.back_to_top", {}, locale)}
-              className="grid min-h-12 min-w-12 shrink-0 place-items-center rounded-card border border-teal-deep bg-teal-deep px-3 text-body font-semibold text-paper hover:bg-teal-deep/90"
+              className="btn-pop grid min-h-12 min-w-12 shrink-0 place-items-center rounded-card border border-teal-deep bg-teal-deep px-3 text-body font-semibold text-paper hover:bg-teal-deep/90"
             >
               <span aria-hidden="true">↑</span>
               <span className="sr-only">{resolve("footer.back_to_top", {}, locale)}</span>

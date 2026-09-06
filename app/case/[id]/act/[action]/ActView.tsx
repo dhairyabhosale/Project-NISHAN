@@ -84,10 +84,10 @@ export function ActView({
         </dl>
         <p className="mt-4 prose-measure text-body text-ink">{resolve("act.if_passes", { days: effectDays }, locale)}</p>
         <div className="mt-8 flex flex-wrap gap-3">
-          <Link href={href + "/timeline"} className="inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
+          <Link href={href + "/timeline"} className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
             {resolve("act.done_timeline", {}, locale)}
           </Link>
-          <Link href={href + "/fix"} className="inline-flex min-h-14 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink">
+          <Link href={href + "/fix"} className="btn-pop inline-flex min-h-14 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink">
             {resolve("act.back", {}, locale)}
           </Link>
         </div>
@@ -106,7 +106,7 @@ export function ActView({
         <p className="mt-2 rounded-card border-2 border-stop bg-paper p-4 text-body text-ink">
           {becauseKey ? resolve(becauseKey, {}, locale) : resolve("act.ruled_out.not_this_blocker", {}, locale)}
         </p>
-        <Link href={href + "/fix"} className="mt-8 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
+        <Link href={href + "/fix"} className="btn-pop mt-8 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
           {resolve("act.back", {}, locale)}
         </Link>
       </main>
@@ -159,7 +159,7 @@ export function ActView({
             type="button"
             onClick={() => (DEMO_MOBILE.test(mobile) ? complete({ mobile: "+91 " + mobile }) : setInvalid(true))}
             disabled={mobile.length !== 10}
-            className="mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+            className="btn-pop mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
           >
             {resolve("act.mobile.submit", {}, locale)}
           </button>
@@ -198,7 +198,7 @@ export function ActView({
             type="button"
             onClick={() => complete({ spelling: chosen })}
             disabled={!chosen}
-            className="mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+            className="btn-pop mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
           >
             {resolve("act.name.submit", {}, locale)}
           </button>
@@ -223,7 +223,7 @@ export function ActView({
           <button
             type="button"
             onClick={() => complete({ account: diagnosis.facts.account_ref })}
-            className="mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper"
+            className="btn-pop mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper"
           >
             {resolve("act.reseed.submit", {}, locale)}
           </button>

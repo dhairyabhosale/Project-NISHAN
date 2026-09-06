@@ -1100,9 +1100,46 @@ finished work**, and is recorded as such in §13.
   Near-square corners read as *document*; the single round element is the money.
 - Touch targets **≥ 56px** for primary actions, **≥ 48px** for everything else.
   Primary action pinned to the bottom of the viewport for thumb reach.
-- **One orchestrated motion only** - the rail marker settling into position on the
-  diagnosis screen (400ms, ease-out, shut gate drawing after it). Everything else
-  is instant. `prefers-reduced-motion` removes it and renders the final state.
+- **Motion - revised 6 September 2026.** The rule here used to read *"one
+  orchestrated motion only, everything else is instant."* That has not described
+  the build for some time (`card-lift`, `page-in`, `panel-in`, `accordion-in`,
+  `skeleton` and `stat-cycle` all predate this revision), and a deliberate pass
+  on entrance, scroll reveal, route change, hover and the diagnostic wait has now
+  made the gap wide enough that leaving the old sentence in place would be the
+  document lying about the product. It is replaced by a budget, not a ban.
+
+  **The rail marker is still the one hero moment** (400ms, ease-out, shut gate
+  drawing after it). Nothing else may compete with it, and the way that is
+  enforced is by keeping everything else small and shared:
+
+  | Motion | Where | Timing |
+  |---|---|---|
+  | Entrance (`rise`) | header, hero copy, revealed sections | 460ms, one keyframe, stagger 70ms |
+  | Route change | `page-in` plus a 3px teal sweep on the top edge | 300ms / 560ms |
+  | Hover | `btn-pop` lift, `btn-fill` fill, `btn-ghost` underline | 180ms |
+  | Count-up | published figures on the landing page | 1100ms, once, on first view |
+  | Diagnostic wait | OTP confirm and the demo run control | held 1.5s |
+
+  Binding rules, all currently enforced and measured:
+
+  - **Two curves and four durations**, as CSS custom properties. A single
+    duration copied onto every transition is the anti-pattern, not the standard.
+  - **Transform and opacity only.** Nothing animates a property that forces
+    layout.
+  - **Every hover shape sits inside `@media (hover: hover)`**, so a touch device
+    cannot latch a state it has no way to clear.
+  - **Nothing on screen is ever hidden in order to animate it in.** Scroll
+    reveal arms only what is fully below the fold, so no-JavaScript and
+    slow-hydration both give a finished page rather than a blank one.
+  - **The reveal test is positional, not an IntersectionObserver.** An observer
+    misses elements that cross the viewport between two frames, which strands
+    them at opacity 0 on any jump: a hash link, a flung scroll, a restored
+    scroll position.
+  - `prefers-reduced-motion` **renders the final state everywhere**, including
+    figures, which show their published values without counting.
+  - **The diagnostic wait is a deliberate hold, not a measurement.** Its copy
+    says what is being read and never claims a duration, a system contacted, or
+    an office informed.
 
 ### 11.6 Screen inventory
 

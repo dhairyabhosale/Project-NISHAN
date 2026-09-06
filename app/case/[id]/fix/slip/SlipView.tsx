@@ -118,7 +118,7 @@ export function SlipView({ reference, diagnosis }: { reference: string; diagnosi
           <button
             type="button"
             onClick={() => window.print()}
-            className="min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper"
+            className="btn-pop min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper"
           >
             {resolve("slip.print", {}, locale)}
           </button>

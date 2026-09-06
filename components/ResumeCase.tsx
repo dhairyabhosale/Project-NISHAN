@@ -38,14 +38,14 @@ export function ResumeCase() {
       <div className="mt-4 flex flex-wrap items-center gap-3">
         <Link
           href={"/case/" + encodeURIComponent(reference)}
-          className="inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
+          className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
         >
           {resolve("resume.cta", {}, locale)}
         </Link>
         <button
           type="button"
           onClick={() => { forgetRecent(); setReference(null); }}
-          className="inline-flex min-h-12 items-center rounded-card border border-rule px-4 text-label font-semibold text-ink"
+          className="btn-pop inline-flex min-h-12 items-center rounded-card border border-rule px-4 text-label font-semibold text-ink"
         >
           {resolve("resume.forget", {}, locale)}
         </button>

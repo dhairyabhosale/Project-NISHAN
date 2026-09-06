@@ -76,7 +76,7 @@ export default function HowItWorksPage() {
         <div className="mt-6 flex flex-wrap gap-4">
           <Link 
             href="/demo" 
-            className="inline-flex min-h-12 items-center rounded-card bg-teal-deep px-5 text-label font-semibold text-paper hover:bg-teal-deep/90"
+            className="btn-pop inline-flex min-h-12 items-center rounded-card bg-teal-deep px-5 text-label font-semibold text-paper hover:bg-teal-deep/90"
           >
             {resolve("nav.demo", {}, locale)}
           </Link>

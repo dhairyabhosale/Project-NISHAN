@@ -27,13 +27,13 @@ export default function RouteError({ reset }: { error: Error & { digest?: string
         <button
           type="button"
           onClick={reset}
-          className="inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
+          className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
         >
           {resolve("error.retry", {}, locale)}
         </button>
         <Link
           href="/who"
-          className="inline-flex min-h-14 items-center rounded-card border-2 border-teal-deep px-6 text-body font-semibold text-teal-deep"
+          className="btn-fill inline-flex min-h-14 items-center rounded-card border-2 border-teal-deep px-6 text-body font-semibold text-teal-deep"
         >
           {resolve("error.home", {}, locale)}
         </Link>

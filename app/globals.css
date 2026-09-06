@@ -285,10 +285,10 @@ a:active, button:active { transform: scale(0.985); }
 
 /* Route transition. Replays on each navigation because the element is new. */
 @keyframes page-in {
-  from { opacity: 0; transform: translateY(6px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
 }
-.page-in { animation: page-in 220ms ease-out backwards; }
+.page-in { animation: page-in var(--d-route) var(--ease-out) backwards; }
 
 /* Panels that expand: language selector, Bhashini, FAQ accordion. */
 @keyframes panel-in {
@@ -341,3 +341,227 @@ a:active, button:active { transform: scale(0.985); }
 @media (prefers-reduced-motion: reduce) {
   .stat-cycle { animation: none !important; transform: none !important; }
 }
+
+/* ══ Motion, part two ═════════════════════════════════════════════════════════
+   Entrance, scroll reveal, route change, hover and the diagnostic wait.
+
+   Shared tokens, not one duration copied everywhere: the ux-guidelines row on
+   Duration Timing is explicit that a single cutoff applied to every transition
+   is the anti-pattern. Three durations, two curves, one stagger step.
+
+   --ease-out is power2.out and --ease-pop is back.out(1.4), the curves the
+   motion table pairs with scroll reveal and with card entrances respectively.
+
+   Still no animation library. Everything below is CSS plus three small
+   observers; the 150KB primary-path budget is untouched. ---------------------*/
+:root {
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-pop: cubic-bezier(0.34, 1.40, 0.64, 1);
+  --d-quick: 180ms;
+  --d-enter: 460ms;
+  --d-route: 300ms;
+  --stagger: 70ms;
+}
+
+/* The one entrance keyframe. Everything that arrives uses it, so arrivals all
+   feel like the same system. translate3d, not top: transform and opacity are
+   the two properties that do not force layout. */
+@keyframes rise {
+  from { opacity: 0; transform: translate3d(0, 18px, 0); }
+  to   { opacity: 1; transform: translate3d(0, 0, 0); }
+}
+
+/* FIRST PAINT. The header, the headline, the standfirst and the actions arrive
+   in that order. Pure CSS with fill-mode both, so this is also exactly what a
+   visitor with no JavaScript sees, and it cannot leave anything invisible.
+   Total choreography is 320ms of delay: the last item starts before the first
+   has finished, which reads as one movement rather than a queue. */
+.rise {
+  animation: rise var(--d-enter) var(--ease-out) both;
+  animation-delay: var(--rise-delay, 0ms);
+}
+
+/* SCROLL REVEAL. The armed state is applied by JavaScript and only to elements
+   that are below the fold at the time, so nothing on screen is ever hidden and
+   then shown again. No JavaScript means no arming, which means everything is
+   simply visible: that is the correct degradation, not a fallback. */
+[data-reveal].reveal-armed,
+[data-reveal-group].reveal-armed > * { opacity: 0; }
+
+[data-reveal].reveal-in,
+[data-reveal-group].reveal-in > * {
+  animation: rise var(--d-enter) var(--ease-out) both;
+}
+/* Children of a group follow each other in. Eight covers the longest grid on
+   the page; a ninth child would simply arrive with the eighth. */
+[data-reveal-group].reveal-in > *:nth-child(1) { animation-delay: 0ms; }
+[data-reveal-group].reveal-in > *:nth-child(2) { animation-delay: var(--stagger); }
+[data-reveal-group].reveal-in > *:nth-child(3) { animation-delay: calc(var(--stagger) * 2); }
+[data-reveal-group].reveal-in > *:nth-child(4) { animation-delay: calc(var(--stagger) * 3); }
+[data-reveal-group].reveal-in > *:nth-child(5) { animation-delay: calc(var(--stagger) * 4); }
+[data-reveal-group].reveal-in > *:nth-child(6) { animation-delay: calc(var(--stagger) * 5); }
+[data-reveal-group].reveal-in > *:nth-child(7) { animation-delay: calc(var(--stagger) * 6); }
+[data-reveal-group].reveal-in > *:nth-child(n + 8) { animation-delay: calc(var(--stagger) * 7); }
+
+/* ROUTE CHANGE. Two halves. The content rises in, which .page-in already did;
+   it is retimed here to match the rest of the system. Over the top edge a teal
+   rule sweeps left to right and fades, which is the theme's own material doing
+   the job an overlay would otherwise do, without covering the page or delaying
+   a single pixel of it. */
+.route-sweep {
+  position: fixed;
+  inset: 0 0 auto;
+  height: 3px;
+  z-index: 60;
+  transform-origin: left center;
+  background: linear-gradient(90deg, rgb(var(--teal-deep)), rgb(var(--green)));
+  animation: route-sweep 560ms var(--ease-out) both;
+  pointer-events: none;
+}
+@keyframes route-sweep {
+  0%   { transform: scaleX(0);    opacity: 1; }
+  62%  { transform: scaleX(1);    opacity: 1; }
+  100% { transform: scaleX(1);    opacity: 0; }
+}
+
+/* HOVER. Three shapes, because a solid button, an outlined one and a bare text
+   link do not want the same gesture. All three are inside @media (hover: hover)
+   so a touch device never latches a hover state it cannot clear.
+
+   Contrast is preserved by construction: every hover pair below is white on
+   --teal-deep or --teal-deep on white, both 5.32:1, so no hover state is less
+   legible than the resting one. */
+.btn-pop,
+.btn-fill,
+.btn-ghost {
+  transition: transform var(--d-quick) var(--ease-out),
+              box-shadow var(--d-quick) var(--ease-out),
+              background-color var(--d-quick) var(--ease-out),
+              color var(--d-quick) var(--ease-out),
+              border-color var(--d-quick) var(--ease-out);
+}
+@media (hover: hover) {
+  /* Solid: lifts and casts. The shadow is teal, not black, so it reads as the
+     button leaving the surface rather than as a drop shadow bolted on. */
+  .btn-pop:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgb(0 121 107 / 0.28); }
+
+  /* Outlined: fills with the colour it was already drawn in. Nothing moves,
+     because the fill is the whole event. */
+  .btn-fill:hover {
+    background-color: rgb(var(--teal-deep));
+    color: rgb(var(--white));
+    border-color: rgb(var(--teal-deep));
+  }
+  /* On a teal or photographic surface the same button inverts the other way. */
+  .btn-fill-invert:hover {
+    background-color: rgb(var(--white));
+    color: rgb(var(--teal-deep));
+    border-color: rgb(var(--white));
+    text-shadow: none;
+  }
+
+  /* Bare text: a rule draws itself in from the left. */
+  .btn-ghost { position: relative; }
+  .btn-ghost::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6px;
+    height: 2px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform var(--d-quick) var(--ease-out);
+  }
+  .btn-ghost:hover::after { transform: scaleX(1); }
+}
+.btn-pop:active { transform: translateY(0) scale(0.985); }
+
+/* THE DIAGNOSTIC WAIT. Supplied by the brief; the only change is the colour,
+   which was #25b09b and is now the theme teal, because §11.3 makes the palette
+   the theme and a near-miss green would read as a different product. */
+.loader {
+  width: 50px;
+  aspect-ratio: 1.154;
+  position: relative;
+  background: conic-gradient(from 120deg at 50% 64%, #0000, rgb(var(--teal-deep)) 1deg 120deg, #0000 121deg);
+  animation: l27-0 1.5s infinite cubic-bezier(0.3, 1, 0, 1);
+}
+.loader::before,
+.loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  transform-origin: 50% 66%;
+  animation: l27-1 1.5s infinite;
+}
+.loader::after { --s: -1; }
+@keyframes l27-0 {
+  0%, 30%      { transform: rotate(0); }
+  70%          { transform: rotate(120deg); }
+  70.01%, 100% { transform: rotate(360deg); }
+}
+@keyframes l27-1 {
+  0%      { transform: rotate(calc(var(--s, 1) * 120deg)) translate(0); }
+  30%, 70% { transform: rotate(calc(var(--s, 1) * 120deg)) translate(calc(var(--s, 1) * -5px), 10px); }
+  100%    { transform: rotate(calc(var(--s, 1) * 120deg)) translate(0); }
+}
+
+.diag-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  display: grid;
+  place-items: center;
+  gap: 0;
+  background: rgb(var(--cyan-pale) / 0.96);
+  animation: rise 200ms var(--ease-out) both;
+}
+
+/* Digits must not reflow while they count, or the row twitches for a second
+   and a half. Tabular figures make every digit the same width. */
+.tabular { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  /* The blanket rule above collapses durations to nothing, which lands every
+     animation here on its final frame. These two need saying explicitly: an
+     armed reveal has no final frame to land on, and a swept rule should not
+     flash. */
+  [data-reveal].reveal-armed,
+  [data-reveal-group].reveal-armed > * { opacity: 1 !important; }
+  .route-sweep { display: none; }
+  .btn-pop:hover { transform: none; }
+}
+
+/* The chevron on a choice card. The card itself lifts under card-lift; the
+   arrow leans toward where it is going, which is the smaller half of one
+   gesture rather than a second competing one. */
+.chev { transition: transform var(--d-quick) var(--ease-out); }
+@media (hover: hover) {
+  .card-lift:hover .chev { transform: translateX(3px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .chev { transition: none; }
+  .card-lift:hover .chev { transform: none; }
+}
+
+/* The stat figure sizes itself, rather than arguing with .data.
+   .data sets font-size: var(--t-data), and a plain class beats an unprefixed
+   Tailwind utility in this sheet's order: text-[24px] lost and the figure came
+   out at 17px on a phone, SMALLER than the 22px it replaced. The md: and lg:
+   variants happened to win because media queries are emitted later, which made
+   the bug look like a mobile-only quirk. One class, three sizes, no argument.
+   Sizes are the largest that keep the longest figure on one line at each width:
+   "Rs 18,880 crore" is 15 monospace characters, and mono is wide. */
+.stat-figure {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 26px;
+  line-height: 1.15;
+  font-variant-numeric: tabular-nums;
+}
+/* 28, not 30: at 768 the two columns give about 294px and the longest
+   figure, the 17-character one, needs 285px of it. */
+@media (min-width: 768px)  { .stat-figure { font-size: 28px; } }
+@media (min-width: 1024px) { .stat-figure { font-size: 38px; } }

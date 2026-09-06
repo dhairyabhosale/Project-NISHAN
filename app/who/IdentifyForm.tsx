@@ -146,7 +146,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
           <button
             type="button"
             onClick={() => void lookup(reference)}
-            className="mt-3 min-h-12 rounded-card border border-teal-deep px-4 text-label font-semibold text-teal-deep"
+            className="btn-fill mt-3 min-h-12 rounded-card border border-teal-deep px-4 text-label font-semibold text-teal-deep"
           >
             {resolve("who.reference_submit", {}, locale)}
           </button>
@@ -155,7 +155,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
         <button
           type="submit"
           disabled={busy || !value.trim()}
-          className="mt-6 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-teal-deep disabled:text-paper"
+          className="btn-pop mt-6 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-teal-deep disabled:text-paper"
         >
           {resolve("who.submit", {}, locale)}
         </button>

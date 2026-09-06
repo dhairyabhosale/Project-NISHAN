@@ -74,7 +74,7 @@ export default function FaqPage() {
             <h2 className="text-head font-semibold text-ink">{resolve("faq.still_stuck", {}, locale)}</h2>
             <p className="mt-2 prose-measure text-body text-ink">{resolve("faq.still_stuck_body", {}, locale)}</p>
           </div>
-          <Link href="/who" className="inline-flex min-h-14 shrink-0 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
+          <Link href="/who" className="btn-pop inline-flex min-h-14 shrink-0 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
             {resolve("faq.cta", {}, locale)}
           </Link>
         </div>

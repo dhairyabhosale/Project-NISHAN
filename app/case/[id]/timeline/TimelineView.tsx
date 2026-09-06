@@ -153,14 +153,14 @@ export function TimelineView({
         <div className="mt-4 flex flex-wrap gap-3">
           <Link
             href={href + "/timeline?advance=" + (advance + 15)}
-            className="inline-flex min-h-12 items-center rounded-card border-2 border-teal-deep px-4 text-label font-semibold text-teal-deep"
+            className="btn-fill inline-flex min-h-12 items-center rounded-card border-2 border-teal-deep px-4 text-label font-semibold text-teal-deep"
           >
             {resolve("demo.travel_15", {}, locale)}
           </Link>
           {advance > 0 && (
             <Link
               href={href + "/timeline"}
-              className="inline-flex min-h-12 items-center rounded-card border border-rule px-4 text-label font-semibold text-ink"
+              className="btn-pop inline-flex min-h-12 items-center rounded-card border border-rule px-4 text-label font-semibold text-ink"
             >
               {resolve("demo.travel_reset", {}, locale)}
             </Link>

@@ -136,7 +136,7 @@ export function FaceCheck({ onVerified }: { onVerified: () => void }) {
         <button
           type="button"
           onClick={start}
-          className="mt-4 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
+          className="btn-pop mt-4 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
         >
           {resolve("act.ekyc.start", {}, locale)}
         </button>
@@ -172,14 +172,14 @@ export function FaceCheck({ onVerified }: { onVerified: () => void }) {
           type="button"
           onClick={finish}
           disabled={phase !== "ready"}
-          className="inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+          className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
         >
           {resolve("act.ekyc.confirm", {}, locale)}
         </button>
         <button
           type="button"
           onClick={() => { stop(); setPhase("idle"); }}
-          className="inline-flex min-h-14 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink"
+          className="btn-pop inline-flex min-h-14 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink"
         >
           {resolve("act.ekyc.cancel", {}, locale)}
         </button>

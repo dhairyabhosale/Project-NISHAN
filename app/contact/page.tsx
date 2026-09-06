@@ -82,7 +82,7 @@ export default function ContactPage() {
               </p>
             )}
 
-            <button type="submit" className="mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper">
+            <button type="submit" className="btn-pop mt-4 min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper">
               {resolve("contact.send", {}, locale)}
             </button>
           </form>

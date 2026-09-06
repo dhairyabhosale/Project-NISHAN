@@ -174,7 +174,7 @@ export default function ServicesPage() {
       <section className="shell py-4">
         <Link
           href="/who"
-          className="inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
+          className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
         >
           {resolve("services.cta", {}, locale)}
         </Link>

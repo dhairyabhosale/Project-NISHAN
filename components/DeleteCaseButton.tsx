@@ -80,7 +80,7 @@ export function DeleteCaseButton() {
       <button
         type="button"
         onClick={() => setAsking(true)}
-        className="mt-4 inline-flex min-h-12 items-center rounded-card border-2 border-stop px-5 text-body font-semibold text-stop"
+        className="btn-pop mt-4 inline-flex min-h-12 items-center rounded-card border-2 border-stop px-5 text-body font-semibold text-stop"
       >
         {resolve("real.delete_action", {}, locale)}
       </button>
@@ -100,7 +100,7 @@ export function DeleteCaseButton() {
       <button
         type="button"
         onClick={() => setAsking(false)}
-        className="inline-flex min-h-12 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink"
+        className="btn-pop inline-flex min-h-12 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink"
       >
         {resolve("real.delete_cancel", {}, locale)}
       </button>

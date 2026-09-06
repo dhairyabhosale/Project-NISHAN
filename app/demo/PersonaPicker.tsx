@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { DiagnosticWait, useDiagnosticWait } from "../../components/DiagnosticWait";
 import { useLocale } from "../../components/LocaleProvider";
 import { resolve } from "../../content/resolve";
 import type { CatalogueKey } from "../../lib/content";
@@ -23,6 +24,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   const router = useRouter();
   const [filter, setFilter] = useState<string>("all");
   const [selectedRef, setSelectedRef] = useState<string>(personas[0]?.ref ?? "");
+  const [working, run] = useDiagnosticWait();
 
   const filtered = filter === "all"
     ? personas
@@ -39,13 +41,14 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   ];
 
   function runSelected() {
-    if (selectedPersona) {
-      router.push("/case/" + encodeURIComponent(selectedPersona.reference));
-    }
+    if (!selectedPersona) return;
+    const ref = selectedPersona.reference;
+    run(() => router.push("/case/" + encodeURIComponent(ref)));
   }
 
   return (
     <main className="page-in shell pb-16 pt-8">
+      {working && <DiagnosticWait />}
       <h1 className="text-answer font-semibold leading-tight text-ink">
         {resolve("demo.title", {}, locale)}
       </h1>
@@ -95,14 +98,15 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
               <button
                 type="button"
                 onClick={runSelected}
-                className="inline-flex min-h-12 items-center rounded-card bg-teal-deep px-5 text-label font-semibold text-paper hover:bg-teal-deep/90"
+                disabled={working}
+                className="btn-pop inline-flex min-h-12 items-center rounded-card bg-teal-deep px-5 text-label font-semibold text-paper hover:bg-teal-deep/90 disabled:opacity-70"
               >
                 {resolve("demo.run_test", {}, locale)} &rarr;
               </button>
               <button
                 type="button"
                 onClick={() => setSelectedRef(personas[0]?.ref ?? "")}
-                className="inline-flex min-h-12 items-center rounded-card border border-rule px-4 text-label font-semibold text-ink hover:bg-cyan-pale"
+                className="btn-pop inline-flex min-h-12 items-center rounded-card border border-rule px-4 text-label font-semibold text-ink hover:bg-cyan-pale"
               >
                 {resolve("demo.reset", {}, locale)}
               </button>
@@ -184,7 +188,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
         <h2 className="text-head font-semibold text-ink">{resolve("demo.build_own", {}, locale)}</h2>
         <Link
           href="/demo/new"
-          className="mt-3 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper hover:bg-teal-deep/90"
+          className="btn-pop mt-3 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper hover:bg-teal-deep/90"
         >
           {resolve("newdemo.create", {}, locale)}
         </Link>

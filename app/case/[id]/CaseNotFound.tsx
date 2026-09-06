@@ -12,7 +12,7 @@ export function CaseNotFound() {
       <h1 className="text-head font-semibold text-ink">{resolve("case.not_found", {}, locale)}</h1>
       <Link
         href="/who"
-        className="mt-6 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-5 text-body font-semibold text-paper"
+        className="btn-pop mt-6 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-5 text-body font-semibold text-paper"
       >
         {resolve("who.submit", {}, locale)}
       </Link>

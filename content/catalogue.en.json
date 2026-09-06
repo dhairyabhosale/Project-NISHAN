@@ -546,6 +546,8 @@
   "facts.8.value": "₹3.24 lakh crore+",
   "facts.8.label": "Transferred across all instalments to date",
   "facts.source": "Every figure on this row is published by the Department of Agriculture and Farmers Welfare. We reproduce them and do not calculate or estimate any of them.",
+  "diag.title": "Checking your records",
+  "diag.body": "Reading your details across the seven systems that have to agree before a payment can move.",
   "voices.heading": "Real problems. Simpler answers.",
   "voices.illustrative": "Illustrative user scenarios. These examples show the kinds of problems NISHAN is designed to make easier to understand.",
   "voices.0.quote": "The website told me my e-KYC was pending for four months. Nobody said the code was going to a phone I sold in 2023.",

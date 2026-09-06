@@ -13,6 +13,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { DiagnosticWait, useDiagnosticWait } from "../../../components/DiagnosticWait";
 import { useLocale } from "../../../components/LocaleProvider";
 import { resolve } from "../../../content/resolve";
 
@@ -24,9 +25,12 @@ export function VerifyForm({ reference }: { reference: string }) {
 
   const [code, setCode] = useState("");
   const [error, setError] = useState(false);
+  const [working, run] = useDiagnosticWait();
 
+  /* Both ways into the case go through the same wait: the code path and the
+     "did not get the code" path arrive at the same reconciliation. */
   function go() {
-    router.push("/case/" + encodeURIComponent(reference));
+    run(() => router.push("/case/" + encodeURIComponent(reference)));
   }
 
   function submit() {
@@ -36,6 +40,7 @@ export function VerifyForm({ reference }: { reference: string }) {
 
   return (
     <main className="page-in shell pb-48 pt-8 sm:pb-28">
+      {working && <DiagnosticWait />}
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("otp.title", {}, locale)}</h1>
       <p className="mt-3 prose-measure text-body text-ink">{resolve("otp.standfirst", {}, locale)}</p>
 
@@ -71,7 +76,8 @@ export function VerifyForm({ reference }: { reference: string }) {
         <button
           type="button"
           onClick={go}
-          className="mt-4 min-h-12 rounded-card border border-teal-deep px-4 text-label font-semibold text-teal-deep"
+          disabled={working}
+          className="btn-fill mt-4 min-h-12 rounded-card border border-teal-deep px-4 text-label font-semibold text-teal-deep"
         >
           {resolve("otp.skip", {}, locale)}
         </button>
@@ -82,8 +88,8 @@ export function VerifyForm({ reference }: { reference: string }) {
           <button
             type="button"
             onClick={submit}
-            disabled={code.length < 6}
-            className="min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+            disabled={code.length < 6 || working}
+            className="btn-pop min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
           >
             {resolve("otp.submit", {}, locale)}
           </button>

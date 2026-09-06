@@ -118,7 +118,7 @@ export function NewDemoForm({ blockers }: { blockers: BlockerOption[] }) {
           <p className="data mt-2 text-answer font-bold text-ink">{reference}</p>
           <Link
             href={link}
-            className="mt-4 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
+            className="btn-pop mt-4 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
           >
             {resolve("newdemo.open", {}, locale)}
           </Link>
@@ -132,7 +132,7 @@ export function NewDemoForm({ blockers }: { blockers: BlockerOption[] }) {
             type="button"
             onClick={() => void create()}
             disabled={busy || !name.trim()}
-            className="min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+            className="btn-pop min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
           >
             {resolve("newdemo.create", {}, locale)}
           </button>

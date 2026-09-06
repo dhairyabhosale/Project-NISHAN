@@ -78,7 +78,7 @@ export function BhashiniWidget() {
         type="button"
         onClick={() => setOpen((o) => !o)}
         aria-expanded={open}
-        className="flex min-h-14 items-center gap-2.5 rounded-marker bg-teal-deep px-4 text-body font-semibold text-paper shadow-lg transition-transform hover:scale-[1.03] motion-reduce:transition-none motion-reduce:hover:scale-100"
+        className="btn-pop flex min-h-14 items-center gap-2.5 rounded-marker bg-teal-deep px-4 text-body font-semibold text-paper shadow-lg transition-transform hover:scale-[1.03] motion-reduce:transition-none motion-reduce:hover:scale-100"
       >
         <MicGlyph size={22} />
         <span>{resolve("bhashini.title", {}, locale)}</span>

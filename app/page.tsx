@@ -14,6 +14,8 @@
  * No captcha (P1). No login. No scroll to reach the primary action. */
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import { CountUp } from "../components/CountUp";
 import { ResumeCase } from "../components/ResumeCase";
 import { Voices } from "../components/Voices";
 import { useLocale } from "../components/LocaleProvider";
@@ -121,15 +123,23 @@ export default function EntryPage() {
             and left a third of the frame empty under the words. */}
         <div className="shell relative w-full pb-24 pt-32 md:py-28">
           <div className="home-hero-copy max-w-[22rem] sm:max-w-[26rem] md:max-w-[30rem]">
-            <h1 className="hero-shadow max-w-[20ch] text-[34px] font-bold leading-tight md:text-[46px]">
+            <h1
+              className="rise hero-shadow max-w-[20ch] text-[34px] font-bold leading-tight md:text-[46px]"
+              style={{ "--rise-delay": "90ms" } as CSSProperties}
+            >
               {resolve("entry.headline", {}, locale)}
             </h1>
-            <p className="hero-shadow mt-5 max-w-[52ch] text-[22px] font-bold leading-relaxed">{resolve("entry.standfirst", {}, locale)}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/who" className="inline-flex min-h-14 items-center rounded-card bg-paper px-6 text-body font-semibold text-teal-deep">
+            <p
+              className="rise hero-shadow mt-5 max-w-[52ch] text-[22px] font-bold leading-relaxed"
+              style={{ "--rise-delay": "180ms" } as CSSProperties}
+            >
+              {resolve("entry.standfirst", {}, locale)}
+            </p>
+            <div className="rise mt-8 flex flex-wrap gap-3" style={{ "--rise-delay": "270ms" } as CSSProperties}>
+              <Link href="/who" className="btn-pop inline-flex min-h-14 items-center rounded-card bg-paper px-6 text-body font-semibold text-teal-deep">
                 {resolve("hero.cta", {}, locale)}
               </Link>
-              <Link href="/demo" className="hero-shadow inline-flex min-h-14 items-center rounded-card border-2 border-paper/70 px-6 text-body font-semibold text-paper">
+              <Link href="/demo" className="btn-fill-invert hero-shadow inline-flex min-h-14 items-center rounded-card border-2 border-paper/70 px-6 text-body font-semibold text-paper">
                 {resolve("hero.secondary", {}, locale)}
               </Link>
             </div>
@@ -140,8 +150,8 @@ export default function EntryPage() {
       <section className="shell py-14">
         {/* Renders nothing on a first visit; one tap back on a return. */}
         <ResumeCase />
-        <h2 className="mt-8 text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
-        <ul className="mt-6 grid gap-4 md:grid-cols-2">
+        <h2 data-reveal className="mt-8 text-head font-semibold text-ink">{resolve("entry.choose", {}, locale)}</h2>
+        <ul data-reveal-group className="mt-6 grid gap-4 md:grid-cols-2">
           {CHOICES.map((c) => (
             <li key={c.key}>
               <Link
@@ -153,7 +163,7 @@ export default function EntryPage() {
                   <span className="block text-body font-semibold leading-snug">{resolve(c.label, {}, locale)}</span>
                   <span className="mt-1 block text-label text-ink-soft">{resolve(c.hint, {}, locale)}</span>
                 </span>
-                <svg width="20" height="20" viewBox="0 0 20 20" {...stroke} aria-hidden="true" className="shrink-0 text-ink-soft">
+                <svg width="20" height="20" viewBox="0 0 20 20" {...stroke} aria-hidden="true" className="chev shrink-0 text-ink-soft">
                   <path d="m7 4 6 6-6 6" />
                 </svg>
               </Link>
@@ -165,9 +175,9 @@ export default function EntryPage() {
       {/* A real sequence, so numbering it carries information. */}
       <section className="border-y border-rule bg-paper py-14">
         <div className="shell">
-          <h2 className="text-head font-semibold text-ink">{resolve("how.heading", {}, locale)}</h2>
-          <p className="mt-2 prose-measure text-body text-ink">{resolve("how.standfirst", {}, locale)}</p>
-          <ol className="mt-8 grid gap-4 md:grid-cols-3">
+          <h2 data-reveal className="text-head font-semibold text-ink">{resolve("how.heading", {}, locale)}</h2>
+          <p data-reveal className="mt-2 prose-measure text-body text-ink">{resolve("how.standfirst", {}, locale)}</p>
+          <ol data-reveal-group className="mt-8 grid gap-4 md:grid-cols-3">
             {STEPS.map((n) => (
               <li key={n} className="rounded-card border border-rule bg-cyan-pale p-5">
                 <span className="data grid size-10 place-items-center rounded-card bg-teal-deep text-paper">{n}</span>
@@ -182,30 +192,32 @@ export default function EntryPage() {
       <Voices />
 
       {/* Published figures reproduced, never computed by us - §18. */}
-      <section className="py-14">
+      <section className="py-20">
         <div className="shell">
-        <h2 className="text-head font-semibold text-ink">{resolve("facts.heading", {}, locale)}</h2>
-        <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("facts.standfirst", {}, locale)}</p>
-        <dl className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <h2 data-reveal className="text-[28px] font-semibold leading-tight text-ink md:text-[34px]">{resolve("facts.heading", {}, locale)}</h2>
+        <p data-reveal className="mt-3 prose-measure text-body text-ink-soft">{resolve("facts.standfirst", {}, locale)}</p>
+        <dl data-reveal-group className="mt-10 grid gap-5 sm:grid-cols-2">
           {FACTS.map((n) => (
-            <div key={n} className="stat-cycle rounded-card border border-rule bg-paper p-5">
-              <dt className="data text-head font-bold text-teal-deep">{resolve(k("facts." + n + ".value"), {}, locale)}</dt>
-              <dd className="mt-2 text-label text-ink">{resolve(k("facts." + n + ".label"), {}, locale)}</dd>
+            <div key={n} className="stat-cycle rounded-card border border-rule bg-paper p-6">
+              <dt className="stat-figure font-bold text-teal-deep">
+                <CountUp value={resolve(k("facts." + n + ".value"), {}, locale)} />
+              </dt>
+              <dd className="mt-3 text-body leading-snug text-ink">{resolve(k("facts." + n + ".label"), {}, locale)}</dd>
             </div>
           ))}
         </dl>
-        <p className="mt-6 prose-measure text-label text-ink-soft">{resolve("facts.source", {}, locale)}</p>
+        <p data-reveal className="mt-8 prose-measure text-label text-ink-soft">{resolve("facts.source", {}, locale)}</p>
         </div>
       </section>
 
       {/* Coverage, without the tile grid becoming the front door. */}
       <section className="border-t border-rule bg-paper py-14">
-        <div className="shell flex flex-wrap items-center justify-between gap-6">
+        <div data-reveal className="shell flex flex-wrap items-center justify-between gap-6">
           <div>
             <h2 className="text-head font-semibold text-ink">{resolve("services.title", {}, locale)}</h2>
             <p className="mt-2 prose-measure text-body text-ink">{resolve("services.standfirst", {}, locale)}</p>
           </div>
-          <Link href="/services" className="inline-flex min-h-14 shrink-0 items-center rounded-card border-2 border-teal-deep px-6 text-body font-semibold text-teal-deep">
+          <Link href="/services" className="btn-fill inline-flex min-h-14 shrink-0 items-center rounded-card border-2 border-teal-deep px-6 text-body font-semibold text-teal-deep">
             {resolve("nav.services", {}, locale)}
           </Link>
         </div>

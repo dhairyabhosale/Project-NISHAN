@@ -269,7 +269,7 @@ export function FixView({ reference, diagnosis }: { reference: string; diagnosis
           {officer && (
             <Link
               href={"/case/" + encodeURIComponent(reference) + "/complaint"}
-              className="flex min-h-14 flex-1 items-center justify-center rounded-card bg-teal-deep px-4 text-center text-body font-semibold text-paper"
+              className="btn-pop flex min-h-14 flex-1 items-center justify-center rounded-card bg-teal-deep px-4 text-center text-body font-semibold text-paper"
             >
               {resolve("fix.complain_cta", {}, locale)}
             </Link>

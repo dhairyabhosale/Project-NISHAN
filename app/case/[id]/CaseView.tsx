@@ -65,7 +65,7 @@ export function CaseView({
       <p className="mt-8">
         <Link
           href={"/case/" + encodeURIComponent(reference) + "/timeline"}
-          className="inline-flex min-h-12 items-center rounded-card border-2 border-teal-deep px-5 text-body font-semibold text-teal-deep"
+          className="btn-fill inline-flex min-h-12 items-center rounded-card border-2 border-teal-deep px-5 text-body font-semibold text-teal-deep"
         >
           {resolve("case.timeline_cta", {}, locale)}
         </Link>
@@ -76,7 +76,7 @@ export function CaseView({
         <div className="shell">
           <Link
             href={"/case/" + encodeURIComponent(reference) + "/fix"}
-            className="flex min-h-14 w-full items-center justify-center gap-2 rounded-card bg-teal-deep text-body font-semibold text-paper"
+            className="btn-pop flex min-h-14 w-full items-center justify-center gap-2 rounded-card bg-teal-deep text-body font-semibold text-paper"
           >
             {resolve("case.fix_cta", {}, locale)}
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.75"

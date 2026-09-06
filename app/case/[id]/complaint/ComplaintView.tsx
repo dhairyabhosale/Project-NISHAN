@@ -93,7 +93,7 @@ export function ComplaintView({ reference, diagnosis, initialDraft, totalSteps }
         <p className="mt-4 prose-measure text-body text-ink">{resolve("complaint.not_needed", {}, locale)}</p>
         <p className="mt-4 prose-measure text-body text-ink">{resolve("complaint.not_needed_2", {}, locale)}</p>
         <Link href={"/case/" + encodeURIComponent(reference) + "/fix"}
-              className="mt-8 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
+              className="btn-pop mt-8 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
           {resolve("complaint.back", {}, locale)}
         </Link>
       </main>
@@ -120,7 +120,7 @@ export function ComplaintView({ reference, diagnosis, initialDraft, totalSteps }
         <p className="mt-6 prose-measure text-body text-ink">{resolve("complaint.filed_if_passes", {}, locale)}</p>
 
         <Link href={"/case/" + encodeURIComponent(reference) + "/timeline"}
-              className="mt-8 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
+              className="btn-pop mt-8 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper">
           {resolve("complaint.filed_timeline", {}, locale)}
         </Link>
       </main>
@@ -180,7 +180,7 @@ export function ComplaintView({ reference, diagnosis, initialDraft, totalSteps }
             type="button"
             onClick={file}
             disabled={busy || !loaded || body.trim().length === 0}
-            className="min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+            className="btn-pop min-h-14 w-full rounded-card bg-teal-deep text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
           >
             {resolve(busy ? "complaint.filing" : "complaint.file", {}, locale)}
           </button>
