@@ -211,14 +211,16 @@ button, input { font: inherit; }
   }
 }
 
-@media (min-width: 1280px) {
+/* These two must agree with the breakpoint the nav itself uses, or the pill
+   lays out its track for one arrangement while the nav renders the other. */
+@media (min-width: 1024px) {
   .site-home-pill > .order-3 {
     width: auto;
     flex: 1 1 auto;
     flex-basis: auto;
   }
 }
-@media (max-width: 1279px) {
+@media (max-width: 1023px) {
   .site-home-pill > .order-3 {
     display: none;
   }
@@ -562,3 +564,71 @@ a:active, button:active { transform: scale(0.985); }
    figure, the 17-character one, needs 285px of it. */
 @media (min-width: 768px)  { .stat-figure { font-size: 28px; } }
 @media (min-width: 1024px) { .stat-figure { font-size: 38px; } }
+
+/* ══ Header fit, and the hero clearing it ═════════════════════════════════════
+
+   1024 to 1279 IS A NEW RANGE FOR THE NAV. Until the locale-triggered collapse
+   was removed, the burger owned every width below 1280, so nothing in this
+   block changes how any locale rendered before it. Nothing here applies at
+   1280 and above, which is what keeps English, Hindi and Marathi pixel
+   identical where they already had a nav.
+
+   Measured at 1024, on the landing pill, before any of this:
+
+     locale   nav needs   track has
+     en          640         621     over by 19
+     hi          629         636     fits by 7
+     mr          551         567     fits by 16
+     ta          732         627     over by 105
+
+   So the whole range is tight and Tamil is far out. Twelve pixels of nav gap
+   instead of twenty buys 48px, and 12px of row gap instead of 16 buys another
+   8, which clears en, hi and mr with 37, 63 and 72 to spare. ------------------*/
+@media (min-width: 1024px) and (max-width: 1279px) {
+  header .shell { column-gap: 12px; }
+  /* header .site-nav, not .site-nav: Tailwind's lg:gap-5 is also a single
+     class, so a bare .site-nav ties on specificity and loses on source order.
+     The element selector settles it, which is why header .shell already won. */
+  header .site-nav { column-gap: 12px; }
+}
+
+/* TAMIL ONLY, and only in that range. Its labels run about twice the width of
+   the English ones, so 12px of gap is not enough: it still needs 684 against
+   694. Eight pixels of gap and dropping the tagline from the lockup take it to
+   660 against 694, and the wordmark still names the product on its own.
+
+   Scoped by the lang attribute, so no other locale can be reached by it, and
+   no JavaScript decides anything: the browser matches the document language
+   the same way it matches the width. Font size is untouched, nothing is
+   truncated, and no label is abbreviated past reading. */
+@media (min-width: 1024px) and (max-width: 1279px) {
+  html[lang="ta"] header .site-nav { column-gap: 8px; }
+  html[lang="ta"] .site-home-pill .logo-tagline,
+  html[lang="ta"] header .logo-tagline { display: none; }
+  /* lg:min-w-[175px] reserves a floor for the lockup so it cannot collapse.
+     With the tagline hidden the Tamil wordmark only needs about 133px, so
+     that floor was holding 42px of empty space directly beside a nav that was
+     24px short. Releasing it is the difference between fitting and not. */
+  html[lang="ta"] header .order-1 { min-width: 0; }
+}
+
+/* THE HERO CLEARS THE PILL BY CONSTRUCTION. The top padding used to be a fixed
+   pt-32 / md:py-28, chosen when the English headline ran to two lines. The
+   copy block is vertically centred, so a headline that wraps further grows
+   UPWARD, and Tamil - which wraps to five lines - grew straight into the
+   underside of the pill.
+
+   These three are the pill's own geometry: its top margin, its rendered height
+   (48px of min-h-12 row, 8px of padding either side, 1px of border either
+   side, measured at 66px in every locale), and the gap we want under it. The
+   hero reads the sum, so the clearance follows the pill rather than tracking a
+   line count. Padding, not margin, because the section centres its content
+   inside the content box: content cannot rise above the padding edge however
+   many lines it grows to. */
+:root {
+  --pill-top: 48px;
+  --pill-h: 66px;
+  --pill-gap: 28px;
+  --pill-clear: calc(var(--pill-top) + var(--pill-h) + var(--pill-gap));
+}
+.hero-clear { padding-top: var(--pill-clear); }

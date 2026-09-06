@@ -727,25 +727,25 @@ describe("Design tokens - nothing paints transparent or an unexpected grey", () 
   });
 });
 
-/* The header overlap, and the contract that stops it coming back.
+/* The header, and the contract that keeps the hamburger off a desktop.
  *
- * WHAT HAPPENED: the desktop nav is flex-none inside a min-w-0 flex-1 track
- * with justify-end. flex-none means it never shrinks, so once its intrinsic
- * width passed the track it did not clip, wrap or compress - it overflowed the
- * track's LEFT edge and sat on top of the logo mark, the wordmark and the
- * subtitle. Tamil reached it first at 983px of nav against a 811px track.
+ * WHAT THIS REPLACED. There used to be a measured collapse: the nav was sized
+ * against its track and, when it did not fit, taken out of flow so the burger
+ * could take over. The only label set that ever failed that test was Tamil, so
+ * in practice it was a locale-triggered collapse, and it produced three faults
+ * at once - Tamil lost its nav on every route but the landing page, the landing
+ * page LATCHED because the pill gives the track flex: 1 1 auto and a track with
+ * no in-flow content measures 0px, and a 1920px screen could show a hamburger.
  *
- * WHY A BREAKPOINT WOULD NOT HAVE FIXED IT: .shell is capped at max-width
- * 1152px, so the track is ~811px at every viewport from 1248px upward. A nav
- * that does not fit at 1280 does not fit at 1920 either.
+ * The tests below used to assert that mechanism existed and was wired to both
+ * controls. They asserted the bug. They now assert its absence, and that the
+ * thing that replaced it - Tamil made to FIT, in CSS, keyed on the lang
+ * attribute - is present in the compiled stylesheet.
  *
- * These assertions are structural, and they say so. The pixel proof is a
- * browser pass - 32 header screenshots across four locales and four widths,
- * with en/hi/mr compared by hash - which needs a layout engine this suite does
- * not have. What is checkable here is that the mechanism exists, is wired to
- * both controls, and is not silently purged, which is the failure mode that
- * would put the overlap back with no visible error. */
-describe("Header - the nav can never collide with the logo lockup", () => {
+ * The pixel proof is a browser pass: 4 locales x 4 widths x 3 routes, plus a
+ * geometry diff against the deployed build confirming en/hi/mr are unchanged.
+ * What is checkable here is that no code path can reintroduce the collapse. */
+describe("Header - the hamburger is a viewport decision, never a locale one", () => {
   const chrome = fs.readFileSync(path.join(ROOT, "components", "SiteChrome.tsx"), "utf8");
   const sheets = () => {
     const dir = path.join(ROOT, ".next", "static", "css");
@@ -753,76 +753,75 @@ describe("Header - the nav can never collide with the logo lockup", () => {
       .map((f) => fs.readFileSync(path.join(dir, f), "utf8")).join(NEWLINE);
   };
 
-  it("compiles the utilities the collapse is built from", () => {
-    /* Tailwind scans source text, and the collapse classes live in a
-       concatenated expression rather than a static string - exactly the shape
-       that gets purged. A purged collapse is not a broken style, it is the
-       overlap again, with nothing to see in the console. */
-    const css = sheets();
-    /* Tailwind escapes the variant colon, so the selector is literally
-       `.xl\:absolute`. Built from a char code for the same reason NEWLINE is
-       above: a backslash in a literal here is one editor round-trip away from
-       becoming a no-op escape, and `"xl\:absolute"` reads as "xl:absolute",
-       which is not in the stylesheet and never will be. That mistake makes
-       this assertion fail loudly rather than silently, but only by luck. */
-    const BACKSLASH = String.fromCharCode(92);
-    for (const name of ["absolute", "right-full", "invisible", "hidden"]) {
-      const selector = ".xl" + BACKSLASH + ":" + name;
-      assert.ok(css.includes(selector),
-        selector + " never compiled, so the nav cannot be taken out of flow and will overlap the lockup again");
+  it("holds no state that could collapse the nav", () => {
+    /* The whole class of bug. State derived from the locale is what went stale
+       and left a hamburger on screen after switching back to English; if there
+       is no state, there is nothing to go stale. */
+    for (const ghost of ["navFits", "setNavFits", "navRef", "trackRef", "burgerRef"]) {
+      assert.equal(chrome.includes(ghost), false,
+        ghost + " is back, which means the nav can decide its own layout again");
     }
+    assert.equal(/useLayoutEffect|ResizeObserver/.test(chrome), false,
+      "the header measures itself again, which is how the collapse was built");
   });
 
-  it("measures the nav against the space it actually has", () => {
-    assert.match(chrome, /scrollWidth/, "nothing measures the nav's intrinsic width");
-    assert.match(chrome, /clientWidth/, "nothing measures the track the nav has to fit into");
-    /* Constructed AND observing. Matching the bare word ResizeObserver passed
-       even with the observer stubbed out, because the name survives in the
-       `typeof ResizeObserver === "undefined"` guard - an assertion that could
-       not fail, caught by injecting the stub. */
-    assert.match(chrome, /new ResizeObserver\(/, "no ResizeObserver is constructed");
-    assert.match(chrome, /\.observe\(/, "a ResizeObserver is made but never told what to watch");
+  it("gates the nav and the burger on the same breakpoint and nothing else", () => {
+    /* One is the exact complement of the other. If they ever disagree a width
+       exists that shows both, or neither. */
+    assert.match(chrome, /"site-nav hidden[^"]*\blg:flex\b/,
+      "the desktop nav is not shown at lg");
+    assert.match(chrome, /rounded-card hover:bg-white\/10 lg:hidden"/,
+      "the burger is not hidden at lg");
+    assert.match(chrome, /"shell border-t border-white\/20 pb-4 lg:hidden"/,
+      "the burger panel can still open at desktop widths");
+    /* No conditional may reach either one. */
+    assert.equal(/\(\w+ \? " (lg|xl):hidden" : ""\)/.test(chrome), false,
+      "the burger's visibility is conditional again");
   });
 
-  it("measures against space that does not depend on the answer", () => {
-    /* The latch. Collapsing the nav reveals the burger, and the burger takes
-       its own width plus the gap beside it out of the same track the nav is
-       measured against. Measured naively, a collapsed nav shrinks its own
-       track and can never come back: switching Tamil to English at 1440 left
-       the nav collapsed, because English needs 640px and the burger had cut
-       the track from 690px to 634px.
-
-       So the burger's footprint has to be added back, making the figure
-       invariant to the state it decides. Without this the header is stable in
-       exactly one direction, which is the kind of bug that looks fine in a
-       single screenshot. */
-    const effect = chrome.slice(chrome.indexOf("const measure = ()"), chrome.indexOf("ro.observe("));
-    assert.match(effect, /burgerRef/,
-      "the fit is measured without accounting for the burger, so collapsing shrinks the track it measures against");
-    assert.match(effect, /offsetWidth/, "the burger's width is never added back");
-    assert.match(effect, /columnGap/, "the gap beside the burger is never added back");
+  it("makes Tamil fit rather than hiding it", () => {
+    /* The replacement for the collapse. Scoped to the lang attribute so no
+       other locale can be reached, and to 1024-1279 so 1280 and above - where
+       en, hi and mr already had a nav - is untouched. */
+    /* The minifier drops the attribute quotes, so html[lang="ta"] is emitted as
+       html[lang=ta]. Matching only the quoted form passes against source and
+       fails against the built sheet, which is the sheet that ships. */
+    const css = sheets();
+    const TA = /\[lang="?ta"?\]/;
+    assert.match(css, TA, "no Tamil-specific rule compiled at all");
+    assert.match(css, /min-width:1024px\) and \(max-width:1279px/,
+      "the tightened range did not compile");
+    assert.match(css.replace(/\s+/g, ""), /\[lang="?ta"?\]header\.site-nav\{[^}]*column-gap:8px/,
+      "Tamil does not get its tighter nav gap");
   });
 
-  it("binds both the nav and the burger to the same fit decision", () => {
-    /* If the burger kept a static xl:hidden, collapsing the nav above 1280px
-       would leave that locale with no navigation at all. */
-    const burger = chrome.slice(chrome.indexOf("setMobileOpen((o) => !o)"));
-    assert.match(burger.slice(0, 600), /navFits/,
-      "the burger is not bound to the fit check, so a collapsed nav leaves no way to navigate");
-    const desktopNav = chrome.slice(chrome.indexOf("ref={navRef}"), chrome.indexOf("ref={navRef}") + 600);
-    assert.match(desktopNav, /navFits/, "the desktop nav is not bound to the fit check");
-  });
-
-  it("takes the nav out of flow rather than clipping or truncating it", () => {
-    /* The brief's constraint, and §11.7's: a half-readable nav item is worse
-       than a hidden one. Clipping would also cut off the dropdown panels, which
-       are positioned inside the nav. */
-    const track = chrome.slice(chrome.indexOf("ref={trackRef}"), chrome.indexOf("ref={navRef}"));
-    assert.equal(/overflow-hidden|truncate|text-ellipsis/.test(track), false,
-      "the header track clips its content instead of collapsing the nav");
-    const navBlock = chrome.slice(chrome.indexOf("ref={navRef}"), chrome.indexOf("</nav>"));
+  it("never shrinks a nav label below the §11.4 label size", () => {
+    /* The other way to make Tamil fit, and the one the brief rules out: a nav
+       set smaller than the scale, or truncated, is a worse answer than a wider
+       bar. */
+    const navBlock = chrome.slice(chrome.indexOf('className="site-nav'), chrome.indexOf("</nav>"));
+    assert.equal(/text-\[1[0-4]px\]|text-xs|text-\[0\.\d+rem\]/.test(navBlock), false,
+      "a nav item is set below the label size");
     assert.equal(/truncate|text-ellipsis/.test(navBlock), false,
       "a nav item truncates, which the brief rules out");
+    const css = sheets();
+    /* Same minified form as above. This one asserts ABSENCE, so the quoted-only
+       pattern would have passed whatever the sheet contained: a rule that never
+       matches never fires, and the test could not fail. */
+    assert.equal(/\[lang="?ta"?\][^{]*\{[^}]*font-size/.test(css), false,
+      "a Tamil-only rule changes a font size");
+  });
+
+  it("clears the hero from the pill by construction, not by a tuned number", () => {
+    /* Bug 2. The old top padding was chosen for the English line count, so any
+       locale that wrapped further grew up into the pill. */
+    const css = sheets().replace(/\s+/g, "");
+    assert.ok(css.includes("--pill-clear:calc("), "the clearance is not computed from the pill");
+    assert.ok(/\.hero-clear\{padding-top:var\(--pill-clear\)\}/.test(css),
+      "the hero does not use the computed clearance");
+    const page = fs.readFileSync(path.join(ROOT, "app", "page.tsx"), "utf8");
+    assert.equal(/pt-32|pt-\[\d+px\]/.test(page.slice(page.indexOf("hero-clear") - 200, page.indexOf("hero-clear") + 200)), false,
+      "a fixed top padding is back on the hero copy");
   });
 
   it("ships both a desktop nav and a burger on every rendered route", () => {
@@ -831,7 +830,7 @@ describe("Header - the nav can never collide with the logo lockup", () => {
       const header = html.slice(0, html.indexOf("</header>") + 9);
       assert.ok(header.includes("<nav"), route + " serves a header with no nav at all");
       assert.match(header, /aria-expanded="false"[^>]*class="[^"]*size-12/,
-        route + " serves a header with no burger control, so a collapsed nav has nowhere to go");
+        route + " serves a header with no burger control, so narrow viewports have nowhere to go");
     }
   });
 });
