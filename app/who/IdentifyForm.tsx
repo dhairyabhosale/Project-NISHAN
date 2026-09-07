@@ -165,7 +165,7 @@ export function IdentifyForm({ personas }: { personas: DemoCase[] }) {
         <section className="mt-8">
           <h2 className="text-head font-semibold text-ink">{resolve("who.demo_heading", {}, locale)}</h2>
           <p className="mt-2 prose-measure text-label text-ink-soft">{resolve("who.demo_body", {}, locale)}</p>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {personas.map((p) => (
               <li key={p.reference}>
                 <button

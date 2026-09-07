@@ -164,7 +164,7 @@ export default function ServicesPage() {
           <div className="shell">
             <h2 className="text-head font-semibold text-ink">{resolve(TIER_HEADING[tier], {}, locale)}</h2>
             <p className="mt-2 prose-measure text-body text-ink">{resolve(TIER_NOTE[tier], {}, locale)}</p>
-            <ul className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-5 grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3">
               {ROWS.filter((r) => r.tier === tier).map((r) => <Row key={r.i} {...r} />)}
             </ul>
           </div>

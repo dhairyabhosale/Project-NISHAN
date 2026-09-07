@@ -86,7 +86,7 @@ export function CaseStatus({ reference, diagnosis }: { reference: string; diagno
         {resolve("status.heading", {}, locale)}
       </h2>
 
-      <dl className="mt-4 grid gap-5 sm:grid-cols-2">
+      <dl className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2">
         <div>
           <dt className="text-label font-semibold text-ink-soft">{resolve("status.now", {}, locale)}</dt>
           <dd className="mt-1 prose-measure text-body text-ink">{resolve(stateKey, {}, locale)}</dd>

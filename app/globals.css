@@ -701,3 +701,17 @@ a:active, button:active { transform: scale(0.985); }
    whole fix. Latin never reaches the condition, which is why the page looked
    fine in English for as long as anyone only checked English. */
 body { overflow-wrap: break-word; }
+
+/* The hero's actions vs the floating voice button. The copy block is centred in
+   the hero, so bottom padding lifts it rather than stretching it: 80px is the
+   button's 56px plus its 16px offset plus a gap, which puts the secondary
+   action clear of the lane the button occupies. Phones only; above 640 the two
+   are nowhere near each other. */
+@media (max-width: 639px) {
+  .hero-clear { padding-bottom: calc(6rem + 80px); }
+}
+/* Not repeated at 320. Below md the hero has no min-height, so the copy block
+   is top-anchored and bottom padding lengthens the page without moving the
+   actions: measured, it changed nothing. A 23px corner overlap between the
+   floating button and the secondary action survives at 320 and is recorded in
+   MOBILE-AUDIT.md rather than papered over. */

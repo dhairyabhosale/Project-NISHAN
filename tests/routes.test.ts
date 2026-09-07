@@ -834,3 +834,121 @@ describe("Header - the hamburger is a viewport decision, never a locale one", ()
     }
   });
 });
+
+/* Mobile, and the invariants that keep it from scrolling sideways.
+ *
+ * This suite has no layout engine: it fetches served HTML and reads the built
+ * stylesheet. It cannot measure a box, so it cannot literally assert
+ * "scrollWidth <= clientWidth" on 320 combinations - that is a browser pass,
+ * and it currently reports 0 of 320.
+ *
+ * What it CAN do is hold the structural conditions that caused every one of the
+ * ten Tamil overflows, each of which is a property of the source or the
+ * compiled CSS. That is the difference between a test that would have caught
+ * the bug and a test that merely describes it.
+ */
+describe("Mobile - nothing may burst the viewport", () => {
+  const sheets = () => {
+    const dir = path.join(ROOT, ".next", "static", "css");
+    return fs.readdirSync(dir).filter((f) => f.endsWith(".css"))
+      .map((f) => fs.readFileSync(path.join(dir, f), "utf8")).join(NEWLINE);
+  };
+  const sources = () => {
+    const out: [string, string][] = [];
+    const walk = (dir: string) => {
+      for (const e of fs.readdirSync(dir, { withFileTypes: true })) {
+        const full = path.join(dir, e.name);
+        if (e.isDirectory()) { walk(full); continue; }
+        if (full.endsWith(".tsx")) out.push([full, fs.readFileSync(full, "utf8")]);
+      }
+    };
+    walk(path.join(ROOT, "app"));
+    walk(path.join(ROOT, "components"));
+    return out;
+  };
+
+  it("gives every breakpoint-only grid an explicit shrinkable column", () => {
+    /* THE BUG THIS CATCHES. A grid that declares its columns only at a
+       breakpoint has no template below it, so items land in an implicit `auto`
+       track, which sizes to min-content and cannot shrink below the longest
+       word in it. English breaks at spaces and never reaches the limit; Tamil
+       does, and took four routes past the viewport with it. */
+    const offenders: string[] = [];
+    for (const [file, src] of sources()) {
+      const classAttrs = src.match(/className=(?:"[^"]*"|\{`[^`]*`\})/g) || [];
+      for (const attr of classAttrs) {
+        if (!/(^|[\s"`{])grid([\s"`]|$)/.test(attr)) continue;
+        const hasBreakpointCols = /\b(sm|md|lg|xl):grid-cols-/.test(attr);
+        const hasBaseCols = /(^|[\s"`{])grid-cols-/.test(attr);
+        if (hasBreakpointCols && !hasBaseCols) {
+          offenders.push(path.relative(ROOT, file) + ": " + attr.slice(0, 90));
+        }
+      }
+    }
+    assert.deepEqual(offenders, [],
+      "a grid declares columns only at a breakpoint, so below it the track is min-content and cannot shrink: " +
+      offenders.join(" | "));
+  });
+
+  it("never leaves a 1fr track with its automatic minimum", () => {
+    /* 1fr means minmax(auto, 1fr), and that `auto` minimum is min-content.
+       overflow-wrap does not rescue it: that changes how text wraps, not the
+       intrinsic size the track is measured against. minmax(0, 1fr) does. */
+    const offenders: string[] = [];
+    for (const [file, src] of sources()) {
+      if (/grid-cols-\[[^\]]*(?<![0-9a-z(,])1fr/.test(src)) {
+        const m = src.match(/grid-cols-\[[^\]]*\]/g) || [];
+        m.filter((x) => /(?<!minmax\(0,)1fr/.test(x) && !x.includes("minmax(0,1fr)"))
+          .forEach((x) => offenders.push(path.relative(ROOT, file) + ": " + x));
+      }
+    }
+    assert.deepEqual(offenders, [],
+      "a bare 1fr track keeps a min-content minimum and will not shrink: " + offenders.join(" | "));
+  });
+
+  it("lets a single unbreakable word break rather than burst the page", () => {
+    /* One Tamil word in an h1 measured 355px against a 288px column. It
+       overflowed its own box, and on a mobile viewport an overflow widens the
+       LAYOUT VIEWPORT, so every position:fixed element grew with it: the
+       pinned action bar reported 371px wide on a 320px screen. */
+    const css = sheets().replace(/\s+/g, "");
+    assert.match(css, /body\{[^}]*overflow-wrap:break-word/,
+      "body has no overflow-wrap guard, so one long word can widen the layout viewport");
+  });
+
+  it("serves a small hero to a small screen", () => {
+    /* 253kB and a 5024ms LCP on Slow 3G at 6x CPU, for a 360px screen, is the
+       single most expensive thing this build did to the user it is for. */
+    const page = fs.readFileSync(path.join(ROOT, "app", "page.tsx"), "utf8");
+    assert.match(page, /srcSet="[^"]*hero-farmer-480\.webp 480w/,
+      "the hero has no small variant in its srcset");
+    assert.match(page, /sizes="100vw"/, "the hero srcset has no sizes, so the browser cannot choose");
+    for (const w of [480, 768, 1200]) {
+      const f = path.join(ROOT, "public", "hero-farmer-" + w + ".webp");
+      assert.ok(fs.existsSync(f), "hero-farmer-" + w + ".webp is referenced but not shipped");
+      const kb = fs.statSync(f).size / 1024;
+      assert.ok(kb < w / 4,
+        "hero-farmer-" + w + ".webp is " + kb.toFixed(0) + "kB, too heavy for the width it serves");
+    }
+  });
+
+  it("keeps the header off itself at the floor width", () => {
+    /* At 320 the lockup shrinks to 103px while Tamil needs 125px, so the
+       wordmark ran under the language control. The answer is a second row, not
+       a smaller font and not a hidden wordmark. */
+    const css = sheets().replace(/\s+/g, "");
+    assert.match(css, /@media\(max-width:359px\)\{[^@]*\.site-home-pill\{[^}]*flex-wrap:wrap/,
+      "the pill does not wrap at the floor width, so the lockup and the controls compete for one row");
+    assert.equal(/@media\(max-width:359px\)\{[^@]*\.site-home-pill[^@]*display:none/.test(css), false,
+      "something is hidden at the floor width instead of being laid out differently");
+  });
+
+  it("declares a viewport that allows zoom", () => {
+    for (const [route, html] of Object.entries(served)) {
+      assert.match(html, /name="viewport"[^>]*width=device-width/,
+        route + " has no device-width viewport");
+      assert.equal(/user-scalable=no|maximum-scale=1/.test(html), false,
+        route + " blocks pinch zoom");
+    }
+  });
+});

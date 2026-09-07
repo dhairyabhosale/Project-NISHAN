@@ -66,7 +66,7 @@ export function NewDemoForm({ blockers }: { blockers: BlockerOption[] }) {
         {resolve("newdemo.synthetic", {}, locale)}
       </p>
 
-      <div className="mt-8 grid gap-8 lg:grid-cols-2">
+      <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
         <div>
           <label htmlFor="demo-name" className="block text-label font-semibold text-ink">
             {resolve("newdemo.name_label", {}, locale)}

@@ -76,7 +76,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
           {resolve("demo.judge_sub", {}, locale)}
         </p>
 
-        <div className="mt-5 grid gap-4 lg:grid-cols-2">
+        <div className="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
           <div>
             <label htmlFor="scenario-select" className="block text-label font-semibold text-ink">
               {resolve("demo.select_scenario", {}, locale)}
@@ -149,7 +149,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
           ))}
         </div>
 
-        <ul className="mt-6 grid max-w-4xl gap-4 md:grid-cols-2">
+        <ul className="mt-6 grid grid-cols-1 max-w-4xl gap-4 md:grid-cols-2">
           {filtered.map((p) => (
             <li key={p.ref} className="min-w-0">
               <Link

@@ -77,7 +77,7 @@ export default function WhatsRealPage() {
       <h1 className="text-answer font-semibold leading-tight text-ink">{resolve("real.title", {}, locale)}</h1>
       <p className="mt-4 prose-measure text-body text-ink">{resolve("real.intro", {}, locale)}</p>
 
-      <ul className="mt-8 grid gap-3 lg:grid-cols-2">
+      <ul className="mt-8 grid grid-cols-1 gap-3 lg:grid-cols-2">
         {ROWS.map((row) => (
           <li key={row.component} className="h-full rounded-card border border-rule bg-paper p-5">
             <div className="flex flex-wrap items-start justify-between gap-2">
@@ -96,7 +96,7 @@ export default function WhatsRealPage() {
       </ul>
 
       <h2 className="mt-12 text-head font-semibold text-ink">{resolve("real.limits_heading", {}, locale)}</h2>
-      <ul className="mt-4 grid gap-3 lg:grid-cols-2">
+      <ul className="mt-4 grid grid-cols-1 gap-3 lg:grid-cols-2">
         {Array.from({ length: LIMIT_COUNT }, (_, i) => (
           <li key={i} className="flex gap-3 text-body text-ink">
             <span aria-hidden="true" className="mt-2.5 size-1.5 shrink-0 rounded-full bg-ink-soft" />

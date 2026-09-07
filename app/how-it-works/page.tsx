@@ -97,7 +97,7 @@ export default function HowItWorksPage() {
           {resolve("how.standfirst", {}, locale)}
         </p>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {steps.map((s) => (
             <div
               key={s.num}
@@ -124,7 +124,7 @@ export default function HowItWorksPage() {
         </h2>
 
         <div className="mt-6 rounded-card border border-rule bg-paper p-4 sm:p-6">
-          <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label={resolve("how_page.flow.title", {}, locale)}>
+          <ol className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label={resolve("how_page.flow.title", {}, locale)}>
             {flowNodes.map((node, i) => (
               <li key={node.label} className="relative flex min-h-20 items-center gap-3 rounded-card border border-rule bg-cyan-pale/40 p-4">
                 <span className="grid size-8 place-items-center rounded-full bg-teal-deep text-paper font-bold text-label" aria-hidden="true">
@@ -142,7 +142,7 @@ export default function HowItWorksPage() {
 
 
       <section className="border-t border-rule py-10">
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="rounded-card border-2 border-teal-deep bg-paper p-6">
             <div className="flex items-center gap-2">
               <span className="inline-block size-3 rounded-full bg-teal-deep" aria-hidden="true" />

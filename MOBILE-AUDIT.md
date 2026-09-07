@@ -213,3 +213,20 @@ Paused part-way through Phase 2 at the user's request. Outstanding:
 - **axe at 375 after the overflow fixes.** It read 0 twice before them.
 - **Time-to-usable re-measured** now the hero is 19kB rather than 253kB.
 - **After screenshots** of the hero and the Money Rail at mobile.
+
+## Left alone, second pass
+
+- **The floating voice button overlaps the secondary hero action at 320px, by
+  23px of one corner.** Clear at 360 and 375 with an 8px gap, which is what the
+  footer and hero lane-clearing rules bought. It survives at 320 because the
+  pill is two rows there, so the copy starts ~56px lower.
+
+  Bottom padding does not fix it: below `md` the hero has no `min-height`, so
+  the copy block is top-anchored and padding lengthens the page without moving
+  the actions. Measured, not assumed. The moves that would work are moving the
+  button up (onto the standfirst), shrinking it to an icon (hiding its label,
+  which the brief rules out), or giving the hero a mobile `min-height` so
+  centring engages, which is a layout change large enough to want its own pass.
+
+  Left as a 23px corner at the floor width, on an optional affordance, rather
+  than churned at the end of a session.

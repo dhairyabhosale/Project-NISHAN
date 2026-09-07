@@ -233,7 +233,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
               <span className="sr-only">{resolve("footer.back_to_top", {}, locale)}</span>
             </button>
           </div>
-          <div className="grid gap-8 md:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div>
               <h2 className="text-label font-bold uppercase tracking-wide text-ink-soft">{resolve("nav.services", {}, locale)}</h2>
               <ul className="mt-2 space-y-2">
