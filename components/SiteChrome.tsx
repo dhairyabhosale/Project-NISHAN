@@ -86,7 +86,17 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           solved, because the strip the header sits across runs from luminance
           0.065 to 0.947 - dark trees against bright sky - and no text colour
           clears that range. The band sits above the image instead. */}
-      <header className={`on-teal relative text-paper ${isLandingPage ? "site-home-header" : "bg-teal-deep"}`}>
+      <header
+        className={
+          "on-teal relative text-paper " +
+          // Open, it is a full sheet rather than a transparent strip over the
+          // photograph. On the landing page the header is deliberately
+          // transparent, so the menu had nothing behind it and every item sat
+          // on top of the hero copy.
+          (mobileOpen ? "site-menu-open " : "") +
+          (isLandingPage ? "site-home-header" : "bg-teal-deep")
+        }
+      >
         <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
@@ -94,7 +104,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
             plays once per full page load and not on client-side navigation,
             which is the "first time" the entrance is meant to mark. */}
         <div className={`rise shell flex flex-wrap items-center justify-between gap-x-4 gap-y-3 lg:flex-nowrap ${isLandingPage ? "site-home-pill" : "pb-4 pt-14 lg:pt-12"}`}>
-          <Link href="/" className="order-1 flex min-h-12 basis-full shrink-0 items-center rounded-card sm:basis-auto sm:min-w-[195px] lg:mr-2 lg:min-w-[175px]">
+          <Link href="/" className="order-1 flex min-h-12 shrink-0 items-center rounded-card sm:min-w-[195px] lg:mr-2 lg:min-w-[175px]">
             <NishanLogo locale={locale} />
           </Link>
 
@@ -162,7 +172,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
 
           </div>
 
-          <div className="order-2 ml-auto flex basis-full items-center justify-end gap-2 sm:basis-auto lg:order-3 lg:shrink-0 lg:ml-2">
+          <div className="order-2 ml-auto flex items-center justify-end gap-2 lg:order-3 lg:shrink-0 lg:ml-2">
             <LanguageSelector />
             <button
               type="button"

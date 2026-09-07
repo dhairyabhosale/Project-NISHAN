@@ -715,3 +715,40 @@ body { overflow-wrap: break-word; }
    actions: measured, it changed nothing. A 23px corner overlap between the
    floating button and the secondary action survives at 320 and is recorded in
    MOBILE-AUDIT.md rather than papered over. */
+
+/* THE OPEN MENU IS A SHEET, NOT AN OVERLAY.
+   On the landing page the header is transparent by design, so the burger panel
+   had nothing behind it: every menu item rendered straight on top of the hero
+   headline and neither was readable. Opening it now takes over the viewport in
+   solid --teal-deep and scrolls on its own, which is what the panel always
+   needed and never had. Above lg the burger does not exist, so neither does
+   this. */
+@media (max-width: 1023px) {
+  .site-menu-open {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    background: rgb(var(--teal-deep));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  /* As a sheet the floating pill is just the sheet's own top row: no capsule,
+     no glass, no margin. The pill exists to sit ON the photograph, and there is
+     no photograph behind it here. */
+  .site-menu-open .site-home-pill {
+    width: auto;
+    max-width: none;
+    margin: 0;
+    /* 56px of head clearance: the prototype badge is pinned to the header
+       top-right, and as a sheet the top row would otherwise sit under it. */
+    padding: 56px 16px 16px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    flex-wrap: nowrap;
+  }
+  .site-menu-open .logo-tagline { display: block; }
+}
