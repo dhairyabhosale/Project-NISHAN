@@ -163,7 +163,7 @@ button, input { font: inherit; }
      and 1280. Clearing the badge by margin is locale-proof and width-proof,
      where shortening labels only holds until the next long language. The
      narrow breakpoint already used 48 for the same reason. */
-  margin: 48px auto 0;
+  margin: 40px auto 0;
   padding: 8px 16px;
   border-radius: 9999px;
   /* Glass, not a solid slab: the photograph shows through and is blurred
@@ -626,7 +626,7 @@ a:active, button:active { transform: scale(0.985); }
    inside the content box: content cannot rise above the padding edge however
    many lines it grows to. */
 :root {
-  --pill-top: 48px;
+  --pill-top: 40px;
   --pill-h: 66px;
   --pill-gap: 28px;
   --pill-clear: calc(var(--pill-top) + var(--pill-h) + var(--pill-gap));
@@ -752,3 +752,106 @@ body { overflow-wrap: break-word; }
   }
   .site-menu-open .logo-tagline { display: block; }
 }
+
+/* ══ The e-KYC capture ring ═══════════════════════════════════════════════════
+   A circle, because that is what every identity-capture screen uses and it
+   tells the reader where to put their face without a sentence. The video is
+   cropped to the circle by overflow, not by a mask, so it degrades to a square
+   frame rather than to nothing if the border-radius is ever lost. */
+.ekyc-stage {
+  position: relative;
+  width: min(320px, 78vw);
+}
+.ekyc-ring {
+  position: relative;
+  aspect-ratio: 1;
+  border-radius: 999px;
+  overflow: hidden;
+  background: rgb(var(--ink));
+  border: 4px solid rgb(var(--teal-deep));
+  box-shadow: 0 0 0 6px rgb(var(--cyan-pale));
+}
+.ekyc-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Mirrored, because a preview that moves the opposite way to your head is
+     the single most disorienting thing a capture screen can do. */
+  transform: scaleX(-1);
+}
+.ekyc-hidden { display: none; }
+
+/* The shutter. One white wash over the ring, out as fast as it came in. */
+@keyframes ekyc-flash {
+  0%   { opacity: 0; }
+  18%  { opacity: 0.92; }
+  100% { opacity: 0; }
+}
+.ekyc-flash {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: rgb(var(--white));
+  animation: ekyc-flash 420ms ease-out both;
+  pointer-events: none;
+}
+
+/* Working. The ring itself carries it, so there is no second spinner competing
+   with the picture the reader is looking at. */
+@keyframes ekyc-busy {
+  to { transform: rotate(360deg); }
+}
+.ekyc-ring-busy::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 4px solid transparent;
+  border-top-color: rgb(var(--green));
+  animation: ekyc-busy 900ms linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ekyc-flash { animation: none; opacity: 0; }
+  .ekyc-ring-busy::after { animation: none; border-top-color: rgb(var(--green)); }
+}
+
+/* Map pins. Absolutely placed by percentage, so they track the tiles at any
+   size. The label sits under the dot and is legible on a photographic map
+   because it carries its own plate. */
+.office-pin {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  padding: 6px;
+  min-width: 48px;
+  min-height: 48px;
+  align-content: center;
+}
+.office-pin-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: rgb(var(--ink-soft));
+  border: 3px solid rgb(var(--white));
+  box-shadow: 0 1px 4px rgb(var(--ink) / 0.5);
+}
+.office-pin-on {
+  background: rgb(var(--stop));
+  width: 22px;
+  height: 22px;
+}
+.office-pin-label {
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.2;
+  max-width: 92px;
+  text-align: center;
+  color: rgb(var(--ink));
+  background: rgb(var(--white) / 0.92);
+  border-radius: 2px;
+  padding: 1px 4px;
+}
+

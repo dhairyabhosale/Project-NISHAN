@@ -276,8 +276,17 @@ describe("F18 - the §12.6 response headers", () => {
     ["x-content-type-options", /^nosniff$/],
     ["referrer-policy", /strict-origin-when-cross-origin/],
     ["permissions-policy", /microphone=\(\)/],
-    ["permissions-policy", /camera=\(\)/],
-    ["permissions-policy", /geolocation=\(\)/]
+    /* camera=(self), not camera=(). The build ships an in-browser identity
+       check, and camera=() denied it to our own page: getUserMedia rejected
+       before the browser ever asked the reader, and the failure surfaced as
+       "permission was refused". (self) keeps every other origin out, including
+       anything framed. The microphone stays fully denied below, because that
+       is the claim the disabled Bhashini button rests on. */
+    ["permissions-policy", /camera=\(self\)/],
+    ["permissions-policy", /geolocation=\(\)/],
+    /* Map tiles on /contact are images, so this is the only external origin in
+       the policy and it can fetch nothing back: connect-src stays 'self'. */
+    ["content-security-policy", /img-src 'self' data: https:\/\/tile\.openstreetmap\.org/]
   ];
 
   it("sets every specified header on a page response", async () => {
@@ -301,7 +310,11 @@ describe("F18 - the §12.6 response headers", () => {
     // §9.4 says the button requests no permission. This header is how a
     // reviewer checks that in devtools instead of taking it on trust.
     const policy = (await fetch(BASE + "/")).headers.get("permissions-policy") ?? "";
-    for (const feature of ["microphone", "camera", "geolocation"]) {
+    /* Camera is deliberately out of this list now: the page needs it, and it
+       is asserted as camera=(self) in the table above, which still shuts out
+       every other origin. The microphone is what the disabled Bhashini button
+       claims, so that one stays absolute. */
+    for (const feature of ["microphone", "geolocation"]) {
       assert.match(policy, new RegExp(feature + "=\(\)"), feature + " is not denied: " + policy);
     }
   });

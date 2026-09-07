@@ -97,7 +97,7 @@ export function SiteChrome({ children }: { children: ReactNode }) {
           (isLandingPage ? "site-home-header" : "bg-teal-deep")
         }
       >
-        <p className="site-prototype-badge absolute right-3 top-2 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
+        <p className="site-prototype-badge absolute right-3 top-1 z-10 rounded-card border-2 border-pending bg-pending px-2.5 py-1 text-label font-bold text-ink sm:right-4">
           {resolve("banner.chip", {}, locale)}
         </p>
         {/* `rise` here rather than on <header>: this lives in the layout, so it

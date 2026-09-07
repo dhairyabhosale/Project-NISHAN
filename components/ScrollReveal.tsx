@@ -57,7 +57,7 @@ export function ScrollReveal() {
       ticking = false;
       /* Reveal a little before the element is fully up, so the movement is
          finishing as the reader arrives rather than starting. */
-      const line = window.innerHeight * 0.9;
+      const line = window.innerHeight * 0.78;
       const remaining: HTMLElement[] = [];
       armed.forEach((el) => {
         if (el.getBoundingClientRect().top > line) { remaining.push(el); return; }

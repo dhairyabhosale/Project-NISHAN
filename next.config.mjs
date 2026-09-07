@@ -27,8 +27,15 @@
  * Permissions-Policy is the one worth reading twice. The build claims the
  * microphone button asks for nothing, and this header is how a reviewer
  * verifies that claim in devtools in five seconds instead of taking it on
- * trust. camera and geolocation are denied for the same reason: §12.6 names
- * all three, and a page that cannot request them cannot leak them.
+ * trust. geolocation is denied for the same reason.
+ *
+ * CAMERA IS THE EXCEPTION, and it has to be. §12.6 names all three, but this
+ * build ships an in-browser identity check that is the whole answer to P7 and
+ * P10, and camera=() meant getUserMedia could never resolve: the feature was
+ * dead on every deployment and the failure looked like a permission the reader
+ * had refused. camera=(self) keeps every other origin out, including anything
+ * framed, and the microphone stays fully denied, which is the claim the
+ * disabled Bhashini button actually rests on.
  */
 
 const CSP = [
@@ -42,7 +49,9 @@ const CSP = [
   // next/font inlines @font-face declarations.
   "style-src 'self' 'unsafe-inline'",
   "font-src 'self' data:",
-  "img-src 'self' data:",
+  // OpenStreetMap raster tiles on /contact. Images only: no script, no key,
+  // no library, and connect-src stays 'self' so nothing can still phone out.
+  "img-src 'self' data: https://tile.openstreetmap.org",
   // Nothing leaves this origin. No model, no analytics, no government host.
   "connect-src 'self'",
   "manifest-src 'self'",
@@ -53,7 +62,7 @@ const SECURITY_HEADERS = [
   { key: "Content-Security-Policy", value: CSP },
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-  { key: "Permissions-Policy", value: "microphone=(), camera=(), geolocation=(), interest-cohort=()" },
+  { key: "Permissions-Policy", value: "microphone=(), camera=(self), geolocation=(), interest-cohort=()" },
   { key: "X-Frame-Options", value: "DENY" },
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" }
 ];

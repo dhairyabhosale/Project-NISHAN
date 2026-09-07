@@ -4,62 +4,77 @@
  *
  * P7 is the e-KYC dead end: the portal's mandatory identity step depends on an
  * OTP to the Aadhaar-linked mobile, and when that number is stale the web path
- * fails with no in-browser alternative - the reader is ejected to an app
- * download or a Common Service Centre. A camera needs no phone number, so it
+ * fails with no in-browser alternative. A camera needs no phone number, so it
  * works for exactly the person the OTP route abandons.
  *
- * WHAT IS REAL HERE: the camera. getUserMedia is a genuine permission prompt,
- * the preview is the reader's real video stream, and the liveness prompts are
- * real instructions they have to follow.
+ * WHY THIS NEVER WORKED BEFORE. next.config.mjs sent
+ * `Permissions-Policy: camera=()`, which denies the camera to the page itself,
+ * so getUserMedia rejected on every deployment before the browser ever asked
+ * the reader anything. The failure surfaced as "permission was refused", which
+ * is what a reader would reasonably blame themselves for. The header now sends
+ * camera=(self); the microphone stays fully denied, which is the claim the
+ * disabled Bhashini button actually rests on.
  *
- * WHAT IS SIMULATED: the verification. There is no real UIDAI system, and the
- * captured frame is resolved against the mock records. Said on screen, at the
- * moment of highest risk of being believed (§12.7).
+ * WHAT IS REAL: the camera. A genuine permission prompt, the reader's own video
+ * in the ring, a real shutter.
  *
- * WHAT NEVER HAPPENS: the frame never leaves the device. It is drawn to a
- * canvas in memory, its dimensions are checked, and it is discarded - there is
- * no upload, no fetch carrying image data, and no storage write. §12.1 and
- * §12.5 both forbid collecting what we do not need, and a photograph of a
- * reader's face is the clearest possible example of something we do not need.
- * The CSP (connect-src 'self') means a browser would block an upload even if
- * this code tried, which is worth more than the promise.
+ * WHAT IS SIMULATED: the verification, and the photograph that comes back. The
+ * captured frame is measured and discarded in the same function, and what the
+ * reader is then shown is a drawn stand-in, not their face. That is a stronger
+ * privacy position than showing the real capture, and it is said on screen.
+ *
+ * WHAT NEVER HAPPENS: the frame never leaves the device. No upload, no fetch
+ * carrying image data, no storage write. connect-src 'self' means the browser
+ * would refuse an upload even if this code tried one.
  *
  * THE TRACK IS ALWAYS STOPPED. Every exit path - success, cancel, unmount,
  * error - runs stop(). A camera light left on after the reader thinks they are
- * finished would be the single worst thing in this build.
- *
- * This component is loaded dynamically so its code never reaches any other
- * route: §11.9 caps the primary path at 150KB and a camera is not on it.
+ * finished would be the worst thing in this build.
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale } from "./LocaleProvider";
 import { resolve } from "../content/resolve";
-import type { CatalogueKey } from "../lib/content";
 
-type Phase = "idle" | "starting" | "center" | "turn" | "blink" | "ready" | "denied";
+type Phase = "idle" | "starting" | "framing" | "flash" | "processing" | "done" | "denied";
 
-const PROMPT: Record<"center" | "turn" | "blink" | "ready", CatalogueKey> = {
-  center: "act.ekyc.step_center",
-  turn: "act.ekyc.step_turn",
-  blink: "act.ekyc.step_blink",
-  ready: "act.ekyc.step_hold"
-};
+/** Long enough to read as work, short enough not to feel stalled. */
+const PROCESS_MS = 1000;
+const FLASH_MS = 420;
 
-/** Long enough for the reader to actually do the thing being asked. */
-const STEP_MS = 2600;
+/** The stand-in. Drawn, not photographed: a neutral bust in the palette, so it
+ *  is unmistakably a placeholder and cannot resemble anybody. */
+function drawStandIn(canvas: HTMLCanvasElement) {
+  const S = 320;
+  canvas.width = S;
+  canvas.height = S;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  ctx.fillStyle = "#E0F7FA";
+  ctx.fillRect(0, 0, S, S);
+  ctx.fillStyle = "#A5D6A7";
+  ctx.beginPath();
+  ctx.arc(S / 2, S * 0.38, S * 0.17, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(S * 0.18, S);
+  ctx.quadraticCurveTo(S * 0.5, S * 0.55, S * 0.82, S);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#00796B";
+  ctx.lineWidth = 6;
+  ctx.beginPath();
+  ctx.arc(S / 2, S / 2, S / 2 - 4, 0, Math.PI * 2);
+  ctx.stroke();
+}
 
-/* `otherWayHref` is where the reader goes when the camera cannot work for
-   them. §10.4 and §16 both say a route that is unavailable is shown ruled out
-   WITH the way through, never left as a wall: the denied state named the
-   alternatives in prose and then offered no control to reach any of them. */
 export function FaceCheck({ onVerified, otherWayHref }: { onVerified: () => void; otherWayHref?: string }) {
   const { locale } = useLocale();
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const shotRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
   const [phase, setPhase] = useState<Phase>("idle");
 
-  /** The only way the camera is released, and every path leads here. */
   const stop = useCallback(() => {
     const stream = streamRef.current;
     streamRef.current = null;
@@ -80,50 +95,55 @@ export function FaceCheck({ onVerified, otherWayHref }: { onVerified: () => void
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        await videoRef.current.play().catch(() => { /* autoplay policy; the stream is still live */ });
+        await videoRef.current.play().catch(() => { /* autoplay policy; the stream is live */ });
       }
-      setPhase("center");
+      setPhase("framing");
     } catch {
-      // Denied, no camera, or an insecure origin. Never a dead end (§10.4).
       stop();
       setPhase("denied");
     }
   }
 
-  /* The liveness sequence. Prompts advance on a timer rather than on detection:
-     real face and gesture detection would mean a model, and §16.2 keeps models
-     out of this build entirely. The prompts are real instructions and the
-     camera is real - what is simulated is the judgement, which is exactly what
-     the disclosure says. */
-  useEffect(() => {
-    if (phase !== "center" && phase !== "turn" && phase !== "blink") return;
-    const next: Record<string, Phase> = { center: "turn", turn: "blink", blink: "ready" };
-    const id = window.setTimeout(() => setPhase(next[phase]), STEP_MS);
-    return () => window.clearTimeout(id);
-  }, [phase]);
-
-  /** Capture, check, discard. Nothing survives this function. */
-  function finish() {
+  /** Capture, measure, discard, then show the stand-in. Nothing survives. */
+  function capture() {
     const video = videoRef.current;
     let captured = false;
     if (video && video.videoWidth > 0) {
-      const canvas = document.createElement("canvas");
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      const ctx = canvas.getContext("2d");
+      const scratch = document.createElement("canvas");
+      scratch.width = video.videoWidth;
+      scratch.height = video.videoHeight;
+      const ctx = scratch.getContext("2d");
       if (ctx) {
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        captured = canvas.width > 0 && canvas.height > 0;
+        ctx.drawImage(video, 0, 0, scratch.width, scratch.height);
+        captured = scratch.width > 0 && scratch.height > 0;
         // Discarded here, in this scope, before anything else can reach it.
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        canvas.width = 0;
-        canvas.height = 0;
+        ctx.clearRect(0, 0, scratch.width, scratch.height);
+        scratch.width = 0;
+        scratch.height = 0;
       }
     }
     stop();
-    if (captured) onVerified();
-    else setPhase("denied");
+    if (!captured) { setPhase("denied"); return; }
+    setPhase("flash");
   }
+
+  /* flash -> processing -> done, on timers, with the stand-in drawn once the
+     shutter has fired so there is something in the ring to look at. */
+  useEffect(() => {
+    if (phase === "flash") {
+      const t = window.setTimeout(() => setPhase("processing"), FLASH_MS);
+      return () => window.clearTimeout(t);
+    }
+    if (phase === "processing") {
+      const t = window.setTimeout(() => setPhase("done"), PROCESS_MS);
+      return () => window.clearTimeout(t);
+    }
+    return undefined;
+  }, [phase]);
+
+  useEffect(() => {
+    if (phase === "flash" && shotRef.current) drawStandIn(shotRef.current);
+  }, [phase]);
 
   if (phase === "denied") {
     return (
@@ -132,8 +152,6 @@ export function FaceCheck({ onVerified, otherWayHref }: { onVerified: () => void
           {resolve("act.ekyc.denied", {}, locale)}
         </p>
         <div className="mt-4 flex flex-wrap gap-3">
-          {/* Permission can be granted after the fact, so the first offer is
-              simply to ask again. */}
           <button
             type="button"
             onClick={() => setPhase("idle")}
@@ -169,61 +187,79 @@ export function FaceCheck({ onVerified, otherWayHref }: { onVerified: () => void
     );
   }
 
-  const prompt = phase === "starting" ? null : PROMPT[phase];
-
-  return (
-    <div className="mt-4">
-      <div className="overflow-hidden rounded-card border-2 border-teal-deep bg-ink">
-        <video
-          ref={videoRef}
-          playsInline
-          muted
-          autoPlay
-          aria-label={resolve("act.ekyc.title", {}, locale)}
-          className="block aspect-[4/3] w-full object-cover"
-        />
-      </div>
-
-      {prompt && (
-        <div className="mt-4 rounded-card bg-cyan-pale p-4">
-          <p className="text-answer font-semibold leading-tight text-ink" role="status">
-            {resolve(prompt, {}, locale)}
-          </p>
-          {/* How far through the sequence, without a new string to translate:
-              a filled step is one that is done or running. */}
-          <ol className="mt-3 flex gap-2" aria-hidden="true">
-            {(["center", "turn", "blink"] as const).map((step, i) => {
-              const at = ["center", "turn", "blink"].indexOf(phase);
-              const done = phase === "ready" || (at >= 0 && i <= at);
-              return (
-                <li
-                  key={step}
-                  className={"h-1.5 flex-1 rounded-marker " + (done ? "bg-teal-deep" : "bg-rule")}
-                />
-              );
-            })}
-          </ol>
-        </div>
-      )}
-
-      <p className="mt-3 prose-measure text-label text-ink-soft">{resolve("act.ekyc.live_note", {}, locale)}</p>
-
-      <div className="mt-4 flex flex-wrap gap-3">
+  if (phase === "done") {
+    return (
+      <div className="mt-4">
+        <p role="status" className="rounded-card border-2 border-green bg-green-soft p-4 text-body font-semibold text-ink">
+          {resolve("act.ekyc.success", {}, locale)}
+        </p>
         <button
           type="button"
-          onClick={finish}
-          disabled={phase !== "ready"}
-          className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
+          onClick={onVerified}
+          className="btn-pop mt-4 inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper"
         >
           {resolve("act.ekyc.confirm", {}, locale)}
         </button>
+      </div>
+    );
+  }
+
+  const shot = phase === "flash" || phase === "processing";
+
+  return (
+    <div className="mt-4">
+      {/* The ring. A circle is what every e-KYC capture screen uses, and it
+          tells the reader where to put their face without a sentence. */}
+      <div className="ekyc-stage mx-auto">
+        <div className={"ekyc-ring" + (phase === "processing" ? " ekyc-ring-busy" : "")}>
+          <video
+            ref={videoRef}
+            playsInline
+            muted
+            autoPlay
+            aria-label={resolve("act.ekyc.title", {}, locale)}
+            className={"ekyc-media" + (shot ? " ekyc-hidden" : "")}
+          />
+          <canvas ref={shotRef} aria-hidden="true" className={"ekyc-media" + (shot ? "" : " ekyc-hidden")} />
+        </div>
+        {phase === "flash" && <div className="ekyc-flash" aria-hidden="true" />}
+      </div>
+
+      {phase === "framing" && (
+        <p className="mt-5 text-center text-body font-semibold text-ink" role="status">
+          {resolve("act.ekyc.frame_hint", {}, locale)}
+        </p>
+      )}
+      {phase === "processing" && (
+        <p className="mt-5 text-center text-body font-semibold text-ink" role="status">
+          {resolve("act.ekyc.processing", {}, locale)}
+        </p>
+      )}
+      {shot && (
+        <p className="mt-2 text-center text-label text-ink-soft">{resolve("act.ekyc.demo_photo", {}, locale)}</p>
+      )}
+      {phase === "framing" && (
+        <p className="mt-3 prose-measure text-label text-ink-soft">{resolve("act.ekyc.live_note", {}, locale)}</p>
+      )}
+
+      <div className="mt-5 flex flex-wrap justify-center gap-3">
         <button
           type="button"
-          onClick={() => { stop(); setPhase("idle"); }}
-          className="btn-pop inline-flex min-h-14 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink"
+          onClick={capture}
+          disabled={phase !== "framing"}
+          className="btn-pop inline-flex min-h-14 items-center rounded-card bg-teal-deep px-6 text-body font-semibold text-paper disabled:bg-rule disabled:text-ink-soft"
         >
-          {resolve("act.ekyc.cancel", {}, locale)}
+          {resolve("act.ekyc.capture", {}, locale)}
         </button>
+        {phase === "framing" && (
+          <button
+            type="button"
+            onClick={() => { stop(); setPhase("idle"); }}
+            className="btn-pop inline-flex min-h-14 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink"
+          >
+            {resolve("act.ekyc.cancel", {}, locale)}
+          </button>
+        )}
       </div>
     </div>
   );
