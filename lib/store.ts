@@ -36,7 +36,9 @@ export interface CaseEvent {
   fromState: CaseState | null;
   toState: CaseState;
   /** "action" is a completable in-browser action (§P10) - see lib/actions.ts. */
-  kind: "diagnosis" | "fix_step" | "credit" | "grievance" | "escalation" | "action";
+  /** "reset" puts a case back to its diagnosed state. It is APPENDED, never
+   *  a deletion: see app/api/case/reset. */
+  kind: "diagnosis" | "fix_step" | "credit" | "grievance" | "escalation" | "action" | "reset";
   detail: Record<string, unknown>;
   /** §8.7: a replayed action is a no-op if already applied. */
   idempotencyKey: string;

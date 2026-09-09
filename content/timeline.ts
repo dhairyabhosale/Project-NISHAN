@@ -44,6 +44,10 @@ export function describe(event: CaseEvent): CatalogueKey {
   if (event.kind === "grievance") return "timeline.event.grievance_filed";
   if (event.kind === "credit") return "timeline.event.credited";
   if (event.kind === "fix_step") return "timeline.event.fix_step";
+  /* Appended, not a deletion: the log reads action-then-reset, in order.
+     Without a line of its own a reset would fall through to the diagnosis
+     sentence, which would be a wrong description rather than a generic one. */
+  if (event.kind === "reset") return "timeline.event.reset";
   if (event.kind === "action") {
     return event.toState === "FIX_DONE" ? "timeline.event.action_done" : "timeline.event.action_started";
   }

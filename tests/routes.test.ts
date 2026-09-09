@@ -965,3 +965,113 @@ describe("Mobile - nothing may burst the viewport", () => {
     }
   });
 });
+
+/* The redo path, over HTTP.
+ *
+ * The device is the record of what a reader completed, so the completed screen
+ * cannot be fetched from here - the server does not know what any particular
+ * browser holds. What IS assertable over HTTP is the half this suite exists to
+ * protect: that resetting a case is recorded rather than hidden, that it is not
+ * a deletion wearing another name, and that the copy the two controls need
+ * resolves in every locale.
+ *
+ * The bug this covers: a completion was written to the device and nothing ever
+ * cleared it, so one tester finishing the camera e-KYC made the step
+ * unreachable in that browser for the rest of the session.
+ */
+describe("F17 - a completed action can be undone", () => {
+  const REF = "NSH-D33F";
+  const post = (body: unknown) =>
+    fetch(BASE + "/api/case/reset", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+  it("records a reset against a real case", async () => {
+    const res = await post({ reference: REF, at: new Date().toISOString() });
+    assert.equal(res.status, 200, "the reset endpoint refused a valid case");
+    const body = (await res.json()) as { events?: number };
+    assert.ok(typeof body.events === "number" && body.events > 0,
+      "the reset reported no events, so nothing was appended");
+  });
+
+  it("APPENDS the reset rather than deleting the history it undoes", async () => {
+    /* §8.8 makes the citizen's timeline and the audit trail the same rows. A
+       reset that removed the completion it undid would rewrite history to keep
+       a demo tidy, which is the one thing this log must not do.
+
+       The first version of this compared two resets to each other, which a
+       delete-then-append passes trivially: both calls report one event. So it
+       records a completion first and asserts the reset lands ON TOP of it. */
+    const completed = (await (await fetch(BASE + "/api/action", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ reference: REF, action: "EKYC_FACE", at: new Date().toISOString() })
+    })).json()) as { events: number };
+    assert.ok(completed.events >= 1, "the completion was not recorded, so this proves nothing");
+
+    const after = (await (await post({ reference: REF, at: new Date().toISOString() })).json()) as { events: number };
+    assert.equal(after.events, completed.events + 1,
+      "the log went from " + completed.events + " to " + after.events +
+      "; a reset must append exactly one event and remove none");
+  });
+
+  it("is not a deletion: the case still opens afterwards", async () => {
+    await post({ reference: REF, at: new Date().toISOString() });
+    const res = await fetch(BASE + "/case/" + REF);
+    assert.equal(res.status, 200, "the case stopped resolving after a reset, so reset deleted it");
+    assert.ok(mainText(await res.text()).length > 250, "the case rendered empty after a reset");
+  });
+
+  it("refuses junk without guessing what was meant", async () => {
+    const bad: unknown[] = [
+      {},
+      { reference: REF },
+      { at: new Date().toISOString() },
+      { reference: "NOT-A-REF", at: new Date().toISOString() },
+      { reference: REF, at: "not-a-date" },
+      { reference: 12345, at: new Date().toISOString() }
+    ];
+    for (const body of bad) {
+      const res = await post(body);
+      assert.equal(res.status, 400, "accepted junk: " + JSON.stringify(body));
+    }
+  });
+
+  it("gives an unknown reference the same answer as any other miss", async () => {
+    // §12.6: references must not be enumerable to identity data.
+    const res = await post({ reference: "NSH-0000", at: new Date().toISOString() });
+    assert.equal(res.status, 404);
+  });
+
+  it("carries the copy both controls need, in every locale", async () => {
+    /* §16.4 - the buttons are user-facing, so they come from the catalogue in
+       all four locales or they do not ship. */
+    const locales = ["en", "hi", "mr", "ta"] as const;
+    const keys = ["act.redo", "act.redo_note", "demo.reset_heading", "demo.reset_note",
+      "demo.reset_action", "demo.reset_done", "demo.reset_none", "timeline.event.reset"];
+    for (const loc of locales) {
+      const cat = JSON.parse(
+        fs.readFileSync(path.join(ROOT, "content", "catalogue." + loc + ".json"), "utf8")
+      ) as Record<string, string>;
+      for (const key of keys) {
+        assert.ok(typeof cat[key] === "string" && cat[key].trim().length > 0,
+          loc + " is missing " + key);
+        assert.equal(/TODO_/.test(cat[key]), false, loc + " " + key + " is still a placeholder");
+      }
+    }
+  });
+
+  it("serves the reset control on /demo, labelled as a demo control", async () => {
+    const html = served["/demo"];
+    const en = JSON.parse(
+      fs.readFileSync(path.join(ROOT, "content", "catalogue.en.json"), "utf8")
+    ) as Record<string, string>;
+    const text = visible(html);
+    assert.ok(text.includes(en["demo.reset_action"]),
+      "/demo does not offer the reset control");
+    assert.ok(text.includes("demo control") || text.includes(en["demo.reset_note"].slice(0, 24)),
+      "/demo offers a reset without saying it is a demo control");
+  });
+});

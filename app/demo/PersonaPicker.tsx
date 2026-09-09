@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { resetCase, reportReset } from "../../lib/caseReset";
 import { DiagnosticWait, useDiagnosticWait } from "../../components/DiagnosticWait";
 import { useLocale } from "../../components/LocaleProvider";
 import { resolve } from "../../content/resolve";
@@ -25,6 +26,10 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
   const [filter, setFilter] = useState<string>("all");
   const [selectedRef, setSelectedRef] = useState<string>(personas[0]?.ref ?? "");
   const [working, run] = useDiagnosticWait();
+  /* null = not asked yet. "none" vs "done" so the control reports what it
+     actually did rather than claiming a reset it did not perform, which is the
+     rule DeleteCaseButton already follows. */
+  const [wiped, setWiped] = useState<"none" | "done" | null>(null);
 
   const filtered = filter === "all"
     ? personas
@@ -39,6 +44,18 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
     { id: "land", label: resolve("demo.filter_land", {}, locale) },
     { id: "eligibility", label: resolve("demo.filter_eligibility", {}, locale) }
   ];
+
+  /* The same code path as "Do this again" on a completed action: both clear
+     device state through lib/caseReset and both append a reset event rather
+     than editing the log. This one clears everything for the case - completed
+     actions, filed complaint, ticked fix steps - so the persona reads exactly
+     as it did when first diagnosed. */
+  function resetSelected() {
+    if (!selectedPersona) return;
+    const removed = resetCase(selectedPersona.reference);
+    setWiped(removed.length === 0 ? "none" : "done");
+    if (removed.length > 0) void reportReset(selectedPersona.reference, new Date().toISOString());
+  }
 
   function runSelected() {
     if (!selectedPersona) return;
@@ -84,7 +101,7 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
             <select
               id="scenario-select"
               value={selectedRef}
-              onChange={(e) => setSelectedRef(e.target.value)}
+              onChange={(e) => { setSelectedRef(e.target.value); setWiped(null); }}
               className="mt-2 min-h-12 w-full rounded-card border-2 border-rule bg-paper px-3 text-body font-medium text-ink focus:border-teal-deep"
             >
               {personas.map((p) => (
@@ -105,12 +122,35 @@ export function PersonaPicker({ personas }: { personas: PersonaCard[] }) {
               </button>
               <button
                 type="button"
-                onClick={() => setSelectedRef(personas[0]?.ref ?? "")}
+                onClick={() => { setSelectedRef(personas[0]?.ref ?? ""); setWiped(null); }}
                 className="btn-pop inline-flex min-h-12 items-center rounded-card border border-rule px-4 text-label font-semibold text-ink hover:bg-cyan-pale"
               >
                 {resolve("demo.reset", {}, locale)}
               </button>
             </div>
+
+            {/* A demo control, and it says so - §11.7 S11 keeps this surface
+                visibly separate from the citizen product. Same pending border
+                as the time-travel panel on the timeline, for the same reason. */}
+            <section className="mt-6 rounded-card border-2 border-pending bg-paper p-4">
+              <h3 className="text-label font-bold uppercase tracking-wider text-ink">
+                {resolve("demo.reset_heading", {}, locale)}
+              </h3>
+              <p className="mt-2 prose-measure text-label text-ink">{resolve("demo.reset_note", {}, locale)}</p>
+              <button
+                type="button"
+                onClick={resetSelected}
+                disabled={!selectedPersona}
+                className="btn-fill mt-4 inline-flex min-h-12 items-center rounded-card border-2 border-teal-deep px-4 text-label font-semibold text-teal-deep disabled:opacity-70"
+              >
+                {resolve("demo.reset_action", {}, locale)}
+              </button>
+              {wiped && (
+                <p role="status" className="mt-3 rounded-card border border-teal-deep bg-cyan-pale p-3 text-label font-semibold text-ink">
+                  {resolve(wiped === "none" ? "demo.reset_none" : "demo.reset_done", {}, locale)}
+                </p>
+              )}
+            </section>
           </div>
 
           {selectedPersona && (

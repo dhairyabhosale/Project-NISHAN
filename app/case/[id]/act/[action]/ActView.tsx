@@ -18,7 +18,8 @@ import { useEffect, useState } from "react";
 import { useLocale } from "../../../../../components/LocaleProvider";
 import { resolve } from "../../../../../content/resolve";
 import { ACTIONS, type ActionId } from "../../../../../lib/actions";
-import { readActions, writeAction } from "../../../../../lib/actionStore";
+import { readActions, writeAction, clearAction } from "../../../../../lib/actionStore";
+import { reportReset } from "../../../../../lib/caseReset";
 import { addDays } from "../../../../../lib/escalation";
 import type { CatalogueKey } from "../../../../../lib/content";
 import type { Diagnosis } from "../../../../../lib/types/diagnosis";
@@ -74,6 +75,21 @@ export function ActView({
     }).catch(() => { /* offline: recorded on the device regardless */ });
   }
 
+  /* The way back out of a completed step, and the fix for a real bug: a
+     completion was written once and never cleared, so this screen read
+     "recorded as complete" for the rest of the browser's life and the step
+     could never be reached again. Applies to all four actions, because all
+     four record completion through the same store.
+
+     The server log is appended to, not edited. The history keeps the
+     completion AND the reset, in that order. */
+  function redo() {
+    const at = new Date().toISOString();
+    clearAction(reference, actionId);
+    setDoneAt(null);
+    void reportReset(reference, at);
+  }
+
   /* ── Already done ──────────────────────────────────────────────────────── */
   if (doneAt) {
     const effectBy = addDays(doneAt, effectDays).slice(0, 10);
@@ -95,7 +111,15 @@ export function ActView({
           <Link href={href + "/fix"} className="btn-pop inline-flex min-h-14 items-center rounded-card border border-rule px-5 text-body font-semibold text-ink">
             {resolve("act.back", {}, locale)}
           </Link>
+          <button
+            type="button"
+            onClick={redo}
+            className="btn-fill inline-flex min-h-14 items-center rounded-card border-2 border-teal-deep px-5 text-body font-semibold text-teal-deep"
+          >
+            {resolve("act.redo", {}, locale)}
+          </button>
         </div>
+        <p className="mt-4 prose-measure text-label text-ink-soft">{resolve("act.redo_note", {}, locale)}</p>
       </main>
     );
   }

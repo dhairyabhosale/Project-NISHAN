@@ -11,7 +11,12 @@ import { describe, it } from "node:test";
 import {
   ACTIONS, ACTION_IDS, actionFor, availableActions, ruledOutActions, officeOnly, nothingToDo
 } from "../lib/actions";
-import { readActionsFrom, writeActionTo, ACTION_KEY_PREFIX } from "../lib/actionStore";
+import {
+  readActionsFrom, writeActionTo, clearActionFrom, clearAllActionsFrom,
+  ACTION_KEY_PREFIX, ACTION_SCHEMA
+} from "../lib/actionStore";
+import { resetCaseOn, CASE_KEY_PREFIXES, FIX_KEY_PREFIX } from "../lib/caseReset";
+import { GRIEVANCE_KEY_PREFIX } from "../lib/grievanceStore";
 import { readRecentFrom, writeRecentTo, forgetRecentFrom, RECENT_KEY } from "../lib/recentCase";
 import { getCase, referenceFor } from "../lib/store";
 import { PERSONAS, CURRENT_CYCLE } from "../mocks/fixtures";
@@ -268,5 +273,164 @@ describe("recentCase - the return path", () => {
     assert.doesNotThrow(() => writeRecentTo(hostile, "NSH-D33F"));
     assert.doesNotThrow(() => forgetRecentFrom(hostile));
     assert.equal(readRecentFrom(null), null);
+  });
+});
+
+/* The completion that could never be cleared.
+ *
+ * THE BUG. A completion was written to the device and nothing ever removed it,
+ * so once a reader finished the camera e-KYC that browser showed "recorded as
+ * complete" for good and the camera step became unreachable. On a judged demo
+ * the first tester locks the feature out for the rest of the session.
+ *
+ * Three things are asserted here: that a completion can be undone, that the
+ * undo covers all four actions rather than only the one that was reported, and
+ * that a case reset clears every device key rather than only the action list.
+ * The last is what stops the bug reappearing as "the complaint is still filed"
+ * or "the fix steps are still ticked".
+ */
+describe("actionStore - a completion can be undone", () => {
+  const store = () => {
+    const map = new Map<string, string>();
+    return {
+      getItem: (k: string) => map.get(k) ?? null,
+      setItem: (k: string, v: string) => { map.set(k, v); },
+      removeItem: (k: string) => { map.delete(k); },
+      map
+    };
+  };
+  const AT = "2026-09-09T10:00:00.000Z";
+  const REF = "NSH-D33F";
+
+  it("clears one completion so the step can be done again", () => {
+    const s = store();
+    writeActionTo(s, REF, "EKYC_FACE", AT);
+    assert.equal(readActionsFrom(s, REF).length, 1, "precondition: the completion was recorded");
+    clearActionFrom(s, REF, "EKYC_FACE");
+    assert.deepEqual(readActionsFrom(s, REF), [],
+      "the completion survived the clear, so the step is still unreachable");
+  });
+
+  it("covers every completable action, not just the camera one", () => {
+    /* The camera is what was reported, but all four record completion through
+       this store and all four would have stuck the same way. */
+    for (const id of ACTION_IDS) {
+      const s = store();
+      writeActionTo(s, REF, id, AT);
+      assert.equal(readActionsFrom(s, REF).length, 1, id + " was not recorded");
+      clearActionFrom(s, REF, id);
+      assert.deepEqual(readActionsFrom(s, REF), [], id + " cannot be undone");
+    }
+  });
+
+  it("clears only the action asked for", () => {
+    const s = store();
+    writeActionTo(s, REF, "EKYC_FACE", AT);
+    writeActionTo(s, REF, "UPDATE_MOBILE", AT);
+    clearActionFrom(s, REF, "EKYC_FACE");
+    assert.deepEqual(readActionsFrom(s, REF).map((e) => e.id), ["UPDATE_MOBILE"],
+      "clearing one completion disturbed another");
+  });
+
+  it("leaves other cases alone", () => {
+    const s = store();
+    writeActionTo(s, REF, "EKYC_FACE", AT);
+    writeActionTo(s, "NSH-3DCE", "EKYC_FACE", AT);
+    clearActionFrom(s, REF, "EKYC_FACE");
+    assert.equal(readActionsFrom(s, "NSH-3DCE").length, 1, "clearing one case cleared another");
+  });
+
+  it("is a no-op on a case with nothing recorded", () => {
+    const s = store();
+    assert.deepEqual(clearActionFrom(s, REF, "EKYC_FACE"), []);
+    assert.deepEqual(clearAllActionsFrom(s, REF), []);
+  });
+
+  it("never throws when storage is hostile or absent", () => {
+    const hostile = {
+      getItem() { throw new Error("SecurityError"); },
+      setItem() { throw new Error("SecurityError"); },
+      removeItem() { throw new Error("SecurityError"); }
+    };
+    assert.doesNotThrow(() => clearActionFrom(hostile, REF, "EKYC_FACE"));
+    assert.doesNotThrow(() => clearActionFrom(null, REF, "EKYC_FACE"));
+    assert.doesNotThrow(() => resetCaseOn(hostile, REF));
+    assert.doesNotThrow(() => resetCaseOn(null, REF));
+  });
+
+  it("reads a previous-schema value as nothing completed", () => {
+    /* This is what clears the completions already sitting on devices that
+       loaded the build before the fix. v1 wrote a bare array; anything that is
+       not the current wrapper reads as empty, so no migration code is needed
+       and no orphaned key is left behind. */
+    const s = store();
+    s.setItem(ACTION_KEY_PREFIX + REF, JSON.stringify([{ id: "EKYC_FACE", at: AT }]));
+    assert.deepEqual(readActionsFrom(s, REF), [],
+      "a v1 completion still reads as complete, so devices that already tested stay locked out");
+    const written = writeActionTo(s, REF, "EKYC_FACE", AT);
+    assert.equal(written.length, 1, "the key could not be rewritten in the current shape");
+    const box = JSON.parse(s.map.get(ACTION_KEY_PREFIX + REF) as string) as { v: number };
+    assert.equal(box.v, ACTION_SCHEMA, "the written value does not carry the schema version");
+  });
+});
+
+describe("caseReset - one case back to its diagnosed state", () => {
+  const store = () => {
+    const map = new Map<string, string>();
+    return {
+      getItem: (k: string) => map.get(k) ?? null,
+      setItem: (k: string, v: string) => { map.set(k, v); },
+      removeItem: (k: string) => { map.delete(k); },
+      map
+    };
+  };
+  const AT = "2026-09-09T10:00:00.000Z";
+  const REF = "NSH-D33F";
+
+  const dirty = () => {
+    const s = store();
+    writeActionTo(s, REF, "EKYC_FACE", AT);
+    writeActionTo(s, REF, "UPDATE_MOBILE", AT);
+    s.setItem(GRIEVANCE_KEY_PREFIX + REF, AT);
+    s.setItem(FIX_KEY_PREFIX + REF, JSON.stringify([0, 1]));
+    return s;
+  };
+
+  it("clears completions, the filed complaint and the ticked steps together", () => {
+    const s = dirty();
+    const removed = resetCaseOn(s, REF);
+    assert.deepEqual(readActionsFrom(s, REF), [], "completions survived the reset");
+    assert.equal(s.getItem(GRIEVANCE_KEY_PREFIX + REF), null, "the filed complaint survived the reset");
+    assert.equal(s.getItem(FIX_KEY_PREFIX + REF), null, "the ticked fix steps survived the reset");
+    assert.equal(removed.length, 3, "the reset reported the wrong keys: " + removed.join(", "));
+  });
+
+  it("knows every per-case key this build writes", () => {
+    /* If a new per-case key is added and not listed there, a reset leaves part
+       of the case behind and the bug returns wearing a different hat. */
+    assert.ok(CASE_KEY_PREFIXES.includes(ACTION_KEY_PREFIX));
+    assert.ok(CASE_KEY_PREFIXES.includes(GRIEVANCE_KEY_PREFIX));
+    assert.ok(CASE_KEY_PREFIXES.includes(FIX_KEY_PREFIX));
+  });
+
+  it("leaves every other case untouched", () => {
+    const s = dirty();
+    writeActionTo(s, "NSH-3DCE", "EKYC_FACE", AT);
+    s.setItem(GRIEVANCE_KEY_PREFIX + "NSH-3DCE", AT);
+    resetCaseOn(s, REF);
+    assert.equal(readActionsFrom(s, "NSH-3DCE").length, 1, "the reset reached another case's completions");
+    assert.equal(s.getItem(GRIEVANCE_KEY_PREFIX + "NSH-3DCE"), AT, "the reset reached another case's complaint");
+  });
+
+  it("reports nothing removed when there was nothing stored", () => {
+    /* A control that says "reset" when it reset nothing is the same category of
+       untruth /whats-real exists to avoid. */
+    assert.deepEqual(resetCaseOn(store(), REF), []);
+  });
+
+  it("takes a reference in any case or spacing a reader might hold", () => {
+    const s = dirty();
+    assert.equal(resetCaseOn(s, "  nsh-d33f  ").length, 3,
+      "a pasted reference did not resolve to the same case");
   });
 });
